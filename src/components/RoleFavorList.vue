@@ -8,14 +8,54 @@
     
     <div v-else class="favor-relations">
       <div v-for="relation in favorRelations" :key="relation.targetId" class="favor-item">
-        <div class="target-name">{{ getTargetName(relation.targetId) }}</div>
-        
-        <div class="favor-value" :class="getFavorClass(relation.value)">
-          {{ relation.value }}
+        <div class="target-info">
+          <div class="target-name">{{ relation.targetName }}</div>
         </div>
         
-        <div class="favor-level">
-          {{ getLevelName(relation.value) }}
+        <div class="favor-values">
+          <div class="favor-direction">
+            <div class="direction-label">对方好感</div>
+            <div class="favor-value" :class="getFavorClass(relation.targetToSource)">
+              {{ relation.targetToSource }}
+            </div>
+            <div class="favor-level">{{ getLevelName(relation.targetToSource) }}</div>
+          </div>
+          
+          <div class="favor-arrow">⟺</div>
+          
+          <div class="favor-direction">
+            <div class="direction-label">我方好感</div>
+            <div class="favor-value" :class="getFavorClass(relation.sourceToTarget)">
+              {{ relation.sourceToTarget }}
+            </div>
+            <div class="favor-level">{{ getLevelName(relation.sourceToTarget) }}</div>
+          </div>
+        </div>
+        
+        <div v-if="relation.targetToSourceEffects.length > 0" class="trait-effects">
+          <div class="effects-header">对方对我的特质影响:</div>
+          <div v-for="(effect, index) in relation.targetToSourceEffects" 
+               :key="`target-${index}`" 
+               class="trait-effect"
+               :class="getEffectClass(effect.value)">
+            {{ effect.description }}
+            <span class="effect-value" :class="getEffectClass(effect.value)">
+              {{ effect.value > 0 ? '+' : '' }}{{ effect.value }}
+            </span>
+          </div>
+        </div>
+        
+        <div v-if="relation.sourceToTargetEffects.length > 0" class="trait-effects">
+          <div class="effects-header">我对对方的特质影响:</div>
+          <div v-for="(effect, index) in relation.sourceToTargetEffects" 
+               :key="`source-${index}`" 
+               class="trait-effect"
+               :class="getEffectClass(effect.value)">
+            {{ effect.description }}
+            <span class="effect-value" :class="getEffectClass(effect.value)">
+              {{ effect.value > 0 ? '+' : '' }}{{ effect.value }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -26,6 +66,7 @@
 import { computed } from 'vue';
 import type { Role } from '../types/Role';
 import { getFavorLevelName as getLevel } from '../utils/favorUtils';
+import { calculateTraitFavorEffects } from '../utils/traitFavorUtils';
 
 // 定义组件属性
 const props = defineProps<{
@@ -35,20 +76,37 @@ const props = defineProps<{
 
 // 计算属性：获取所有好感度关系
 const favorRelations = computed(() => {
-  return props.role.favorRelations.map(relation => {
-    const targetRole = props.allRoles.find(r => r.id === relation.targetId);
+  return props.role.favorRelations.map(sourceRelation => {
+    const targetRole = props.allRoles.find(r => r.id === sourceRelation.targetId);
+    if (!targetRole) return {
+      targetId: sourceRelation.targetId,
+      targetName: `未知角色(${sourceRelation.targetId})`,
+      sourceToTarget: sourceRelation.value,
+      targetToSource: 0,
+      targetToSourceEffects: [],
+      sourceToTargetEffects: []
+    };
+
+    // 查找目标角色对当前角色的好感度
+    const targetRelation = targetRole.favorRelations.find(r => r.targetId === props.role.id);
+    const targetToSource = targetRelation ? targetRelation.value : 0;
+
+    // 计算特质好感度影响（目标角色对当前角色的好感）
+    const targetToSourceEffects = calculateTraitFavorEffects(props.role, targetRole);
+    
+    // 计算特质好感度影响（当前角色对目标角色的好感）
+    const sourceToTargetEffects = calculateTraitFavorEffects(targetRole, props.role);
+    
     return {
-      ...relation,
-      targetName: targetRole?.name || `未知角色(${relation.targetId})`
+      targetId: sourceRelation.targetId,
+      targetName: targetRole.name,
+      sourceToTarget: sourceRelation.value,
+      targetToSource,
+      targetToSourceEffects,
+      sourceToTargetEffects
     };
   });
 });
-
-// 获取目标角色名称
-function getTargetName(targetId: number): string {
-  const targetRole = props.allRoles.find(r => r.id === targetId);
-  return targetRole?.name || `未知角色(${targetId})`;
-}
 
 // 获取好感度等级名称
 function getLevelName(value: number): string {
@@ -63,6 +121,13 @@ function getFavorClass(value: number): string {
   if (value >= -10) return 'favor-neutral';
   if (value >= -50) return 'favor-negative';
   return 'favor-hostile';
+}
+
+// 获取影响值的CSS类
+function getEffectClass(value: number): string {
+  if (value > 0) return 'effect-positive';
+  if (value < 0) return 'effect-negative';
+  return 'effect-neutral';
 }
 </script>
 
@@ -91,21 +156,55 @@ h3 {
 .favor-relations {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.8rem;
 }
 
 .favor-item {
   display: flex;
-  align-items: center;
-  padding: 0.5rem;
+  flex-direction: column;
+  padding: 0.8rem;
   background-color: white;
   border-radius: 4px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+.target-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
 .target-name {
-  flex: 1;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.favor-values {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.favor-direction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 45%;
+}
+
+.direction-label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.3rem;
+}
+
+.favor-arrow {
+  color: #999;
+  font-size: 1.2rem;
 }
 
 .favor-value {
@@ -118,10 +217,39 @@ h3 {
 }
 
 .favor-level {
-  width: 80px;
-  text-align: center;
   color: #666;
   font-size: 0.9rem;
+  margin-top: 0.3rem;
+  text-align: center;
+}
+
+.trait-effects {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
+}
+
+.effects-header {
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.trait-effect {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.effect-value {
+  font-weight: 500;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  margin-left: 0.5rem;
 }
 
 /* 好感度值的颜色样式 */
@@ -153,5 +281,21 @@ h3 {
 .favor-hostile {
   background-color: #fce4ec;
   color: #c2185b;
+}
+
+/* 影响值的颜色样式 */
+.effect-positive {
+  color: #2e7d32;
+  background-color: #e6f7e6;
+}
+
+.effect-negative {
+  color: #d32f2f;
+  background-color: #ffebee;
+}
+
+.effect-neutral {
+  color: #757575;
+  background-color: #f5f5f5;
 }
 </style> 

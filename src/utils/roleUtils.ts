@@ -3,6 +3,7 @@ import type { Skill, SkillType } from '../types/Skill';
 import { generateCharacterTraits } from './traitUtils';
 import { generateSpecializedSkills, applyTraitEffectsToSkills } from './skillUtils';
 import { initializeFavorRelations } from './favorUtils';
+import { applyTraitFavorEffectsToRoles } from './traitFavorUtils';
 
 // 英文名字列表
 const maleNames = ['John', 'David', 'Michael', 'James', 'Robert', 'William', 'Thomas', 'Christopher'];
@@ -145,12 +146,15 @@ export function generateRandomRoles(count: number): Role[] {
     roles.push(generateRandomRole(i + 1));
   }
 
-  // 为每个角色初始化与其他角色的好感度关系
-  return roles.map(role => {
+  // 为每个角色初始化与其他角色的好感度关系（初始值为0）
+  const rolesWithRelations = roles.map(role => {
     const otherRoleIds = roles
       .filter(r => r.id !== role.id)
       .map(r => r.id);
     
     return initializeFavorRelations(role, otherRoleIds);
   });
+
+  // 应用特质好感度影响
+  return applyTraitFavorEffectsToRoles(rolesWithRelations);
 } 

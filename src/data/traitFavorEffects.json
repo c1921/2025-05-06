@@ -1,0 +1,226 @@
+{
+  "traitFavorEffects": [
+    {
+      "sourceTraitId": 29,
+      "targetTraitId": 29,
+      "favorChange": 8,
+      "description": "同为勤劳之人相互欣赏"
+    },
+    {
+      "sourceTraitId": 30,
+      "targetTraitId": 30,
+      "favorChange": 5,
+      "description": "同为懒惰之人相互理解"
+    },
+    {
+      "sourceTraitId": 29,
+      "targetTraitId": 30,
+      "favorChange": -10,
+      "description": "勤劳之人厌恶懒惰之人"
+    },
+    {
+      "sourceTraitId": 30,
+      "targetTraitId": 29,
+      "favorChange": -5,
+      "description": "懒惰之人惧怕勤劳之人"
+    },
+    {
+      "sourceTraitId": 31,
+      "targetTraitId": 31,
+      "favorChange": 6,
+      "description": "同为慷慨之人相互称赞"
+    },
+    {
+      "sourceTraitId": 32,
+      "targetTraitId": 32,
+      "favorChange": 4,
+      "description": "同为贪婪之人相互警惕"
+    },
+    {
+      "sourceTraitId": 31,
+      "targetTraitId": 32,
+      "favorChange": -8,
+      "description": "慷慨之人鄙视贪婪之人"
+    },
+    {
+      "sourceTraitId": 32,
+      "targetTraitId": 31,
+      "favorChange": -4,
+      "description": "贪婪之人不理解慷慨之人"
+    },
+    {
+      "sourceTraitId": 33,
+      "targetTraitId": 33,
+      "favorChange": 7,
+      "description": "同为诚实之人互相信任"
+    },
+    {
+      "sourceTraitId": 34,
+      "targetTraitId": 34,
+      "favorChange": 3,
+      "description": "同为狡猾之人惺惺相惜"
+    },
+    {
+      "sourceTraitId": 33,
+      "targetTraitId": 34,
+      "favorChange": -7,
+      "description": "诚实之人不信任狡猾之人"
+    },
+    {
+      "sourceTraitId": 34,
+      "targetTraitId": 33,
+      "favorChange": -3,
+      "description": "狡猾之人觉得诚实之人天真"
+    },
+    {
+      "sourceTraitId": 35,
+      "targetTraitId": 35,
+      "favorChange": 8,
+      "description": "同为忠诚之人互相敬重"
+    },
+    {
+      "sourceTraitId": 36,
+      "targetTraitId": 36,
+      "favorChange": 4,
+      "description": "同为放荡之人志趣相投"
+    },
+    {
+      "sourceTraitId": 35,
+      "targetTraitId": 36,
+      "favorChange": -6,
+      "description": "忠诚之人轻视放荡之人"
+    },
+    {
+      "sourceTraitId": 36,
+      "targetTraitId": 35,
+      "favorChange": -3,
+      "description": "放荡之人觉得忠诚之人无趣"
+    },
+    {
+      "sourceTraitId": 47,
+      "targetTraitId": 47,
+      "favorChange": 7,
+      "description": "同为热情之人相互激励"
+    },
+    {
+      "sourceTraitId": 48,
+      "targetTraitId": 48,
+      "favorChange": 5,
+      "description": "同为沮丧之人互相理解"
+    },
+    {
+      "sourceTraitId": 47,
+      "targetTraitId": 48,
+      "favorChange": 4,
+      "description": "热情之人想要鼓励沮丧之人"
+    },
+    {
+      "sourceTraitId": 48,
+      "targetTraitId": 47,
+      "favorChange": -5,
+      "description": "沮丧之人觉得热情之人吵闹"
+    },
+    {
+      "sourceTraitId": 49,
+      "targetTraitId": 49,
+      "favorChange": 8,
+      "description": "同为勇敢之人相互敬佩"
+    },
+    {
+      "sourceTraitId": 50,
+      "targetTraitId": 50,
+      "favorChange": 3,
+      "description": "同为胆小之人互相依靠"
+    },
+    {
+      "sourceTraitId": 49,
+      "targetTraitId": 50,
+      "favorChange": -3,
+      "description": "勇敢之人轻视胆小之人"
+    },
+    {
+      "sourceTraitId": 50,
+      "targetTraitId": 49,
+      "favorChange": 5,
+      "description": "胆小之人崇拜勇敢之人"
+    },
+    {
+      "sourceTraitId": 10,
+      "targetTraitId": 10,
+      "favorChange": 6,
+      "description": "同为冷静之人相互理解"
+    },
+    {
+      "sourceTraitId": 11,
+      "targetTraitId": 11,
+      "favorChange": 7,
+      "description": "同为热情之人相互欣赏"
+    },
+    {
+      "sourceTraitId": 10,
+      "targetTraitId": 11,
+      "favorChange": -4,
+      "description": "冷静之人觉得热情之人莽撞"
+    },
+    {
+      "sourceTraitId": 11,
+      "targetTraitId": 10,
+      "favorChange": -2,
+      "description": "热情之人觉得冷静之人冷漠"
+    },
+    {
+      "sourceTraitId": 1,
+      "targetTraitId": null,
+      "favorChange": 3,
+      "description": "高大威猛，令人敬佩"
+    },
+    {
+      "sourceTraitId": 2,
+      "targetTraitId": null,
+      "favorChange": 10,
+      "description": "容貌姣好，令人倾心"
+    },
+    {
+      "sourceTraitId": 3,
+      "targetTraitId": null,
+      "favorChange": 5,
+      "description": "运动健美，令人青睐"
+    },
+    {
+      "sourceTraitId": 5,
+      "targetTraitId": null,
+      "favorChange": 5,
+      "description": "强壮有力，令人敬佩"
+    },
+    {
+      "sourceTraitId": 6,
+      "targetTraitId": null,
+      "favorChange": 2,
+      "description": "目光锐利，引人注目"
+    },
+    {
+      "sourceTraitId": 7,
+      "targetTraitId": null,
+      "favorChange": 3,
+      "description": "声音独特，令人印象深刻"
+    },
+    {
+      "sourceTraitId": 44,
+      "targetTraitId": null,
+      "favorChange": -5,
+      "description": "残忍冷酷，令人畏惧"
+    },
+    {
+      "sourceTraitId": 40,
+      "targetTraitId": null,
+      "favorChange": -4,
+      "description": "邪恶阴险，令人防备"
+    },
+    {
+      "sourceTraitId": 46,
+      "targetTraitId": null,
+      "favorChange": -2,
+      "description": "邋遢不整，令人避之"
+    }
+  ]
+} 
