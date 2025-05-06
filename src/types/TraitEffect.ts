@@ -1,5 +1,3 @@
-import type { Skill } from './Skill';
-
 // 特质效果类型
 export interface TraitEffect {
   // 影响的技能ID

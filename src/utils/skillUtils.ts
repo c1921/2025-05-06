@@ -4,41 +4,22 @@ import type { Role } from '../types/Role';
 import type { TraitEffectsMap } from '../types/TraitEffect';
 import { calculateTraitEffectForSkill } from '../types/TraitEffect';
 import { traitEffectsMap } from './traitEffects';
+import skillsData from '../data/skills.json';
 
-// 战斗技能
-const combatSkills: Skill[] = [
-  { id: 1, name: 'Swordsmanship', type: 'Combat', baseLevel: 0, bonusLevel: 0, description: 'Skill with swords and bladed weapons' },
-  { id: 2, name: 'Archery', type: 'Combat', baseLevel: 0, bonusLevel: 0, description: 'Proficiency with bows and ranged weapons' },
-  { id: 3, name: 'Hand-to-hand', type: 'Combat', baseLevel: 0, bonusLevel: 0, description: 'Unarmed combat techniques' }
-];
-
-// 魔法技能
-const magicSkills: Skill[] = [
-  { id: 4, name: 'Elemental Magic', type: 'Magic', baseLevel: 0, bonusLevel: 0, description: 'Control over natural elements' },
-  { id: 5, name: 'Healing', type: 'Magic', baseLevel: 0, bonusLevel: 0, description: 'Restoration and recovery magic' },
-  { id: 6, name: 'Illusion', type: 'Magic', baseLevel: 0, bonusLevel: 0, description: 'Creation of false sensory impressions' }
-];
-
-// 生存技能
-const survivalSkills: Skill[] = [
-  { id: 7, name: 'Tracking', type: 'Survival', baseLevel: 0, bonusLevel: 0, description: 'Following trails and finding targets' },
-  { id: 8, name: 'Foraging', type: 'Survival', baseLevel: 0, bonusLevel: 0, description: 'Finding food and resources in the wild' },
-  { id: 9, name: 'Navigation', type: 'Survival', baseLevel: 0, bonusLevel: 0, description: 'Finding direction and creating maps' }
-];
-
-// 社交技能
-const socialSkills: Skill[] = [
-  { id: 10, name: 'Persuasion', type: 'Social', baseLevel: 0, bonusLevel: 0, description: 'Convincing others through logic and appeal' },
-  { id: 11, name: 'Intimidation', type: 'Social', baseLevel: 0, bonusLevel: 0, description: 'Using fear or strength to influence others' },
-  { id: 12, name: 'Deception', type: 'Social', baseLevel: 0, bonusLevel: 0, description: 'Lying and misleading convincingly' }
-];
-
-// 制作技能
-const craftingSkills: Skill[] = [
-  { id: 13, name: 'Smithing', type: 'Crafting', baseLevel: 0, bonusLevel: 0, description: 'Creation and repair of metal items' },
-  { id: 14, name: 'Alchemy', type: 'Crafting', baseLevel: 0, bonusLevel: 0, description: 'Brewing potions and chemical compounds' },
-  { id: 15, name: 'Engineering', type: 'Crafting', baseLevel: 0, bonusLevel: 0, description: 'Building and designing complex structures' }
-];
+// 从JSON导入技能数据
+const {
+  combatSkills,
+  magicSkills,
+  survivalSkills,
+  socialSkills,
+  craftingSkills
+} = skillsData as {
+  combatSkills: Skill[];
+  magicSkills: Skill[];
+  survivalSkills: Skill[];
+  socialSkills: Skill[];
+  craftingSkills: Skill[];
+};
 
 // 默认技能列表
 export const defaultSkills: Skill[] = [
