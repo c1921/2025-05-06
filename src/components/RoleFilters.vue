@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { TraitCategory, TraitSubType } from '../types/Trait';
-import { getTraitsByCategory, getTraitsBySubType, getTraitsByCategoryAndSubType } from '../utils/traitUtils';
+import { getTraitsByCategory } from '../utils/traitUtils';
 
 const emit = defineEmits(['filter-change']);
 

@@ -1,29 +1,35 @@
-// 主要特质类别
+import type { BaseEntity, Group } from './Common';
+
+// 特质类别
 export type TraitCategory = 'Physical' | 'Personality' | 'Skill' | 'Background';
 
-// 身体特质子类别
-export type PhysicalTraitType = 'Appearance' | 'Build' | 'Feature';
+// 特质子类型
+export type TraitSubType = 
+  | 'Appearance' | 'Build' | 'Feature'  // 身体特质
+  | 'Character' | 'Temperament' | 'Social'  // 性格特质
+  | 'Combat' | 'Magic' | 'Survival' | 'Social' | 'Crafting'  // 技能特质
+  | 'Origin' | 'Experience' | 'Status';  // 背景特质
 
-// 性格特质子类别
+// 性格特质类型
 export type PersonalityTraitType = 'Character' | 'Temperament' | 'Social';
 
-// 技能特质子类别
-export type SkillTraitType = 'Technical' | 'Creative' | 'People';
+// 特质接口
+export interface Trait extends BaseEntity {
+  readonly category: TraitCategory;
+  readonly subType: TraitSubType;
+}
 
-// 背景特质子类别
-export type BackgroundTraitType = 'Education' | 'Experience' | 'Cultural';
+// 特质组接口
+export interface TraitGroup extends Group<Trait> {}
 
-// 为每个类别定义特质子类型
-export type TraitSubType = 
-  | PhysicalTraitType 
-  | PersonalityTraitType 
-  | SkillTraitType 
-  | BackgroundTraitType;
+// 特质效果接口
+export interface TraitEffect {
+  readonly skillId: number;
+  readonly value: number;
+  readonly description: string;
+}
 
-export interface Trait {
-  id: number;
-  name: string;
-  description: string;
-  category: TraitCategory;
-  subType: TraitSubType;
-} 
+// 特质效果映射
+export type TraitEffectsMap = {
+  readonly [key: number]: readonly TraitEffect[];
+}; 

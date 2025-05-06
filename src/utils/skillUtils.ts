@@ -1,8 +1,7 @@
 import type { Skill, SkillType } from '../types/Skill';
 import { MIN_SKILL_LEVEL, MAX_SKILL_LEVEL } from '../types/Skill';
 import type { Role } from '../types/Role';
-import type { TraitEffectsMap } from '../types/TraitEffect';
-import { calculateTraitEffectForSkill } from '../types/TraitEffect';
+import type { TraitEffectsMap } from '../types/Trait';
 import { traitEffectsMap } from './traitEffects';
 import skillsData from '../data/skills.json';
 
@@ -100,7 +99,11 @@ export function applyTraitEffectsToSkills(role: Role, effectsMap: TraitEffectsMa
   // 更新每个技能的加成
   return role.skills.map(skill => {
     // 计算特质对当前技能的总效果
-    const bonusLevel = calculateTraitEffectForSkill(effectsMap, traitIds, skill.id);
+    const bonusLevel = traitIds.reduce((total, traitId) => {
+      const effects = effectsMap[traitId] || [];
+      const effect = effects.find(e => e.skillId === skill.id);
+      return total + (effect?.value ?? 0);
+    }, 0);
     
     return {
       ...skill,

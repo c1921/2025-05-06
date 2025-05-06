@@ -24,11 +24,6 @@ const effectiveLevel = computed(() => {
   return getEffectiveLevel(props.skill);
 });
 
-// 计算技能等级百分比（用于进度条宽度）
-const levelPercent = computed(() => {
-  return (effectiveLevel.value / MAX_SKILL_LEVEL) * 100;
-});
-
 // 获取技能等级描述
 const levelDescription = computed(() => {
   return getSkillLevelDescription(effectiveLevel.value);
