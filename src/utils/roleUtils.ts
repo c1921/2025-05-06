@@ -1,6 +1,6 @@
 import type { Role } from '../types/Role';
 import type { SkillType } from '../types/Skill';
-import { generateBalancedTraits } from './traitUtils';
+import { generateCharacterTraits } from './traitUtils';
 import { generateSpecializedSkills, applyTraitEffectsToSkills } from './skillUtils';
 
 const maleNames = ['John', 'David', 'Michael', 'James', 'Robert', 'William', 'Thomas', 'Christopher'];
@@ -18,7 +18,9 @@ export function generateRandomRole(id: number): Role {
   const randomIndex = Math.floor(Math.random() * nameList.length);
   const name = nameList[randomIndex];
   const age = Math.floor(Math.random() * 50) + 18; // 18-67岁
-  const traits = generateBalancedTraits(); // 每个角色获得每个类别各一个特质
+  
+  // 生成特质，确保有三个性格特质并避免矛盾特质
+  const traits = generateCharacterTraits(5); // 总共5个特质，包括3个性格特质
   
   // 随机选择一个专长类型
   const specialtyTypeIndex = Math.floor(Math.random() * specialtyTypes.length);
