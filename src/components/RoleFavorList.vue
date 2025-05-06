@@ -1,60 +1,58 @@
 <template>
-  <div class="role-favor-list">
-    <h3>{{ role.name }} 的好感度关系</h3>
-    
-    <div v-if="favorRelations.length === 0" class="no-relations">
+  <div>
+    <div v-if="favorRelations.length === 0" class="text-center italic text-gray-600 py-4">
       暂无好感度关系
     </div>
     
-    <div v-else class="favor-relations">
-      <div v-for="relation in favorRelations" :key="relation.targetId" class="favor-item">
-        <div class="target-info">
-          <div class="target-name">{{ relation.targetName }}</div>
-        </div>
-        
-        <div class="favor-values">
-          <div class="favor-direction">
-            <div class="direction-label">对方好感</div>
-            <div class="favor-value" :class="getFavorClass(relation.targetToSource)">
-              {{ relation.targetToSource }}
-            </div>
-            <div class="favor-level">{{ getLevelName(relation.targetToSource) }}</div>
+    <div v-else class="space-y-3">
+      <div v-for="relation in favorRelations" :key="relation.targetId" class="card card-bordered">
+        <div class="card-body p-3">
+          <div class="border-b border-gray-200 pb-2 mb-3 flex items-center justify-between">
+            <h4 class="text-lg font-semibold">{{ relation.targetName }}</h4>
           </div>
           
-          <div class="favor-arrow">⟺</div>
-          
-          <div class="favor-direction">
-            <div class="direction-label">我方好感</div>
-            <div class="favor-value" :class="getFavorClass(relation.sourceToTarget)">
-              {{ relation.sourceToTarget }}
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex flex-col items-center w-2/5">
+              <span class="text-sm text-gray-600 mb-1">对方好感</span>
+              <span class="badge w-14 text-center font-bold" :class="getFavorColorClass(relation.targetToSource)">
+                {{ relation.targetToSource }}
+              </span>
+              <span class="text-xs text-gray-600 mt-1">{{ getLevelName(relation.targetToSource) }}</span>
             </div>
-            <div class="favor-level">{{ getLevelName(relation.sourceToTarget) }}</div>
+            
+            <span class="text-gray-400 text-xl">⟺</span>
+            
+            <div class="flex flex-col items-center w-2/5">
+              <span class="text-sm text-gray-600 mb-1">我方好感</span>
+              <span class="badge w-14 text-center font-bold" :class="getFavorColorClass(relation.sourceToTarget)">
+                {{ relation.sourceToTarget }}
+              </span>
+              <span class="text-xs text-gray-600 mt-1">{{ getLevelName(relation.sourceToTarget) }}</span>
+            </div>
           </div>
-        </div>
-        
-        <div v-if="relation.targetToSourceEffects.length > 0" class="trait-effects">
-          <div class="effects-header">对方对我的特质影响:</div>
-          <div v-for="(effect, index) in relation.targetToSourceEffects" 
-               :key="`target-${index}`" 
-               class="trait-effect"
-               :class="getEffectClass(effect.value)">
-            {{ effect.description }}
-            <span class="effect-value" :class="getEffectClass(effect.value)">
-              {{ effect.value > 0 ? '+' : '' }}{{ effect.value }}
-            </span>
+          
+          <div v-if="relation.targetToSourceEffects.length > 0" class="border-t border-gray-200 pt-2 mt-2">
+            <div class="text-sm font-medium text-gray-600 mb-1">对方对我的特质影响:</div>
+            <div v-for="(effect, index) in relation.targetToSourceEffects" 
+                 :key="`target-${index}`"
+                 class="flex justify-between items-center py-1 text-sm">
+              {{ effect.description }}
+              <span class="badge" :class="getEffectColorClass(effect.value)">
+                {{ effect.value > 0 ? '+' : '' }}{{ effect.value }}
+              </span>
+            </div>
           </div>
-        </div>
-        
-        <div v-if="relation.sourceToTargetEffects.length > 0" class="trait-effects">
-          <div class="effects-header">我对对方的特质影响:</div>
-          <div v-for="(effect, index) in relation.sourceToTargetEffects" 
-               :key="`source-${index}`" 
-               class="trait-effect"
-               :class="getEffectClass(effect.value)">
-            {{ effect.description }}
-            <span class="effect-value" :class="getEffectClass(effect.value)">
-              {{ effect.value > 0 ? '+' : '' }}{{ effect.value }}
-            </span>
+          
+          <div v-if="relation.sourceToTargetEffects.length > 0" class="border-t border-gray-200 pt-2 mt-2">
+            <div class="text-sm font-medium text-gray-600 mb-1">我对对方的特质影响:</div>
+            <div v-for="(effect, index) in relation.sourceToTargetEffects" 
+                 :key="`source-${index}`"
+                 class="flex justify-between items-center py-1 text-sm">
+              {{ effect.description }}
+              <span class="badge" :class="getEffectColorClass(effect.value)">
+                {{ effect.value > 0 ? '+' : '' }}{{ effect.value }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -113,189 +111,20 @@ function getLevelName(value: number): string {
   return getLevel(value);
 }
 
-// 获取好感度值的CSS类
-function getFavorClass(value: number): string {
-  if (value >= 70) return 'favor-high';
-  if (value >= 40) return 'favor-medium';
-  if (value >= 10) return 'favor-low';
-  if (value >= -10) return 'favor-neutral';
-  if (value >= -50) return 'favor-negative';
-  return 'favor-hostile';
+// 获取好感度值的Tailwind/FlyonUI颜色类
+function getFavorColorClass(value: number): string {
+  if (value >= 70) return 'badge-success';
+  if (value >= 40) return 'badge-info';
+  if (value >= 10) return 'badge-warning';
+  if (value >= -10) return 'badge-ghost';
+  if (value >= -50) return 'badge-error';
+  return 'badge-secondary';
 }
 
-// 获取影响值的CSS类
-function getEffectClass(value: number): string {
-  if (value > 0) return 'effect-positive';
-  if (value < 0) return 'effect-negative';
-  return 'effect-neutral';
+// 获取影响值的Tailwind/FlyonUI颜色类
+function getEffectColorClass(value: number): string {
+  if (value > 0) return 'badge-success';
+  if (value < 0) return 'badge-error';
+  return 'badge-ghost';
 }
-</script>
-
-<style scoped>
-.role-favor-list {
-  padding: 1rem;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: #333;
-  font-size: 1.2rem;
-}
-
-.no-relations {
-  color: #666;
-  font-style: italic;
-  text-align: center;
-  padding: 1rem;
-}
-
-.favor-relations {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.favor-item {
-  display: flex;
-  flex-direction: column;
-  padding: 0.8rem;
-  background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.target-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.8rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
-}
-
-.target-name {
-  font-weight: 600;
-  font-size: 1.1rem;
-}
-
-.favor-values {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.8rem;
-}
-
-.favor-direction {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 45%;
-}
-
-.direction-label {
-  font-size: 0.85rem;
-  color: #666;
-  margin-bottom: 0.3rem;
-}
-
-.favor-arrow {
-  color: #999;
-  font-size: 1.2rem;
-}
-
-.favor-value {
-  width: 60px;
-  text-align: center;
-  font-weight: bold;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  margin: 0 0.5rem;
-}
-
-.favor-level {
-  color: #666;
-  font-size: 0.9rem;
-  margin-top: 0.3rem;
-  text-align: center;
-}
-
-.trait-effects {
-  margin-top: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid #eee;
-}
-
-.effects-header {
-  font-weight: 500;
-  color: #666;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.trait-effect {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.25rem 0;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.effect-value {
-  font-weight: 500;
-  padding: 0.1rem 0.3rem;
-  border-radius: 3px;
-  margin-left: 0.5rem;
-}
-
-/* 好感度值的颜色样式 */
-.favor-high {
-  background-color: #e6f7e6;
-  color: #2e7d32;
-}
-
-.favor-medium {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.favor-low {
-  background-color: #fff3e0;
-  color: #f57c00;
-}
-
-.favor-neutral {
-  background-color: #f5f5f5;
-  color: #757575;
-}
-
-.favor-negative {
-  background-color: #ffebee;
-  color: #d32f2f;
-}
-
-.favor-hostile {
-  background-color: #fce4ec;
-  color: #c2185b;
-}
-
-/* 影响值的颜色样式 */
-.effect-positive {
-  color: #2e7d32;
-  background-color: #e6f7e6;
-}
-
-.effect-negative {
-  color: #d32f2f;
-  background-color: #ffebee;
-}
-
-.effect-neutral {
-  color: #757575;
-  background-color: #f5f5f5;
-}
-</style> 
+</script> 

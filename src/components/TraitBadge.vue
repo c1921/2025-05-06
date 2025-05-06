@@ -10,19 +10,19 @@ const props = defineProps<{
   showEffects?: boolean;
 }>();
 
-// 根据特质类别获取徽章颜色
-const getBadgeColor = (category: Trait['category']) => {
+// 根据特质类别获取徽章颜色类
+const getBadgeColorClass = (category: Trait['category']): string => {
   switch (category) {
     case 'Physical':
-      return 'bg-blue-100 text-blue-800';
+      return 'badge-info';
     case 'Personality':
-      return 'bg-green-100 text-green-800';
+      return 'badge-success';
     case 'Skill':
-      return 'bg-purple-100 text-purple-800';
+      return 'badge-secondary';
     case 'Background':
-      return 'bg-amber-100 text-amber-800';
+      return 'badge-warning';
     default:
-      return 'bg-gray-100 text-gray-800';
+      return '';
   }
 };
 
@@ -38,7 +38,7 @@ const hasNegativeEffect = computed(() => {
 });
 
 // 获取带有子类型和效果的提示文本
-const getTooltip = computed(() => {
+const tooltipText = computed(() => {
   let tooltip = `${props.trait.name} (${props.trait.subType}): ${props.trait.description}`;
   
   // 如果特质有效果，添加到提示中
@@ -51,92 +51,34 @@ const getTooltip = computed(() => {
   
   return tooltip;
 });
+
+// 获取状态点的颜色类
+const getStatusColorClass = computed(() => {
+  if (!traitEffects.value.length) return '';
+  
+  if (hasNegativeEffect.value) {
+    return 'status-warning'; // 混合效果使用warning
+  } else {
+    return 'status-success'; // 只有正面效果使用success
+  }
+});
 </script>
 
 <template>
-  <div 
-    class="trait-badge" 
-    :class="getBadgeColor(trait.category)"
-    :title="getTooltip"
+  <span 
+    class="badge badge-soft text-xs me-1.5 mb-1.5 inline-flex items-center" 
+    :class="getBadgeColorClass(trait.category)"
+    data-fy-tooltip-hover
+    :data-fy-title="tooltipText"
   >
     {{ trait.name }}
-    <span v-if="showSubType" class="sub-type">({{ trait.subType }})</span>
+    <span v-if="showSubType" class="text-[10px] opacity-80 ms-0.5">({{ trait.subType }})</span>
     
-    <!-- 显示效果标记 -->
-    <span v-if="traitEffects.length > 0" class="effect-indicator">
-      <span class="effect-dot" :class="{ 'has-negative': hasNegativeEffect }"></span>
-    </span>
-  </div>
-</template>
-
-<style scoped>
-.trait-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  margin-right: 5px;
-  margin-bottom: 5px;
-  cursor: help;
-  position: relative;
-}
-
-.sub-type {
-  font-size: 0.7rem;
-  opacity: 0.8;
-  margin-left: 2px;
-}
-
-.effect-indicator {
-  display: inline-block;
-  margin-left: 4px;
-  vertical-align: middle;
-}
-
-.effect-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #27ae60;
-}
-
-.has-negative {
-  background: linear-gradient(135deg, #27ae60 50%, #e74c3c 50%);
-}
-
-.bg-blue-100 {
-  background-color: #dbeafe;
-}
-.text-blue-800 {
-  color: #1e40af;
-}
-
-.bg-green-100 {
-  background-color: #d1fae5;
-}
-.text-green-800 {
-  color: #065f46;
-}
-
-.bg-purple-100 {
-  background-color: #ede9fe;
-}
-.text-purple-800 {
-  color: #5b21b6;
-}
-
-.bg-amber-100 {
-  background-color: #fef3c7;
-}
-.text-amber-800 {
-  color: #92400e;
-}
-
-.bg-gray-100 {
-  background-color: #f3f4f6;
-}
-.text-gray-800 {
-  color: #1f2937;
-}
-</style> 
+    <!-- 效果状态点 -->
+    <span 
+      v-if="traitEffects.length > 0" 
+      class="status status-xs ms-1"
+      :class="getStatusColorClass"
+    ></span>
+  </span>
+</template> 

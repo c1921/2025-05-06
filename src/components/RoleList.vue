@@ -59,20 +59,33 @@ const handleFilterChange = (filters: {
 </script>
 
 <template>
-  <div class="role-list-container">
-    <h2>Role List</h2>
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-xl font-bold text-center text-gray-800 mb-6">Role List</h2>
     
-    <div class="controls">
-      <button class="regenerate-btn" @click="regenerateRoles">Regenerate Roles</button>
+    <div class="flex justify-center mb-6">
+      <button 
+        class="btn btn-primary"
+        @click="regenerateRoles"
+      >
+        <span class="icon-[tabler--refresh] size-4 me-2"></span>
+        Regenerate Roles
+      </button>
     </div>
     
-    <RoleFilters @filter-change="handleFilterChange" />
-    
-    <div v-if="filteredRoles.length === 0" class="no-results">
-      <p>No roles match the current filters.</p>
+    <div class="card card-bordered mb-6">
+      <div class="card-body">
+        <RoleFilters @filter-change="handleFilterChange" />
+      </div>
     </div>
     
-    <div class="role-list">
+    <div v-if="filteredRoles.length === 0" class="alert alert-warning mb-6">
+      <div class="flex">
+        <span class="icon-[tabler--alert-circle] size-5 me-2"></span>
+        <p>No roles match the current filters.</p>
+      </div>
+    </div>
+    
+    <div class="flex flex-wrap justify-center gap-4">
       <RoleCard 
         v-for="role in filteredRoles" 
         :key="role.id" 
@@ -81,54 +94,4 @@ const handleFilterChange = (filters: {
       />
     </div>
   </div>
-</template>
-
-<style scoped>
-.role-list-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.controls {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.regenerate-btn {
-  padding: 10px 20px;
-  background-color: #4a6bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
-}
-
-.regenerate-btn:hover {
-  background-color: #3a59e0;
-}
-
-.no-results {
-  text-align: center;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.role-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-}
-</style> 
+</template> 

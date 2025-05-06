@@ -11,134 +11,52 @@ const props = defineProps<{
   allRoles: Role[];
 }>();
 
-const showFavorList = ref(false);
-
+const modalId = computed(() => `role-favor-modal-${props.role.id}`);
 const topSkills = computed(() => getTopSkills(props.role, 3));
 </script>
 
 <template>
-  <div class="role-card" @click="showFavorList = true">
-    <h3>{{ role.name }}</h3>
-    <div class="role-info">
-      <p>Gender: <span :class="role.gender === 'Male' ? 'male' : 'female'">{{ role.gender }}</span></p>
-      <p>Age: {{ role.age }} years old</p>
-    </div>
-    <div class="traits-section">
-      <h4>Traits:</h4>
-      <div class="traits-container">
-        <TraitBadge v-for="trait in role.traits" :key="trait.id" :trait="trait" />
+  <div class="card card-bordered shadow-sm hover:shadow-md transition-all cursor-pointer m-2 w-72" 
+       :data-overlay="`#${modalId}`" 
+       aria-haspopup="dialog" 
+       aria-expanded="false">
+    <div class="card-body p-4">
+      <h3 class="card-title border-b border-gray-200 pb-2 text-lg font-semibold text-gray-800">{{ role.name }}</h3>
+      <div class="mt-3">
+        <p class="my-1.5">Gender: 
+          <span :class="role.gender === 'Male' ? 'text-blue-600 font-semibold' : 'text-pink-500 font-semibold'">
+            {{ role.gender }}
+          </span>
+        </p>
+        <p class="my-1.5">Age: {{ role.age }} years old</p>
       </div>
+      <div class="mt-4 border-t border-dashed border-gray-200 pt-3">
+        <h4 class="text-sm text-gray-600 mb-2">Traits:</h4>
+        <div class="flex flex-wrap">
+          <TraitBadge v-for="trait in role.traits" :key="trait.id" :trait="trait" />
+        </div>
+      </div>
+      <SkillSection :skills="role.skills" :specialtyType="role.specialtyType" />
     </div>
-    <SkillSection :skills="role.skills" :specialtyType="role.specialtyType" />
-    
-    <!-- 好感度列表弹窗 -->
-    <div v-if="showFavorList" class="favor-modal" @click.stop="showFavorList = false">
-      <div class="favor-modal-content" @click.stop>
-        <RoleFavorList :role="role" :all-roles="allRoles" />
-        <button class="close-button" @click="showFavorList = false">关闭</button>
+  </div>
+
+  <!-- 好感度列表模态窗口 -->
+  <div :id="modalId" class="overlay modal overlay-open:opacity-100 hidden overlay-open:duration-300" role="dialog" tabindex="-1">
+    <div class="modal-dialog overlay-open:opacity-100 overlay-open:duration-300">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">{{ role.name }} 的好感度关系</h3>
+          <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3" aria-label="Close" :data-overlay="`#${modalId}`">
+            <span class="icon-[tabler--x] size-4"></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <RoleFavorList :role="role" :all-roles="allRoles" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-soft btn-secondary" :data-overlay="`#${modalId}`">关闭</button>
+        </div>
       </div>
     </div>
   </div>
-</template>
-
-<style scoped>
-.role-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 10px;
-  width: 300px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-  cursor: pointer;
-}
-
-.role-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-h3 {
-  margin-top: 0;
-  color: #333;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 8px;
-}
-
-.role-info {
-  margin-top: 12px;
-}
-
-.role-info p {
-  margin: 6px 0;
-}
-
-.male {
-  color: #4a6bff;
-  font-weight: bold;
-}
-
-.female {
-  color: #ff6b9a;
-  font-weight: bold;
-}
-
-.traits-section {
-  margin-top: 16px;
-  border-top: 1px dashed #eee;
-  padding-top: 12px;
-}
-
-.traits-section h4 {
-  margin-top: 0;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.traits-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-/* 好感度列表弹窗样式 */
-.favor-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.favor-modal-content {
-  background-color: white;
-  border-radius: 8px;
-  padding: 1rem;
-  max-width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-}
-
-.close-button {
-  display: block;
-  margin: 1rem auto 0;
-  padding: 0.5rem 1rem;
-  background-color: #f5f5f5;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: #666;
-  transition: background-color 0.2s;
-}
-
-.close-button:hover {
-  background-color: #e0e0e0;
-}
-</style> 
+</template> 

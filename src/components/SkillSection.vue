@@ -35,21 +35,37 @@ const isSpecialtyType = (type: SkillType) => {
 const getTypeTitle = (type: SkillType) => {
   return isSpecialtyType(type) ? `${type} (Specialty)` : type;
 };
+
+// 获取技能类型的颜色类
+const getTypeColorClass = (type: SkillType): string => {
+  switch (type) {
+    case 'Combat': return 'text-error-500';
+    case 'Magic': return 'text-violet-500';
+    case 'Survival': return 'text-success-500';
+    case 'Social': return 'text-info-500';
+    case 'Crafting': return 'text-warning-500';
+    default: return 'text-gray-500';
+  }
+};
 </script>
 
 <template>
-  <div class="skills-section">
-    <h4>Skills</h4>
+  <div class="mt-5 pt-4 border-t border-gray-200">
+    <h4 class="text-base font-medium text-gray-700 pb-2 mb-3 border-b border-gray-100">Skills</h4>
     
-    <div v-for="(skills, type) in groupedSkills" :key="type" class="skill-group">
+    <div v-for="(skills, type) in groupedSkills" :key="type" class="mb-4">
       <div 
-        class="skill-group-header" 
-        :class="{ 'specialty': isSpecialtyType(type as SkillType) }"
+        class="text-sm font-semibold mb-2"
+        :class="[
+          getTypeColorClass(type as SkillType),
+          { 'font-bold': isSpecialtyType(type as SkillType) }
+        ]"
       >
         {{ getTypeTitle(type as SkillType) }}
+        <span v-if="isSpecialtyType(type as SkillType)" class="text-amber-500 ms-1">★</span>
       </div>
       
-      <div class="skill-list">
+      <div class="pl-2">
         <SkillBar 
           v-for="skill in skills" 
           :key="skill.id" 
@@ -58,39 +74,4 @@ const getTypeTitle = (type: SkillType) => {
       </div>
     </div>
   </div>
-</template>
-
-<style scoped>
-.skills-section {
-  margin-top: 20px;
-}
-
-h4 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 1rem;
-  color: #333;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 5px;
-}
-
-.skill-group {
-  margin-bottom: 15px;
-}
-
-.skill-group-header {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #555;
-}
-
-.specialty {
-  color: #e67e22;
-  font-weight: 700;
-}
-
-.skill-list {
-  padding-left: 8px;
-}
-</style> 
+</template> 
