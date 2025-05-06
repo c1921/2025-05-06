@@ -73,7 +73,12 @@ const handleFilterChange = (filters: {
     </div>
     
     <div class="role-list">
-      <RoleCard v-for="role in filteredRoles" :key="role.id" :role="role" />
+      <RoleCard 
+        v-for="role in filteredRoles" 
+        :key="role.id" 
+        :role="role"
+        :all-roles="roles"
+      />
     </div>
   </div>
 </template>
