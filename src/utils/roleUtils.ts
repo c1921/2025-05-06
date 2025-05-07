@@ -1,10 +1,11 @@
-import type { Role, PoliticalStance } from '../types/Role';
+import type { Role, PoliticalStance, PersonalityTraits } from '../types/Role';
 import type { Skill, SkillType } from '../types/Skill';
 import { generateCharacterTraits } from './traitUtils';
 import { generateSpecializedSkills, applyTraitEffectsToSkills } from './skillUtils';
 import { initializeFavorRelations } from './favorUtils';
 import { applyTraitFavorEffectsToRoles } from './traitFavorUtils';
 import { applyPoliticalFavorEffectsToRoles } from './politicalFavorUtils';
+import { applyTraitPersonalityEffects } from './traitPersonalityEffects';
 
 // 英文名字列表
 const maleNames = ['John', 'David', 'Michael', 'James', 'Robert', 'William', 'Thomas', 'Christopher'];
@@ -29,6 +30,34 @@ function generateRandomPoliticalStance(): PoliticalStance {
     diplomatic: getRandomValue(),
     civil: getRandomValue(),
     societal: getRandomValue()
+  };
+}
+
+/**
+ * 生成AI性格特质（所有值默认为0）
+ * 后续通过特质扩展来为不同性格特质赋值
+ * @returns 默认的AI性格特质
+ */
+function generateRandomPersonalityTraits(): PersonalityTraits {
+  // 所有性格特质默认为0
+  return createDefaultPersonalityTraits();
+}
+
+/**
+ * 创建默认的AI性格特质（所有值为0）
+ * @returns 默认的AI性格特质
+ */
+function createDefaultPersonalityTraits(): PersonalityTraits {
+  return {
+    energy: 0,
+    bravery: 0,
+    compassion: 0,
+    greed: 0,
+    honor: 0,
+    rationality: 0,
+    sociability: 0,
+    vengefulness: 0,
+    zealotry: 0
   };
 }
 
@@ -66,14 +95,18 @@ export function generateCharacter(
     skills,
     favorRelations: [],
     specialtyType,
-    politicalStance: generateRandomPoliticalStance()
+    politicalStance: generateRandomPoliticalStance(),
+    aiPersonality: createDefaultPersonalityTraits()
   };
   
   // 应用特质效果到技能
-  return {
+  const roleWithSkills = {
     ...role,
     skills: applyTraitEffectsToSkills(role)
   };
+  
+  // 应用特质效果到AI个性
+  return applyTraitPersonalityEffects(roleWithSkills);
 }
 
 /**
@@ -146,14 +179,18 @@ export function generateRandomRole(id: number): Role {
     skills: generateSpecializedSkills(specialtyType),
     favorRelations: [],
     specialtyType,
-    politicalStance: generateRandomPoliticalStance()
+    politicalStance: generateRandomPoliticalStance(),
+    aiPersonality: generateRandomPersonalityTraits()
   };
   
   // 应用特质效果到技能
-  return {
+  const roleWithSkills = {
     ...role,
     skills: applyTraitEffectsToSkills(role)
   };
+  
+  // 应用特质效果到AI个性
+  return applyTraitPersonalityEffects(roleWithSkills);
 }
 
 /**

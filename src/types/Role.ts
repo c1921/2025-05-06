@@ -16,6 +16,19 @@ export interface PoliticalStance {
   societal: number; // 0-100，社会价值观（进步-传统）
 }
 
+// 角色个性系统（AI性格特质）
+export interface PersonalityTraits {
+  energy: number; // -100~100，精力（低能量-高能量）
+  bravery: number; // -100~100，胆量（胆小-勇敢）
+  compassion: number; // -100~100，怜悯（冷酷-悲悯）
+  greed: number; // -100~100，贪婪（无欲-贪婪）
+  honor: number; // -100~100，荣誉（卑鄙-荣誉）
+  rationality: number; // -100~100，理性（感性-理性）
+  sociability: number; // -100~100，社交（孤僻-外向）
+  vengefulness: number; // -100~100，报复（宽恕-记恨）
+  zealotry: number; // -100~100，狂热（冷漠-狂热）
+}
+
 // 角色类型
 export interface Role {
   id: ID;
@@ -30,4 +43,6 @@ export interface Role {
   specialtyType?: SkillType;
   // 政治倾向
   politicalStance: PoliticalStance;
+  // AI性格特质（用户不可见）
+  aiPersonality: PersonalityTraits;
 } 
