@@ -86,7 +86,7 @@ const selectRole = (roleId: number) => {
 
 <template>
   <div class="max-w-6xl mx-auto">
-    <h2 class="text-xl font-bold text-center  mb-6">Role Management</h2>
+    <h2 class="text-xl font-bold text-center mb-6">Role Management</h2>
     
     <div class="flex justify-center mb-6">
       <button 
@@ -107,7 +107,7 @@ const selectRole = (roleId: number) => {
     <div v-if="filteredRoles.length === 0" class="alert alert-warning mb-6">
       <div class="flex">
         <span class="icon-[tabler--alert-circle] size-5 me-2"></span>
-        <p>无匹配结果，请尝试调整筛选条件。</p>
+        <p>No matching results, please try adjusting the filters.</p>
       </div>
     </div>
     
@@ -117,21 +117,22 @@ const selectRole = (roleId: number) => {
       <div class="md:col-span-4 lg:col-span-3">
         <div class="card card-bordered">
           <div class="card-header border-b p-3">
-            <h3 class="text-base font-semibold">角色列表</h3>
+            <h3 class="text-base font-semibold">Character List</h3>
           </div>
-          <div class="divide-y">
+          <div class="border-base-content/25 divide-base-content/25 flex flex-col divide-y rounded-md border *:first:rounded-t-md *:last:rounded-b-md">
             <button
               v-for="role in filteredRoles"
               :key="role.id"
               @click="selectRole(role.id)"
-              class="w-full px-4 py-3 text-left hover:bg-gray-500 transition-colors duration-150"
-              :class="{'bg-primary-50 font-medium': role.id === selectedRoleId}"
+              class="link flex items-center no-underline p-3"
+              :class="{
+                'link-primary': role.id === selectedRoleId,
+                'hover:link-primary': role.id !== selectedRoleId
+              }"
             >
-              <div class="flex items-center">
-                <span class="status me-2" :class="role.gender === 'Male' ? 'status-info' : 'status-pink'"></span>
-                <span>{{ role.name }}</span>
-                <span class="text-xs  ms-auto">{{ role.age }}岁</span>
-              </div>
+              <span class="status me-3" :class="role.gender === 'Male' ? 'status-info' : 'status-pink'"></span>
+              <span class="grow">{{ role.name }}</span>
+              <span class="text-xs opacity-50">{{ role.age }} years</span>
             </button>
           </div>
         </div>
@@ -165,9 +166,9 @@ const selectRole = (roleId: number) => {
         </div>
         
         <div v-else class="flex justify-center items-center h-64 rounded-lg border-2 border-dashed">
-          <div class="text-center ">
+          <div class="text-center">
             <span class="icon-[tabler--user-question] size-12 block mx-auto mb-2"></span>
-            <p>请选择一个角色查看详细信息</p>
+            <p>Please select a character to view details</p>
           </div>
         </div>
       </div>

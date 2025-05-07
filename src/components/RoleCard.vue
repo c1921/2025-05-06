@@ -9,7 +9,7 @@ import RoleFavorList from './RoleFavorList.vue';
 const props = defineProps<{
   role: Role;
   allRoles: Role[];
-  isDetailView?: boolean; // 是否为详情视图模式
+  isDetailView?: boolean; // Whether in detail view mode
 }>();
 
 const modalId = computed(() => `role-favor-modal-${props.role.id}`);
@@ -17,7 +17,7 @@ const topSkills = computed(() => getTopSkills(props.role, 3));
 </script>
 
 <template>
-  <!-- 列表视图模式 - 用于在角色列表中显示 -->
+  <!-- List view mode - used for displaying in character list -->
   <div v-if="!isDetailView"
        class="card card-ed shadow-sm hover:shadow-md transition-all cursor-pointer m-2 w-72" 
        :data-overlay="`#${modalId}`" 
@@ -43,12 +43,12 @@ const topSkills = computed(() => getTopSkills(props.role, 3));
     </div>
   </div>
 
-  <!-- 详情视图模式 - 用于在侧边详情中显示完整内容 -->
+  <!-- Detail view mode - used to display complete content in sidebar -->
   <div v-else class="w-full">
     <div class="grid grid-cols-1 gap-4">
-      <!-- 特质部分 -->
+      <!-- Traits section -->
       <div>
-        <h4 class="text-base font-semibold  mb-3 pb-1 -b">特质</h4>
+        <h4 class="text-base font-semibold  mb-3 pb-1 -b">Traits</h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
           <div v-for="category in ['Physical', 'Personality', 'Skill', 'Background']" :key="category" class="rounded p-3 ">
             <h5 class="text-sm font-medium  mb-2">{{ category }}</h5>
@@ -59,28 +59,28 @@ const topSkills = computed(() => getTopSkills(props.role, 3));
                 :trait="trait" 
                 show-sub-type
               />
-              <span v-if="!role.traits.some(t => t.category === category)" class="text-sm  italic">无</span>
+              <span v-if="!role.traits.some(t => t.category === category)" class="text-sm  italic">None</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 技能部分 -->
+      <!-- Skills section -->
       <div>
-        <h4 class="text-base font-semibold  mb-3 pb-1 -b">技能</h4>
+        <h4 class="text-base font-semibold  mb-3 pb-1 -b">Skills</h4>
         <SkillSection :skills="role.skills" :specialtyType="role.specialtyType" />
       </div>
 
-      <!-- 好感度关系部分 -->
+      <!-- Favor relationships section -->
       <div>
         <div class="flex items-center justify-between mb-3 pb-1 -b">
-          <h4 class="text-base font-semibold ">好感度关系</h4>
+          <h4 class="text-base font-semibold ">Favor Relationships</h4>
           <button 
             class="btn btn-sm btn-soft-primary"
             :data-overlay="`#${modalId}`"
           >
             <span class="icon-[tabler--heart] size-4 me-1"></span>
-            查看详情
+            View Details
           </button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -90,7 +90,7 @@ const topSkills = computed(() => getTopSkills(props.role, 3));
             class="flex items-center justify-between p-2  rounded"
           >
             <span class="font-medium">
-              {{ allRoles.find(r => r.id === relation.targetId)?.name || '未知角色' }}
+              {{ allRoles.find(r => r.id === relation.targetId)?.name || 'Unknown Character' }}
             </span>
             <span 
               class="badge"
@@ -104,12 +104,12 @@ const topSkills = computed(() => getTopSkills(props.role, 3));
     </div>
   </div>
 
-  <!-- 好感度列表模态窗口(两种模式都会使用) -->
+  <!-- Favor list modal (used in both modes) -->
   <div :id="modalId" class="overlay modal overlay-open:opacity-100 hidden overlay-open:duration-300" role="dialog" tabindex="-1">
     <div class="modal-dialog overlay-open:opacity-100 overlay-open:duration-300">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title">{{ role.name }} 的好感度关系</h3>
+          <h3 class="modal-title">{{ role.name }}'s Favor Relationships</h3>
           <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3" aria-label="Close" :data-overlay="`#${modalId}`">
             <span class="icon-[tabler--x] size-4"></span>
           </button>
@@ -118,7 +118,7 @@ const topSkills = computed(() => getTopSkills(props.role, 3));
           <RoleFavorList :role="role" :all-roles="allRoles" />
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-soft btn-secondary" :data-overlay="`#${modalId}`">关闭</button>
+          <button type="button" class="btn btn-soft btn-secondary" :data-overlay="`#${modalId}`">Close</button>
         </div>
       </div>
     </div>
