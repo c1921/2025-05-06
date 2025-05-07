@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import type { Role } from '../types/Role';
 import TraitBadge from './TraitBadge.vue';
 import SkillSection from './SkillSection.vue';
-import { getTopSkills } from '../utils/roleUtils';
 import RoleFavorList from './RoleFavorList.vue';
 import PoliticalStanceSection from './PoliticalStanceSection.vue';
 
@@ -14,7 +13,6 @@ const props = defineProps<{
 }>();
 
 const modalId = computed(() => `role-favor-modal-${props.role.id}`);
-const topSkills = computed(() => getTopSkills(props.role, 3));
 </script>
 
 <template>

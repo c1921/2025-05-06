@@ -13,8 +13,8 @@ const traitFavorEffects = (traitFavorEffectsData as TraitFavorEffectsMap).traitF
  * @param targetRole 受到好感度影响的角色
  * @returns 好感度变化值数组，每个元素包含变化值和描述
  */
-export function calculateTraitFavorEffects(sourceRole: Role, targetRole: Role): { value: number; description: string }[] {
-  const effects: { value: number; description: string }[] = [];
+export function calculateTraitFavorEffects(sourceRole: Role, targetRole: Role): { value: number; description: string; type: 'trait' }[] {
+  const effects: { value: number; description: string; type: 'trait' }[] = [];
   
   // 计算源角色拥有的特质对目标角色的影响
   // 如源角色拥有"美貌"，则目标角色对源角色好感度+10
@@ -27,7 +27,8 @@ export function calculateTraitFavorEffects(sourceRole: Role, targetRole: Role): 
     // 添加全局影响
     effects.push(...globalEffects.map(effect => ({
       value: effect.favorChange,
-      description: effect.description
+      description: effect.description,
+      type: 'trait' as const
     })));
   }
   
@@ -43,7 +44,8 @@ export function calculateTraitFavorEffects(sourceRole: Role, targetRole: Role): 
       // 添加特定影响
       effects.push(...specificEffects.map(effect => ({
         value: effect.favorChange,
-        description: effect.description
+        description: effect.description,
+        type: 'trait' as const
       })));
     }
   }

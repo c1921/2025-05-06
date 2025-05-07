@@ -4,6 +4,7 @@ import { generateCharacterTraits } from './traitUtils';
 import { generateSpecializedSkills, applyTraitEffectsToSkills } from './skillUtils';
 import { initializeFavorRelations } from './favorUtils';
 import { applyTraitFavorEffectsToRoles } from './traitFavorUtils';
+import { applyPoliticalFavorEffectsToRoles } from './politicalFavorUtils';
 
 // 英文名字列表
 const maleNames = ['John', 'David', 'Michael', 'James', 'Robert', 'William', 'Thomas', 'Christopher'];
@@ -14,16 +15,13 @@ const specialtyTypes: SkillType[] = ['Combat', 'Magic', 'Survival', 'Social', 'C
 
 /**
  * 生成随机政治倾向
- * 每个维度默认值为50，随机波动在±30范围内
+ * 每个维度随机生成0-100之间的值
  * @returns 随机生成的政治倾向
  */
 function generateRandomPoliticalStance(): PoliticalStance {
-  // 辅助函数：生成指定范围内的随机数
+  // 辅助函数：生成0-100之间的随机数
   const getRandomValue = () => {
-    // 生成-30到+30之间的随机波动
-    const variation = Math.floor(Math.random() * 61) - 30;
-    // 基础值50加上波动，并确保在0-100范围内
-    return Math.max(0, Math.min(100, 50 + variation));
+    return Math.floor(Math.random() * 101);
   };
 
   return {
@@ -180,5 +178,10 @@ export function generateRandomRoles(count: number): Role[] {
   });
 
   // 应用特质好感度影响
-  return applyTraitFavorEffectsToRoles(rolesWithRelations);
+  let updatedRoles = applyTraitFavorEffectsToRoles(rolesWithRelations);
+  
+  // 应用政治立场好感度影响
+  updatedRoles = applyPoliticalFavorEffectsToRoles(updatedRoles);
+  
+  return updatedRoles;
 } 

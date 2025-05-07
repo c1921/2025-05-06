@@ -31,24 +31,64 @@
             </div>
           </div>
           
-          <div v-if="relation.targetToSourceEffects.length > 0" class="border-t pt-2 mt-2">
-            <div class="text-sm font-medium mb-1">Their Trait Effects on Me:</div>
+          <!-- 他们对我的影响 -->
+          <div v-if="relation.targetToSourceEffects.length > 0 || relation.targetToSourcePoliticalEffects.length > 0" 
+               class="border-t pt-2 mt-2">
+            <div class="text-sm font-medium mb-1">Their Effects on Me:</div>
+            
+            <!-- 特质效果 -->
             <div v-for="(effect, index) in relation.targetToSourceEffects" 
-                 :key="`target-${index}`"
+                 :key="`target-trait-${index}`"
                  class="flex justify-between items-center py-1 text-sm">
-              {{ effect.description }}
+              <div class="flex items-center gap-2">
+                <span class="px-1.5 py-0.5 text-xs rounded-full" :class="getEffectTypeBadgeClass('trait')">Trait</span>
+                {{ effect.description }}
+              </div>
+              <span class="badge" :class="getEffectColorClass(effect.value)">
+                {{ effect.value > 0 ? '+' : '' }}{{ effect.value }}
+              </span>
+            </div>
+            
+            <!-- 政治立场效果 -->
+            <div v-for="(effect, index) in relation.targetToSourcePoliticalEffects" 
+                 :key="`target-political-${index}`"
+                 class="flex justify-between items-center py-1 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="px-1.5 py-0.5 text-xs rounded-full" :class="getEffectTypeBadgeClass('political')">Politics</span>
+                {{ effect.description }}
+              </div>
               <span class="badge" :class="getEffectColorClass(effect.value)">
                 {{ effect.value > 0 ? '+' : '' }}{{ effect.value }}
               </span>
             </div>
           </div>
           
-          <div v-if="relation.sourceToTargetEffects.length > 0" class="border-t pt-2 mt-2">
-            <div class="text-sm font-medium mb-1">My Trait Effects on Them:</div>
+          <!-- 我对他们的影响 -->
+          <div v-if="relation.sourceToTargetEffects.length > 0 || relation.sourceToTargetPoliticalEffects.length > 0" 
+               class="border-t pt-2 mt-2">
+            <div class="text-sm font-medium mb-1">My Effects on Them:</div>
+            
+            <!-- 特质效果 -->
             <div v-for="(effect, index) in relation.sourceToTargetEffects" 
-                 :key="`source-${index}`"
+                 :key="`source-trait-${index}`"
                  class="flex justify-between items-center py-1 text-sm">
-              {{ effect.description }}
+              <div class="flex items-center gap-2">
+                <span class="px-1.5 py-0.5 text-xs rounded-full" :class="getEffectTypeBadgeClass('trait')">Trait</span>
+                {{ effect.description }}
+              </div>
+              <span class="badge" :class="getEffectColorClass(effect.value)">
+                {{ effect.value > 0 ? '+' : '' }}{{ effect.value }}
+              </span>
+            </div>
+            
+            <!-- 政治立场效果 -->
+            <div v-for="(effect, index) in relation.sourceToTargetPoliticalEffects" 
+                 :key="`source-political-${index}`"
+                 class="flex justify-between items-center py-1 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="px-1.5 py-0.5 text-xs rounded-full" :class="getEffectTypeBadgeClass('political')">Politics</span>
+                {{ effect.description }}
+              </div>
               <span class="badge" :class="getEffectColorClass(effect.value)">
                 {{ effect.value > 0 ? '+' : '' }}{{ effect.value }}
               </span>
@@ -65,6 +105,7 @@ import { computed } from 'vue';
 import type { Role } from '../types/Role';
 import { getFavorLevelName as getLevel } from '../utils/favorUtils';
 import { calculateTraitFavorEffects } from '../utils/traitFavorUtils';
+import { calculatePoliticalFavorEffects } from '../utils/politicalFavorUtils';
 
 // 定义组件属性
 const props = defineProps<{
@@ -82,7 +123,9 @@ const favorRelations = computed(() => {
       sourceToTarget: sourceRelation.value,
       targetToSource: 0,
       targetToSourceEffects: [],
-      sourceToTargetEffects: []
+      sourceToTargetEffects: [],
+      targetToSourcePoliticalEffects: [],
+      sourceToTargetPoliticalEffects: []
     };
 
     // 查找目标角色对当前角色的好感度
@@ -94,6 +137,12 @@ const favorRelations = computed(() => {
     
     // 计算特质好感度影响（当前角色对目标角色的好感）
     const sourceToTargetEffects = calculateTraitFavorEffects(targetRole, props.role);
+
+    // 计算政治立场好感度影响（目标角色对当前角色的好感）
+    const targetToSourcePoliticalEffects = calculatePoliticalFavorEffects(props.role, targetRole);
+    
+    // 计算政治立场好感度影响（当前角色对目标角色的好感）
+    const sourceToTargetPoliticalEffects = calculatePoliticalFavorEffects(targetRole, props.role);
     
     return {
       targetId: sourceRelation.targetId,
@@ -101,7 +150,9 @@ const favorRelations = computed(() => {
       sourceToTarget: sourceRelation.value,
       targetToSource,
       targetToSourceEffects,
-      sourceToTargetEffects
+      sourceToTargetEffects,
+      targetToSourcePoliticalEffects,
+      sourceToTargetPoliticalEffects
     };
   });
 });
@@ -126,5 +177,11 @@ function getEffectColorClass(value: number): string {
   if (value > 0) return 'badge-success';
   if (value < 0) return 'badge-error';
   return 'badge-ghost';
+}
+
+// 获取效果类型标签类
+function getEffectTypeBadgeClass(type: 'trait' | 'political'): string {
+  if (type === 'trait') return 'bg-amber-100 text-amber-800';
+  return 'bg-blue-100 text-blue-800';
 }
 </script> 
