@@ -1,4 +1,6 @@
 import type { PersonalityTraits } from '../types/Role';
+import personalityDescriptorsData from '../data/personalityDescriptors.json';
+import personalityTraitNamesData from '../data/personalityTraitNames.json';
 
 // 类型声明
 type PersonalityTier = '-100_-76' | '-75_-1' | '1_75' | '76_100';
@@ -9,63 +11,11 @@ type PersonalityDescriptors = {
   };
 };
 
-// 个性特质形容词与名词映射表
-const personalityDescriptors: PersonalityDescriptors = {
-  bravery: {
-    '-100_-76': { adjective: '胆小的', noun: '软脚虾' },
-    '-75_-1': { adjective: '谨慎的', noun: '避祸者' },
-    '1_75': { adjective: '勇敢的', noun: '战士' },
-    '76_100': { adjective: '无惧的', noun: '英雄' }
-  },
-  compassion: {
-    '-100_-76': { adjective: '冷酷的', noun: '无情者' },
-    '-75_-1': { adjective: '铁石心肠的', noun: '现实主义者' },
-    '1_75': { adjective: '富有同情心的', noun: '援助者' },
-    '76_100': { adjective: '仁慈的', noun: '圣徒' }
-  },
-  greed: {
-    '-100_-76': { adjective: '无欲无求的', noun: '修行者' },
-    '-75_-1': { adjective: '知足的', noun: '简朴家' },
-    '1_75': { adjective: '贪婪的', noun: '收集者' },
-    '76_100': { adjective: '暴食的', noun: '守财奴' }
-  },
-  honor: {
-    '-100_-76': { adjective: '卑鄙的', noun: '骗子' },
-    '-75_-1': { adjective: '投机的', noun: '机会主义者' },
-    '1_75': { adjective: '正直的', noun: '守护者' },
-    '76_100': { adjective: '无私的', noun: '圣骑士' }
-  },
-  rationality: {
-    '-100_-76': { adjective: '冲动的', noun: '疯子' },
-    '-75_-1': { adjective: '感性的', noun: '艺术家' },
-    '1_75': { adjective: '理性的', noun: '思想家' },
-    '76_100': { adjective: '高智的', noun: '计算者' }
-  },
-  sociability: {
-    '-100_-76': { adjective: '孤僻的', noun: '隐士' },
-    '-75_-1': { adjective: '不合群的', noun: '独行者' },
-    '1_75': { adjective: '合群的', noun: '社交家' },
-    '76_100': { adjective: '喧哗的', noun: '派对之王' }
-  },
-  vengefulness: {
-    '-100_-76': { adjective: '宽容的', noun: '和平使者' },
-    '-75_-1': { adjective: '随和的', noun: '调解者' },
-    '1_75': { adjective: '记仇的', noun: '复仇者' },
-    '76_100': { adjective: '恶毒的', noun: '复仇之鬼' }
-  },
-  zealotry: {
-    '-100_-76': { adjective: '冷漠的', noun: '旁观者' },
-    '-75_-1': { adjective: '无热情的', noun: '世界旁观者' },
-    '1_75': { adjective: '狂热的', noun: '信徒' },
-    '76_100': { adjective: '痴狂的', noun: '狂热分子' }
-  },
-  energy: {
-    '-100_-76': { adjective: ' ', noun: ' ' },
-    '-75_-1': { adjective: ' ', noun: ' ' },
-    '1_75': { adjective: ' ', noun: ' ' },
-    '76_100': { adjective: ' ', noun: ' ' }
-  }
-};
+// 导入个性特质形容词与名词映射表
+const personalityDescriptors = personalityDescriptorsData as PersonalityDescriptors;
+
+// 导入个性特质的中文显示名称
+const personalityTraitNames = personalityTraitNamesData as { [key in keyof PersonalityTraits]: string };
 
 /**
  * 获取特质所属的档位
@@ -128,21 +78,6 @@ export function getPersonalityDescription(personality: PersonalityTraits): strin
     return `${descriptor2.adjective}${descriptor1.noun}`;
   }
 }
-
-/**
- * 个性特质的中文显示名称
- */
-const personalityTraitNames: { [key in keyof PersonalityTraits]: string } = {
-  energy: '活力',
-  bravery: '勇气',
-  compassion: '同情心',
-  greed: '贪婪',
-  honor: '荣誉感',
-  rationality: '理性',
-  sociability: '社交性',
-  vengefulness: '复仇心',
-  zealotry: '狂热'
-};
 
 /**
  * 获取角色所有个性值的悬浮提示
