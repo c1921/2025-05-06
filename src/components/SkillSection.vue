@@ -44,14 +44,14 @@ const getTypeColorClass = (type: SkillType): string => {
     case 'Survival': return 'text-success-500';
     case 'Social': return 'text-info-500';
     case 'Crafting': return 'text-warning-500';
-    default: return 'text-gray-500';
+    default: return '';
   }
 };
 </script>
 
 <template>
-  <div class="mt-5 pt-4 border-t border-gray-200">
-    <h4 class="text-base font-medium text-gray-700 pb-2 mb-3 border-b border-gray-100">Skills</h4>
+  <div class="mt-5 pt-4 border-t">
+    <h4 class="text-base font-medium  pb-2 mb-3 border-b">Skills</h4>
     
     <div v-for="(skills, type) in groupedSkills" :key="type" class="mb-4">
       <div 

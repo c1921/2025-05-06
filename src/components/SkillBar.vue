@@ -65,13 +65,13 @@ const skillTooltip = computed(() => {
 <template>
   <div class="mb-2 group" data-fy-tooltip-hover :data-fy-title="skillTooltip">
     <div class="flex justify-between items-center mb-1">
-      <span class="text-xs font-medium text-gray-700">{{ skill.name }}</span>
-      <div class="text-xs text-gray-500 flex items-center gap-1">
+      <span class="text-xs font-medium ">{{ skill.name }}</span>
+      <div class="text-xs  flex items-center gap-1">
         {{ effectiveLevel }}
         <span v-if="hasBonus" class="text-[10px] font-semibold" :class="getBonusTextColorClass">
           ({{ bonusText }})
         </span>
-        <span class="text-gray-400 text-[10px]">({{ levelDescription }})</span>
+        <span class=" text-[10px]">({{ levelDescription }})</span>
       </div>
     </div>
     

@@ -37,11 +37,11 @@ const emitFilterChanges = () => {
 
 <template>
   <div>
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">Filter Roles</h3>
+    <h3 class="text-lg font-semibold  mb-4">Filter Roles</h3>
     
     <div class="grid sm:grid-cols-2 gap-4">
       <div class="form-group">
-        <label for="category-filter" class="text-sm font-medium text-gray-600 mb-1.5 block">
+        <label for="category-filter" class="text-sm font-medium  mb-1.5 block">
           Trait Category
         </label>
         <select 
@@ -59,7 +59,7 @@ const emitFilterChanges = () => {
       </div>
       
       <div class="form-group" v-if="selectedCategory">
-        <label for="subtype-filter" class="text-sm font-medium text-gray-600 mb-1.5 block">
+        <label for="subtype-filter" class="text-sm font-medium  mb-1.5 block">
           Trait Subtype
         </label>
         <select 

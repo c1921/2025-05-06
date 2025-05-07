@@ -1,38 +1,38 @@
 <template>
   <div>
-    <div v-if="favorRelations.length === 0" class="text-center italic text-gray-600 py-4">
+    <div v-if="favorRelations.length === 0" class="text-center italic  py-4">
       暂无好感度关系
     </div>
     
     <div v-else class="space-y-3">
       <div v-for="relation in favorRelations" :key="relation.targetId" class="card card-bordered">
         <div class="card-body p-3">
-          <div class="border-b border-gray-200 pb-2 mb-3 flex items-center justify-between">
+          <div class="border-b pb-2 mb-3 flex items-center justify-between">
             <h4 class="text-lg font-semibold">{{ relation.targetName }}</h4>
           </div>
           
           <div class="flex items-center justify-between mb-3">
             <div class="flex flex-col items-center w-2/5">
-              <span class="text-sm text-gray-600 mb-1">对方好感</span>
+              <span class="text-sm  mb-1">对方好感</span>
               <span class="badge w-14 text-center font-bold" :class="getFavorColorClass(relation.targetToSource)">
                 {{ relation.targetToSource }}
               </span>
-              <span class="text-xs text-gray-600 mt-1">{{ getLevelName(relation.targetToSource) }}</span>
+              <span class="text-xs  mt-1">{{ getLevelName(relation.targetToSource) }}</span>
             </div>
             
-            <span class="text-gray-400 text-xl">⟺</span>
+            <span class=" text-xl">⟺</span>
             
             <div class="flex flex-col items-center w-2/5">
-              <span class="text-sm text-gray-600 mb-1">我方好感</span>
+              <span class="text-sm  mb-1">我方好感</span>
               <span class="badge w-14 text-center font-bold" :class="getFavorColorClass(relation.sourceToTarget)">
                 {{ relation.sourceToTarget }}
               </span>
-              <span class="text-xs text-gray-600 mt-1">{{ getLevelName(relation.sourceToTarget) }}</span>
+              <span class="text-xs  mt-1">{{ getLevelName(relation.sourceToTarget) }}</span>
             </div>
           </div>
           
-          <div v-if="relation.targetToSourceEffects.length > 0" class="border-t border-gray-200 pt-2 mt-2">
-            <div class="text-sm font-medium text-gray-600 mb-1">对方对我的特质影响:</div>
+          <div v-if="relation.targetToSourceEffects.length > 0" class="border-t pt-2 mt-2">
+            <div class="text-sm font-medium  mb-1">对方对我的特质影响:</div>
             <div v-for="(effect, index) in relation.targetToSourceEffects" 
                  :key="`target-${index}`"
                  class="flex justify-between items-center py-1 text-sm">
@@ -43,8 +43,8 @@
             </div>
           </div>
           
-          <div v-if="relation.sourceToTargetEffects.length > 0" class="border-t border-gray-200 pt-2 mt-2">
-            <div class="text-sm font-medium text-gray-600 mb-1">我对对方的特质影响:</div>
+          <div v-if="relation.sourceToTargetEffects.length > 0" class="border-t pt-2 mt-2">
+            <div class="text-sm font-medium  mb-1">我对对方的特质影响:</div>
             <div v-for="(effect, index) in relation.sourceToTargetEffects" 
                  :key="`source-${index}`"
                  class="flex justify-between items-center py-1 text-sm">

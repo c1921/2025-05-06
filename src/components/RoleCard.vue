@@ -9,6 +9,7 @@ import RoleFavorList from './RoleFavorList.vue';
 const props = defineProps<{
   role: Role;
   allRoles: Role[];
+  isDetailView?: boolean; // 是否为详情视图模式
 }>();
 
 const modalId = computed(() => `role-favor-modal-${props.role.id}`);
@@ -16,12 +17,14 @@ const topSkills = computed(() => getTopSkills(props.role, 3));
 </script>
 
 <template>
-  <div class="card card-bordered shadow-sm hover:shadow-md transition-all cursor-pointer m-2 w-72" 
+  <!-- 列表视图模式 - 用于在角色列表中显示 -->
+  <div v-if="!isDetailView"
+       class="card card-ed shadow-sm hover:shadow-md transition-all cursor-pointer m-2 w-72" 
        :data-overlay="`#${modalId}`" 
        aria-haspopup="dialog" 
        aria-expanded="false">
     <div class="card-body p-4">
-      <h3 class="card-title border-b border-gray-200 pb-2 text-lg font-semibold text-gray-800">{{ role.name }}</h3>
+      <h3 class="card-title -b pb-2 text-lg font-semibold ">{{ role.name }}</h3>
       <div class="mt-3">
         <p class="my-1.5">Gender: 
           <span :class="role.gender === 'Male' ? 'text-blue-600 font-semibold' : 'text-pink-500 font-semibold'">
@@ -30,8 +33,8 @@ const topSkills = computed(() => getTopSkills(props.role, 3));
         </p>
         <p class="my-1.5">Age: {{ role.age }} years old</p>
       </div>
-      <div class="mt-4 border-t border-dashed border-gray-200 pt-3">
-        <h4 class="text-sm text-gray-600 mb-2">Traits:</h4>
+      <div class="mt-4 -t -dashed pt-3">
+        <h4 class="text-sm  mb-2">Traits:</h4>
         <div class="flex flex-wrap">
           <TraitBadge v-for="trait in role.traits" :key="trait.id" :trait="trait" />
         </div>
@@ -40,7 +43,68 @@ const topSkills = computed(() => getTopSkills(props.role, 3));
     </div>
   </div>
 
-  <!-- 好感度列表模态窗口 -->
+  <!-- 详情视图模式 - 用于在侧边详情中显示完整内容 -->
+  <div v-else class="w-full">
+    <div class="grid grid-cols-1 gap-4">
+      <!-- 特质部分 -->
+      <div>
+        <h4 class="text-base font-semibold  mb-3 pb-1 -b">特质</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+          <div v-for="category in ['Physical', 'Personality', 'Skill', 'Background']" :key="category" class="rounded p-3 ">
+            <h5 class="text-sm font-medium  mb-2">{{ category }}</h5>
+            <div class="flex flex-wrap">
+              <TraitBadge 
+                v-for="trait in role.traits.filter(t => t.category === category)" 
+                :key="trait.id" 
+                :trait="trait" 
+                show-sub-type
+              />
+              <span v-if="!role.traits.some(t => t.category === category)" class="text-sm  italic">无</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 技能部分 -->
+      <div>
+        <h4 class="text-base font-semibold  mb-3 pb-1 -b">技能</h4>
+        <SkillSection :skills="role.skills" :specialtyType="role.specialtyType" />
+      </div>
+
+      <!-- 好感度关系部分 -->
+      <div>
+        <div class="flex items-center justify-between mb-3 pb-1 -b">
+          <h4 class="text-base font-semibold ">好感度关系</h4>
+          <button 
+            class="btn btn-sm btn-soft-primary"
+            :data-overlay="`#${modalId}`"
+          >
+            <span class="icon-[tabler--heart] size-4 me-1"></span>
+            查看详情
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div 
+            v-for="relation in role.favorRelations" 
+            :key="relation.targetId" 
+            class="flex items-center justify-between p-2  rounded"
+          >
+            <span class="font-medium">
+              {{ allRoles.find(r => r.id === relation.targetId)?.name || '未知角色' }}
+            </span>
+            <span 
+              class="badge"
+              :class="relation.value >= 40 ? 'badge-success' : relation.value >= 0 ? 'badge-info' : 'badge-error'"
+            >
+              {{ relation.value }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 好感度列表模态窗口(两种模式都会使用) -->
   <div :id="modalId" class="overlay modal overlay-open:opacity-100 hidden overlay-open:duration-300" role="dialog" tabindex="-1">
     <div class="modal-dialog overlay-open:opacity-100 overlay-open:duration-300">
       <div class="modal-content">
