@@ -5,6 +5,7 @@ import type { TraitCategory, TraitSubType } from '../types/Trait';
 import { generateRandomRoles } from '../utils/roleUtils';
 import RoleCard from './RoleCard.vue';
 import RoleFilters from './RoleFilters.vue';
+import { getOverallPersonalityDescription, getPersonalityTooltip } from '../utils/personalityDescriptionUtils';
 
 const roles = ref<Role[]>([]);
 const filteredRoles = ref<Role[]>([]);
@@ -120,46 +121,60 @@ const selectRole = (roleId: number) => {
             <h3 class="text-base font-semibold">Character List</h3>
           </div>
           <div class="border-base-content/25 divide-base-content/25 flex flex-col divide-y rounded-md border *:first:rounded-t-md *:last:rounded-b-md">
-            <button
+            <div
               v-for="role in filteredRoles"
               :key="role.id"
-              @click="selectRole(role.id)"
-              class="link flex items-center no-underline p-3"
-              :class="{
-                'link-primary': role.id === selectedRoleId,
-                'hover:link-primary': role.id !== selectedRoleId
-              }"
+              class="flex flex-col"
             >
-              <span class="status me-3" :class="role.gender === 'Male' ? 'status-info' : 'status-pink'"></span>
-              <span class="grow">{{ role.name }}</span>
-              
-              <!-- Political stance indicators -->
-              <div class="flex items-center gap-1 me-2">
-                <!-- Economic indicator -->
-                <span 
-                  class="size-2 rounded-full" 
-                  :class="role.politicalStance.economic < 50 ? 'bg-red-400' : 'bg-blue-400'"
-                  data-fy-tooltip-hover
-                  :data-fy-title="role.politicalStance.economic < 30 ? 'Far Left' : 
-                                role.politicalStance.economic < 45 ? 'Left' : 
-                                role.politicalStance.economic < 55 ? 'Centrist' : 
-                                role.politicalStance.economic < 70 ? 'Right' : 'Far Right'"
-                ></span>
+              <button
+                @click="selectRole(role.id)"
+                class="link flex items-center no-underline p-3"
+                :class="{
+                  'link-primary': role.id === selectedRoleId,
+                  'hover:link-primary': role.id !== selectedRoleId
+                }"
+              >
+                <span class="status me-3" :class="role.gender === 'Male' ? 'status-info' : 'status-pink'"></span>
+                <span class="grow">{{ role.name }}</span>
                 
-                <!-- Civil indicator -->
-                <span 
-                  class="size-2 rounded-full" 
-                  :class="role.politicalStance.civil < 50 ? 'bg-purple-400' : 'bg-orange-400'"
-                  data-fy-tooltip-hover
-                  :data-fy-title="role.politicalStance.civil < 30 ? 'Libertarian' : 
-                                role.politicalStance.civil < 45 ? 'Liberal' : 
-                                role.politicalStance.civil < 55 ? 'Moderate' : 
-                                role.politicalStance.civil < 70 ? 'Statist' : 'Authoritarian'"
-                ></span>
-              </div>
-              
-              <span class="text-xs opacity-50">{{ role.age }} years</span>
-            </button>
+                <!-- Political stance indicators -->
+                <div class="flex items-center gap-1 me-2">
+                  <!-- Economic indicator -->
+                  <div class="tooltip">
+                    <span 
+                      class="tooltip-toggle size-2 rounded-full" 
+                      :class="role.politicalStance.economic < 50 ? 'bg-red-400' : 'bg-blue-400'"
+                    ></span>
+                    <span class="tooltip-content tooltip-shown:opacity-100 tooltip-shown:visible" role="tooltip">
+                      <span class="tooltip-body">
+                        {{ role.politicalStance.economic < 30 ? 'Far Left' : 
+                           role.politicalStance.economic < 45 ? 'Left' : 
+                           role.politicalStance.economic < 55 ? 'Centrist' : 
+                           role.politicalStance.economic < 70 ? 'Right' : 'Far Right' }}
+                      </span>
+                    </span>
+                  </div>
+                  
+                  <!-- Civil indicator -->
+                  <div class="tooltip">
+                    <span 
+                      class="tooltip-toggle size-2 rounded-full" 
+                      :class="role.politicalStance.civil < 50 ? 'bg-purple-400' : 'bg-orange-400'"
+                    ></span>
+                    <span class="tooltip-content tooltip-shown:opacity-100 tooltip-shown:visible" role="tooltip">
+                      <span class="tooltip-body">
+                        {{ role.politicalStance.civil < 30 ? 'Libertarian' : 
+                           role.politicalStance.civil < 45 ? 'Liberal' : 
+                           role.politicalStance.civil < 55 ? 'Moderate' : 
+                           role.politicalStance.civil < 70 ? 'Statist' : 'Authoritarian' }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                
+                <span class="text-xs opacity-50">{{ role.age }} years</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -169,7 +184,23 @@ const selectRole = (roleId: number) => {
         <div v-if="selectedRole" class="card card-bordered">
           <div class="card-header border-b p-4">
             <div class="flex items-center justify-between">
-              <h3 class="text-lg font-semibold">{{ selectedRole.name }}</h3>
+              <div>
+                <div class="flex items-baseline gap-2">
+                  <h3 class="text-lg font-semibold">{{ selectedRole.name }}</h3>
+                  
+                  <!-- 角色个性描述（详情视图） -->
+                  <div class="tooltip">
+                    <span class="tooltip-toggle text-sm text-gray-600">
+                      {{ getOverallPersonalityDescription(selectedRole.aiPersonality) }}
+                    </span>
+                    <span class="tooltip-content tooltip-shown:opacity-100 tooltip-shown:visible" role="tooltip">
+                      <span class="tooltip-body">
+                        {{ getPersonalityTooltip(selectedRole.aiPersonality) }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
               <div>
                 <span 
                   class="badge" 
