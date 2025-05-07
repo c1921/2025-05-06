@@ -5,6 +5,7 @@ import TraitBadge from './TraitBadge.vue';
 import SkillSection from './SkillSection.vue';
 import { getTopSkills } from '../utils/roleUtils';
 import RoleFavorList from './RoleFavorList.vue';
+import PoliticalStanceSection from './PoliticalStanceSection.vue';
 
 const props = defineProps<{
   role: Role;
@@ -63,6 +64,11 @@ const topSkills = computed(() => getTopSkills(props.role, 3));
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Political stance section -->
+      <div>
+        <PoliticalStanceSection :political-stance="role.politicalStance" />
       </div>
 
       <!-- Skills section -->

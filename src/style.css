@@ -4,12 +4,83 @@
 @source "../node_modules/flyonui/flyonui.js";
 @plugin "@iconify/tailwind4";
 
-/* Import Third-party override css */
-/* @import "flyonui/src/vendor/flatpickr.css"; */
-/* @import "flyonui/src/vendor/notyf.css"; */
-/* @import "flyonui/src/vendor/datatables.css"; */
-/* @import "flyonui/src/vendor/editor.css"; */
-/* @import "flyonui/src/vendor/fullcalendar.css"; */
-/* @import "flyonui/src/vendor/raty.css"; */
-/* @import "flyonui/src/vendor/waves.css"; */
-/* @import "flyonui/src/vendor/apexcharts.css"; */
+/* Political Stance Color Variables */
+:root {
+    /* Base colors for political stances */
+    --color-economic-left: #ff2525;
+    --color-economic-right: #25ffff;
+    --color-diplomatic-left: #ff8825;
+    --color-diplomatic-right: #259cff;
+    --color-civil-left: #ffd725;
+    --color-civil-right: #254dff;
+    --color-societal-left: #7eff25;
+    --color-societal-right: #a625ff;
+}
+
+/* Economic axis colors */
+.text-economic-left {
+    color: var(--color-economic-left);
+}
+
+.bg-economic-left {
+    background-color: var(--color-economic-left);
+}
+
+.text-economic-right {
+    color: var(--color-economic-right);
+}
+
+.bg-economic-right {
+    background-color: var(--color-economic-right);
+}
+
+/* Diplomatic axis colors */
+.text-diplomatic-left {
+    color: var(--color-diplomatic-left);
+}
+
+.bg-diplomatic-left {
+    background-color: var(--color-diplomatic-left);
+}
+
+.text-diplomatic-right {
+    color: var(--color-diplomatic-right);
+}
+
+.bg-diplomatic-right {
+    background-color: var(--color-diplomatic-right);
+}
+
+/* Civil axis colors */
+.text-civil-left {
+    color: var(--color-civil-left);
+}
+
+.bg-civil-left {
+    background-color: var(--color-civil-left);
+}
+
+.text-civil-right {
+    color: var(--color-civil-right);
+}
+
+.bg-civil-right {
+    background-color: var(--color-civil-right);
+}
+
+/* Societal axis colors */
+.text-societal-left {
+    color: var(--color-societal-left);
+}
+
+.bg-societal-left {
+    background-color: var(--color-societal-left);
+}
+
+.text-societal-right {
+    color: var(--color-societal-right);
+}
+
+.bg-societal-right {
+    background-color: var(--color-societal-right);
+}

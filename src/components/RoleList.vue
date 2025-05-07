@@ -132,6 +132,32 @@ const selectRole = (roleId: number) => {
             >
               <span class="status me-3" :class="role.gender === 'Male' ? 'status-info' : 'status-pink'"></span>
               <span class="grow">{{ role.name }}</span>
+              
+              <!-- Political stance indicators -->
+              <div class="flex items-center gap-1 me-2">
+                <!-- Economic indicator -->
+                <span 
+                  class="size-2 rounded-full" 
+                  :class="role.politicalStance.economic < 50 ? 'bg-red-400' : 'bg-blue-400'"
+                  data-fy-tooltip-hover
+                  :data-fy-title="role.politicalStance.economic < 30 ? 'Far Left' : 
+                                role.politicalStance.economic < 45 ? 'Left' : 
+                                role.politicalStance.economic < 55 ? 'Centrist' : 
+                                role.politicalStance.economic < 70 ? 'Right' : 'Far Right'"
+                ></span>
+                
+                <!-- Civil indicator -->
+                <span 
+                  class="size-2 rounded-full" 
+                  :class="role.politicalStance.civil < 50 ? 'bg-purple-400' : 'bg-orange-400'"
+                  data-fy-tooltip-hover
+                  :data-fy-title="role.politicalStance.civil < 30 ? 'Libertarian' : 
+                                role.politicalStance.civil < 45 ? 'Liberal' : 
+                                role.politicalStance.civil < 55 ? 'Moderate' : 
+                                role.politicalStance.civil < 70 ? 'Statist' : 'Authoritarian'"
+                ></span>
+              </div>
+              
               <span class="text-xs opacity-50">{{ role.age }} years</span>
             </button>
           </div>

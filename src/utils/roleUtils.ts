@@ -1,4 +1,4 @@
-import type { Role } from '../types/Role';
+import type { Role, PoliticalStance } from '../types/Role';
 import type { Skill, SkillType } from '../types/Skill';
 import { generateCharacterTraits } from './traitUtils';
 import { generateSpecializedSkills, applyTraitEffectsToSkills } from './skillUtils';
@@ -11,6 +11,28 @@ const femaleNames = ['Emma', 'Olivia', 'Sarah', 'Jennifer', 'Emily', 'Jessica', 
 
 // 专长类型列表
 const specialtyTypes: SkillType[] = ['Combat', 'Magic', 'Survival', 'Social', 'Crafting'];
+
+/**
+ * 生成随机政治倾向
+ * 每个维度默认值为50，随机波动在±30范围内
+ * @returns 随机生成的政治倾向
+ */
+function generateRandomPoliticalStance(): PoliticalStance {
+  // 辅助函数：生成指定范围内的随机数
+  const getRandomValue = () => {
+    // 生成-30到+30之间的随机波动
+    const variation = Math.floor(Math.random() * 61) - 30;
+    // 基础值50加上波动，并确保在0-100范围内
+    return Math.max(0, Math.min(100, 50 + variation));
+  };
+
+  return {
+    economic: getRandomValue(),
+    diplomatic: getRandomValue(),
+    civil: getRandomValue(),
+    societal: getRandomValue()
+  };
+}
 
 /**
  * 生成一个角色
@@ -45,7 +67,8 @@ export function generateCharacter(
     traits,
     skills,
     favorRelations: [],
-    specialtyType
+    specialtyType,
+    politicalStance: generateRandomPoliticalStance()
   };
   
   // 应用特质效果到技能
@@ -124,7 +147,8 @@ export function generateRandomRole(id: number): Role {
     traits,
     skills: generateSpecializedSkills(specialtyType),
     favorRelations: [],
-    specialtyType
+    specialtyType,
+    politicalStance: generateRandomPoliticalStance()
   };
   
   // 应用特质效果到技能

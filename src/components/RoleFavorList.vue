@@ -66,13 +66,13 @@ import type { Role } from '../types/Role';
 import { getFavorLevelName as getLevel } from '../utils/favorUtils';
 import { calculateTraitFavorEffects } from '../utils/traitFavorUtils';
 
-// Component props definition
+// 定义组件属性
 const props = defineProps<{
   role: Role;
   allRoles: Role[];
 }>();
 
-// Computed: Get all favor relationships
+// 计算属性：获取所有好感度关系
 const favorRelations = computed(() => {
   return props.role.favorRelations.map(sourceRelation => {
     const targetRole = props.allRoles.find(r => r.id === sourceRelation.targetId);
@@ -85,14 +85,14 @@ const favorRelations = computed(() => {
       sourceToTargetEffects: []
     };
 
-    // Find target character's favor towards current character
+    // 查找目标角色对当前角色的好感度
     const targetRelation = targetRole.favorRelations.find(r => r.targetId === props.role.id);
     const targetToSource = targetRelation ? targetRelation.value : 0;
 
-    // Calculate trait favor effects (target character to current character)
+    // 计算特质好感度影响（目标角色对当前角色的好感）
     const targetToSourceEffects = calculateTraitFavorEffects(props.role, targetRole);
     
-    // Calculate trait favor effects (current character to target character)
+    // 计算特质好感度影响（当前角色对目标角色的好感）
     const sourceToTargetEffects = calculateTraitFavorEffects(targetRole, props.role);
     
     return {
@@ -106,12 +106,12 @@ const favorRelations = computed(() => {
   });
 });
 
-// Get favor level name
+// 获取好感度等级名称
 function getLevelName(value: number): string {
   return getLevel(value);
 }
 
-// Get favor value Tailwind/FlyonUI color class
+// 获取好感度值的Tailwind/FlyonUI颜色类
 function getFavorColorClass(value: number): string {
   if (value >= 70) return 'badge-success';
   if (value >= 40) return 'badge-info';
@@ -121,7 +121,7 @@ function getFavorColorClass(value: number): string {
   return 'badge-secondary';
 }
 
-// Get effect value Tailwind/FlyonUI color class
+// 获取影响值的Tailwind/FlyonUI颜色类
 function getEffectColorClass(value: number): string {
   if (value > 0) return 'badge-success';
   if (value < 0) return 'badge-error';
