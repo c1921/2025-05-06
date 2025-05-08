@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import RoleView from './views/RoleView.vue';
+import MainView from './views/MainView.vue';
 </script>
 
 <template>
-  <div class="min-h-screen">
-    <main class="container mx-auto px-4 py-5">
-      <RoleView />
+  <div class="min-h-screen h-screen flex flex-col">
+    <main class="flex-grow overflow-hidden">
+      <MainView />
     </main>
   </div>
 </template>
