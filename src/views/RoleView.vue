@@ -22,7 +22,7 @@ const filterOptions = ref<{
 
 onMounted(() => {
   // 初始化角色列表
-  roles.value = generateRandomRoles(5);
+  roles.value = generateRandomRoles(12);
   applyFilters();
   
   // 默认选中第一个角色
