@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import RoleList from './components/RoleList.vue';
+import RoleView from './views/RoleView.vue';
 </script>
 
 <template>
   <div class="min-h-screen">
     <main class="container mx-auto px-4 py-5">
-      <RoleList />
+      <RoleView />
     </main>
   </div>
 </template>
