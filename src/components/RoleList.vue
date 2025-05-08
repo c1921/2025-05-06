@@ -15,7 +15,7 @@ const emit = defineEmits<{
 
 // 搜索功能
 const searchQuery = ref('');
-const itemsPerPage = 5; // 每页显示的角色数量
+const itemsPerPage = 8; // 每页显示的角色数量
 const currentPage = ref(1);
 
 // 根据搜索词和分页过滤角色
@@ -23,8 +23,7 @@ const filteredRoles = computed(() => {
   // 先按搜索词过滤
   const searchFiltered = searchQuery.value 
     ? props.roles.filter((role: Role) => 
-        role.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        role.gender.toLowerCase().includes(searchQuery.value.toLowerCase())
+        role.name.toLowerCase().includes(searchQuery.value.toLowerCase())
       )
     : props.roles;
     
@@ -68,22 +67,28 @@ const handleSelectRole = (roleId: number) => {
     <!-- 搜索栏 -->
     <div class="card-header p-3">
       <div class="flex items-center justify-between">
-        <div class="relative">
+        <div class="relative w-full">
           <input 
             type="text" 
             v-model="searchQuery" 
             @input="handleSearchInput"
             placeholder="Search characters..." 
-            class="form-control form-control-sm pl-8 pr-2"
+            class="form-control form-control-sm pl-8 pr-2 w-full"
           />
           <span class="icon-[tabler--search] size-4 absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"></span>
         </div>
       </div>
     </div>
     
-    <!-- 角色列表 -->
+    <!-- 角色列表 - 使用网格布局 -->
     <div class="overflow-y-auto max-h-[calc(100vh-15rem)]">
-      <div class="border-base-content/25 divide-base-content/25 flex flex-col divide-y rounded-md border *:first:rounded-t-md *:last:rounded-b-md">
+      <!-- 无结果提示 -->
+      <div v-if="filteredRoles.length === 0" class="p-4 text-center text-gray-500">
+        No characters matching your search
+      </div>
+      
+      <!-- 网格布局的角色列表 -->
+      <div class="grid grid-cols-2 md:grid-cols-1 gap-1 p-1">
         <div
           v-for="role in filteredRoles"
           :key="role.id"
@@ -91,21 +96,14 @@ const handleSelectRole = (roleId: number) => {
         >
           <button
             @click="handleSelectRole(role.id)"
-            class="link flex items-center no-underline p-3"
+            class="link flex items-center justify-start text-left no-underline p-2 rounded hover:bg-base-100/80"
             :class="{
-              'link-primary': role.id === selectedRoleId,
+              'bg-primary/10 link-primary': role.id === selectedRoleId,
               'hover:link-primary': role.id !== selectedRoleId
             }"
           >
-            <span class="status me-3" :class="role.gender === 'Male' ? 'status-info' : 'status-pink'"></span>
-            <span class="grow">{{ role.name }}</span>
-            <span class="text-xs opacity-50">{{ role.age }} years</span>
+            <span class="truncate text-sm">{{ role.name }}</span>
           </button>
-        </div>
-        
-        <!-- 无结果提示 -->
-        <div v-if="filteredRoles.length === 0" class="p-4 text-center text-gray-500">
-          No characters matching your search
         </div>
       </div>
     </div>

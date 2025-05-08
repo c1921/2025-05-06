@@ -50,8 +50,7 @@ const getTypeColorClass = (type: SkillType): string => {
 </script>
 
 <template>
-  <div class="mt-5 pt-4 border-t">
-    <h4 class="text-base font-medium  pb-2 mb-3 border-b">Skills</h4>
+  <div class="mt-5">
     
     <div v-for="(skills, type) in groupedSkills" :key="type" class="mb-4">
       <div 
