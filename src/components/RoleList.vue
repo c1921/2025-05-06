@@ -22,11 +22,7 @@ const filterOptions = ref<{
 const selectedRole = ref<Role | null>(null);
 
 onMounted(() => {
-  // 生成5个随机角色
-  regenerateRoles();
-});
-
-const regenerateRoles = () => {
+  // 初始化角色列表
   roles.value = generateRandomRoles(5);
   applyFilters();
   
@@ -36,7 +32,7 @@ const regenerateRoles = () => {
   } else {
     selectedRole.value = null;
   }
-};
+});
 
 const applyFilters = () => {
   if (!filterOptions.value.category) {
@@ -87,17 +83,6 @@ const selectRole = (roleId: number) => {
 
 <template>
   <div class="max-w-6xl mx-auto">
-    <h2 class="text-xl font-bold text-center mb-6">Role Management</h2>
-    
-    <div class="flex justify-center mb-6">
-      <button 
-        class="btn btn-primary"
-        @click="regenerateRoles"
-      >
-        <span class="icon-[tabler--refresh] size-4 me-2"></span>
-        Regenerate Roles
-      </button>
-    </div>
     
     <div class="card card-bordered mb-6">
       <div class="card-body">
@@ -194,9 +179,7 @@ const selectRole = (roleId: number) => {
                       {{ getOverallPersonalityDescription(selectedRole.aiPersonality) }}
                     </span>
                     <span class="tooltip-content tooltip-shown:opacity-100 tooltip-shown:visible" role="tooltip">
-                      <span class="tooltip-body">
-                        {{ getPersonalityTooltip(selectedRole.aiPersonality) }}
-                      </span>
+                      <span class="tooltip-body" v-html="getPersonalityTooltip(selectedRole.aiPersonality)"></span>
                     </span>
                   </div>
                 </div>
