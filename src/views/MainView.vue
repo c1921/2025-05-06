@@ -1,15 +1,27 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import RoleView from './RoleView.vue';
 import BuildingView from './BuildingView.vue';
+import MapView from './MapView.vue';
 
 // 当前选中的标签页
 const activeTab = ref('roles');
+
+// 地图是否可见
+const isMapVisible = ref(false);
 
 // 切换标签页
 const setActiveTab = (tabId: string) => {
   activeTab.value = tabId;
 };
+
+// 监听标签页变化
+watch(() => activeTab.value, (newTab) => {
+  isMapVisible.value = newTab === 'map';
+});
+
+// 初始设置
+isMapVisible.value = activeTab.value === 'map';
 </script>
 
 <template>
@@ -19,7 +31,7 @@ const setActiveTab = (tabId: string) => {
     <nav class="tabs tabs-bordered mb-2 px-4 pt-5 flex-shrink-0" aria-label="Main Navigation" role="tablist" aria-orientation="horizontal">
       <button 
         type="button" 
-        class="tab active-tab:tab-active  w-full" 
+        class="tab active-tab:tab-active w-full" 
         :class="{ 'active': activeTab === 'roles' }"
         id="tab-roles" 
         data-tab="#tab-content-roles" 
@@ -33,7 +45,7 @@ const setActiveTab = (tabId: string) => {
       </button>
       <button 
         type="button" 
-        class="tab active-tab:tab-active  w-full" 
+        class="tab active-tab:tab-active w-full" 
         :class="{ 'active': activeTab === 'buildings' }"
         id="tab-buildings" 
         data-tab="#tab-content-buildings" 
@@ -44,6 +56,20 @@ const setActiveTab = (tabId: string) => {
       >
         <span class="icon-[tabler--building] size-5 me-2"></span>
         Buildings
+      </button>
+      <button 
+        type="button" 
+        class="tab active-tab:tab-active w-full" 
+        :class="{ 'active': activeTab === 'map' }"
+        id="tab-map" 
+        data-tab="#tab-content-map" 
+        aria-controls="tab-content-map" 
+        role="tab" 
+        aria-selected="false"
+        @click="setActiveTab('map')"
+      >
+        <span class="icon-[tabler--map] size-5 me-2"></span>
+        地图
       </button>
     </nav>
     
@@ -67,6 +93,16 @@ const setActiveTab = (tabId: string) => {
         :class="{ 'hidden': activeTab !== 'buildings' }"
       >
         <BuildingView />
+      </div>
+      
+      <div 
+        id="tab-content-map" 
+        role="tabpanel" 
+        aria-labelledby="tab-map"
+        class="h-full"
+        :class="{ 'hidden': activeTab !== 'map' }"
+      >
+        <MapView />
       </div>
     </div>
   </div>
