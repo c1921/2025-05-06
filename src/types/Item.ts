@@ -22,28 +22,58 @@ export const ITEM_CATEGORY_NAMES: Record<ItemCategory, string> = {
   [ItemCategory.Miscellaneous]: 'Miscellaneous'
 };
 
-// 物品接口
-export interface Item extends BaseEntity {
-  readonly quantity: number;
+// 基础物品接口
+export interface BaseItem extends BaseEntity {
   readonly value: number;
   readonly category: ItemCategory;
 }
 
-// 创建物品的工厂函数
-export function createItem(
+// 库存物品接口（带数量）
+export interface InventoryItem {
+  readonly itemId: ID;
+  quantity: number;
+}
+
+// 完整物品接口（包含基础信息和数量）
+export interface Item extends BaseItem {
+  readonly quantity: number;
+}
+
+// 创建基础物品的工厂函数
+export function createBaseItem(
   id: ID,
   name: string,
   description: string,
-  quantity: number,
   value: number,
   category: ItemCategory
-): Item {
+): BaseItem {
   return {
     id,
     name,
     description,
-    quantity,
     value,
     category
+  };
+}
+
+// 创建库存物品的工厂函数
+export function createInventoryItem(
+  itemId: ID,
+  quantity: number
+): InventoryItem {
+  return {
+    itemId,
+    quantity
+  };
+}
+
+// 合并基础物品和库存数量，创建完整物品
+export function createItem(
+  baseItem: BaseItem,
+  quantity: number
+): Item {
+  return {
+    ...baseItem,
+    quantity
   };
 } 

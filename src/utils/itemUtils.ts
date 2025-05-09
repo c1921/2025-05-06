@@ -1,16 +1,23 @@
-import { type Item, ItemCategory, createItem } from '../types/Item';
+import type { BaseItem, Item, ItemCategory } from '../types/Item';
+import { createBaseItem } from '../types/Item';
+import { mergeItemsWithInventory } from './inventoryService';
 import itemsData from '../data/items.json';
 
-// 从JSON数据加载物品
-export function loadItems(): Item[] {
-  return itemsData.items.map(item => createItem(
+// 从JSON数据加载基础物品
+export function loadBaseItems(): BaseItem[] {
+  return itemsData.items.map(item => createBaseItem(
     item.id,
     item.name,
     item.description,
-    item.quantity,
     item.value,
     item.category as ItemCategory
   ));
+}
+
+// 加载完整物品（包含数量）
+export function loadItems(): Item[] {
+  const baseItems = loadBaseItems();
+  return mergeItemsWithInventory(baseItems);
 }
 
 // 按类别过滤物品
@@ -32,4 +39,9 @@ export function calculateTotalValue(items: Item[]): number {
 // 获取物品总数量
 export function getTotalQuantity(items: Item[]): number {
   return items.reduce((total, item) => total + item.quantity, 0);
+}
+
+// 根据ID查找物品
+export function findItemById(items: Item[], id: number): Item | undefined {
+  return items.find(item => item.id === id);
 } 

@@ -44,7 +44,7 @@
         </thead>
         <tbody>
           <tr 
-            v-for="item in filteredItems" 
+            v-for="item in paginatedItems" 
             :key="item.id" 
             class="row-hover cursor-pointer" 
             @click="selectItem(item)"
@@ -61,6 +61,47 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    
+    <!-- 分页控件 -->
+    <div class="flex flex-wrap items-center justify-between gap-2 py-4">
+      <div class="me-2 block max-w-sm text-sm text-base-content/80 sm:mb-0">
+        Showing
+        <span class="font-semibold text-base-content/80">{{ startIndex + 1 }}-{{ endIndex }}</span>
+        of
+        <span class="font-semibold">{{ filteredItems.length }}</span>
+        items
+      </div>
+      <nav class="join">
+        <button 
+          type="button" 
+          class="btn btn-soft btn-square join-item" 
+          aria-label="previous button"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
+          <span class="icon-[tabler--chevron-left] size-5 rtl:rotate-180"></span>
+        </button>
+        <button 
+          v-for="page in totalPages" 
+          :key="page"
+          type="button" 
+          class="btn btn-soft join-item btn-square" 
+          :class="{ 'bg-primary text-primary-content': currentPage === page }"
+          @click="currentPage = page"
+        >
+          {{ page }}
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-soft btn-square join-item" 
+          aria-label="next button"
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+        >
+          <span class="icon-[tabler--chevron-right] size-5 rtl:rotate-180"></span>
+        </button>
+      </nav>
     </div>
     
     <div v-if="selectedItem" class="card mt-4 p-4">
@@ -90,7 +131,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, watch } from 'vue';
 import type { Item } from '../types/Item';
 import { ItemCategory, ITEM_CATEGORY_NAMES } from '../types/Item';
 import { loadItems, filterItemsByCategory, findItemsByName, calculateTotalValue, getTotalQuantity } from '../utils/itemUtils';
@@ -108,6 +149,8 @@ export default defineComponent({
     const selectedCategory = ref<string>('');
     const searchQuery = ref<string>('');
     const selectedItem = ref<Item | null>(null);
+    const currentPage = ref<number>(1);
+    const itemsPerPage = ref<number>(5);
     
     const filteredItems = computed(() => {
       let result = items.value;
@@ -123,12 +166,34 @@ export default defineComponent({
       return result;
     });
     
+    const totalPages = computed(() => {
+      return Math.ceil(filteredItems.value.length / itemsPerPage.value);
+    });
+    
+    const startIndex = computed(() => {
+      return (currentPage.value - 1) * itemsPerPage.value;
+    });
+    
+    const endIndex = computed(() => {
+      const end = startIndex.value + itemsPerPage.value;
+      return end > filteredItems.value.length ? filteredItems.value.length : end;
+    });
+    
+    const paginatedItems = computed(() => {
+      return filteredItems.value.slice(startIndex.value, endIndex.value);
+    });
+    
     const totalValue = computed(() => {
       return calculateTotalValue(filteredItems.value);
     });
     
     const totalQuantity = computed(() => {
       return getTotalQuantity(filteredItems.value);
+    });
+    
+    // 监听过滤条件变化，重置到第一页
+    watch([selectedCategory, searchQuery], () => {
+      currentPage.value = 1;
     });
     
     const selectItem = (item: Item) => {
@@ -162,7 +227,13 @@ export default defineComponent({
       selectedCategory,
       searchQuery,
       selectedItem,
+      currentPage,
+      itemsPerPage,
       filteredItems,
+      totalPages,
+      startIndex,
+      endIndex,
+      paginatedItems,
       totalValue,
       totalQuantity,
       categoryNames: ITEM_CATEGORY_NAMES,
@@ -173,3 +244,11 @@ export default defineComponent({
   }
 });
 </script>
+
+<style scoped>
+.item-list {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+</style>
