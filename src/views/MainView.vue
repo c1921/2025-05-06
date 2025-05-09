@@ -3,6 +3,7 @@ import { ref, watch } from 'vue';
 import RoleView from './RoleView.vue';
 import BuildingView from './BuildingView.vue';
 import MapView from './MapView.vue';
+import ItemView from './ItemView.vue';
 
 // 当前选中的标签页
 const activeTab = ref('roles');
@@ -60,6 +61,20 @@ isMapVisible.value = activeTab.value === 'map';
       <button 
         type="button" 
         class="tab active-tab:tab-active w-full" 
+        :class="{ 'active': activeTab === 'items' }"
+        id="tab-items" 
+        data-tab="#tab-content-items" 
+        aria-controls="tab-content-items" 
+        role="tab" 
+        aria-selected="false"
+        @click="setActiveTab('items')"
+      >
+        <span class="icon-[tabler--backpack] size-5 me-2"></span>
+        Items
+      </button>
+      <button 
+        type="button" 
+        class="tab active-tab:tab-active w-full" 
         :class="{ 'active': activeTab === 'map' }"
         id="tab-map" 
         data-tab="#tab-content-map" 
@@ -69,7 +84,7 @@ isMapVisible.value = activeTab.value === 'map';
         @click="setActiveTab('map')"
       >
         <span class="icon-[tabler--map] size-5 me-2"></span>
-        地图
+        Map
       </button>
     </nav>
     
@@ -93,6 +108,16 @@ isMapVisible.value = activeTab.value === 'map';
         :class="{ 'hidden': activeTab !== 'buildings' }"
       >
         <BuildingView />
+      </div>
+      
+      <div 
+        id="tab-content-items" 
+        role="tabpanel" 
+        aria-labelledby="tab-items"
+        class="h-full"
+        :class="{ 'hidden': activeTab !== 'items' }"
+      >
+        <ItemView />
       </div>
       
       <div 
