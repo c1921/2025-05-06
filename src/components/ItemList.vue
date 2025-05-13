@@ -131,10 +131,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import type { Item } from '../types/Item';
 import { ItemCategory, ITEM_CATEGORY_NAMES } from '../types/Item';
 import { loadItems, filterItemsByCategory, findItemsByName, calculateTotalValue, getTotalQuantity } from '../utils/itemUtils';
+import { gameEngine } from '../core/GameEngine';
 
 export default defineComponent({
   name: 'ItemList',
@@ -145,12 +146,29 @@ export default defineComponent({
     }
   },
   setup() {
+    const refreshItems = () => {
+      items.value = loadItems();
+    };
+    
     const items = ref<Item[]>(loadItems());
     const selectedCategory = ref<string>('');
     const searchQuery = ref<string>('');
     const selectedItem = ref<Item | null>(null);
     const currentPage = ref<number>(1);
     const itemsPerPage = ref<number>(5);
+    
+    // 监听游戏事件以刷新物品列表
+    onMounted(() => {
+      // 监听食物消耗事件
+      gameEngine.addEventListener('foodConsumed', () => {
+        refreshItems();
+      });
+      
+      // 每天变化时刷新物品列表
+      gameEngine.addEventListener('dayChanged', () => {
+        refreshItems();
+      });
+    });
     
     const filteredItems = computed(() => {
       let result = items.value;

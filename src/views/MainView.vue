@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import RoleView from './RoleView.vue';
 import BuildingView from './BuildingView.vue';
 import MapView from './MapView.vue';
 import ItemView from './ItemView.vue';
 import TimeControl from '../components/TimeControl.vue';
+import { gameEngine } from '../core/GameEngine';
+import { getItemQuantity } from '../utils/inventoryService';
+
+// 食物物品ID（根据items.json）
+const FOOD_ITEM_ID = 9;
 
 // 当前选中的标签页
 const activeTab = ref('roles');
@@ -12,8 +17,11 @@ const activeTab = ref('roles');
 // 地图是否可见
 const isMapVisible = ref(false);
 
-// 时间控制组件引用，定义正确的类型
-const timeControlRef = ref<InstanceType<typeof TimeControl> | null>(null);
+// 时间控制组件引用
+const timeControlRef = ref(null);
+
+// 食物库存数量
+const foodQuantity = ref(getItemQuantity(FOOD_ITEM_ID));
 
 // 切换标签页
 const setActiveTab = (tabId: string) => {
@@ -25,6 +33,14 @@ watch(() => activeTab.value, (newTab) => {
   isMapVisible.value = newTab === 'map';
 });
 
+// 监听食物消耗事件，更新库存显示
+onMounted(() => {
+  gameEngine.addEventListener('foodConsumed', () => {
+    // 更新食物库存显示
+    foodQuantity.value = getItemQuantity(FOOD_ITEM_ID);
+  });
+});
+
 // 初始设置
 isMapVisible.value = activeTab.value === 'map';
 </script>
@@ -33,12 +49,17 @@ isMapVisible.value = activeTab.value === 'map';
   <div class="h-full flex flex-col">
     
     <!-- 顶部导航栏 -->
-    <header class="flex items-center justify-between px-4 py-2 bg-base-200">
-      <!-- 游戏标题/Logo 暂时留空-->
-      <div class="text-lg font-bold"></div>
+    <header class="flex flex-col sm:flex-row items-center justify-between gap-2 px-4 py-2 bg-base-200">
+      <!-- 库存状态 -->
+      <div class="flex items-center gap-3 text-sm order-2 sm:order-1 w-full sm:w-auto justify-center sm:justify-start">
+        <div class="flex items-center gap-1 bg-base-100 px-2 py-1 rounded-full shadow-sm">
+          <span class="icon-[tabler--apple] size-4 text-green-500"></span>
+          <span class="font-medium">{{ foodQuantity }}</span>
+        </div>
+      </div>
       
       <!-- 时间控制器 -->
-      <TimeControl ref="timeControlRef" />
+      <TimeControl ref="timeControlRef" class="order-1 sm:order-2 w-full sm:w-auto mb-1 sm:mb-0" />
     </header>
     
     <!-- 标签导航 -->

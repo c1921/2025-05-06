@@ -13,6 +13,7 @@ import SkillSection from './SkillSection.vue';
 import RoleFavorList from './RoleFavorList.vue';
 import PoliticalStanceSection from './PoliticalStanceSection.vue';
 import { getOverallPersonalityDescription, getPersonalityTooltip } from '../utils/personalityDescriptionUtils';
+import { gameEngine } from '../core/GameEngine';
 
 // 组件属性定义
 const props = defineProps<{
@@ -22,6 +23,19 @@ const props = defineProps<{
 
 // 计算模态框ID，确保每个角色卡片有唯一的模态框标识
 const modalId = computed(() => `role-favor-modal-${props.role.id}`);
+
+// 计算角色是否饥饿
+const isHungry = computed(() => gameEngine.isRoleHungry(props.role.id));
+
+// 获取饥饿状态文本描述
+const hungerStatusText = computed(() => {
+  return isHungry.value ? '饥饿' : '充足';
+});
+
+// 获取饥饿状态样式类
+const hungerStatusClass = computed(() => {
+  return isHungry.value ? 'badge-error' : 'badge-success';
+});
 </script>
 
 <template>
@@ -51,6 +65,16 @@ const modalId = computed(() => `role-favor-modal-${props.role.id}`);
             {{ role.gender }}
           </span>
           <span class="badge badge-ghost ms-2">{{ role.age }} years</span>
+          
+          <!-- 饥饿状态标签 -->
+          <span 
+            class="badge ms-2" 
+            :class="hungerStatusClass"
+            :title="`食物状态: ${isHungry ? '饥饿' : '充足'}`"
+          >
+            <span class="icon-[tabler--apple] size-3 me-1"></span>
+            {{ hungerStatusText }}
+          </span>
         </div>
       </div>
     </div>

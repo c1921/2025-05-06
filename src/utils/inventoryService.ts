@@ -13,7 +13,7 @@ const defaultInventory: InventoryItem[] = [
   { itemId: 6, quantity: 1 },  // Lucky Charm
   { itemId: 7, quantity: 25 }, // Wood
   { itemId: 8, quantity: 30 }, // Stone
-  { itemId: 9, quantity: 12 }, // Food
+  { itemId: 9, quantity: 120 }, // Food
   { itemId: 10, quantity: 8 }, // Steel
   { itemId: 11, quantity: 15 }, // Leather
   { itemId: 12, quantity: 20 }  // Cloth

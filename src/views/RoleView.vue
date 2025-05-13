@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import type { Role } from '../types/Role';
 import type { TraitCategory, TraitSubType } from '../types/Trait';
-import { generateRandomRoles } from '../utils/roleUtils';
 import RoleCard from '../components/RoleCard.vue';
 import RoleFilters from '../components/RoleFilters.vue';
 import RoleList from '../components/RoleList.vue';
+import { gameEngine } from '../core/GameEngine';
 
-const roles = ref<Role[]>([]);
+const roles = computed(() => gameEngine.getRoles());
 const filteredRoles = ref<Role[]>([]);
 const selectedRoleId = ref<number | null>(null);
 const selectedRole = ref<Role | null>(null);
@@ -21,8 +21,7 @@ const filterOptions = ref<{
 });
 
 onMounted(() => {
-  // 初始化角色列表
-  roles.value = generateRandomRoles(12);
+  // 应用初始筛选
   applyFilters();
   
   // 默认选中第一个角色
@@ -31,6 +30,16 @@ onMounted(() => {
   } else {
     selectedRole.value = null;
   }
+  
+  // 监听游戏事件来更新UI
+  gameEngine.addEventListener('dayChanged', () => {
+    // 当天数变化时，重新应用筛选以更新UI
+    applyFilters();
+    // 如果当前选中的角色存在，则保持选中状态
+    if (selectedRoleId.value !== null) {
+      selectRole(selectedRoleId.value);
+    }
+  });
 });
 
 const applyFilters = () => {
@@ -39,95 +48,83 @@ const applyFilters = () => {
     filteredRoles.value = [...roles.value];
     return;
   }
-
+  
+  // 应用特质类型筛选
   filteredRoles.value = roles.value.filter(role => {
-    // 查找符合筛选条件的特质
+    // 查找是否有匹配的特质
     return role.traits.some(trait => {
-      const categoryMatch = trait.category === filterOptions.value.category;
-      
-      // 如果未指定子类型，仅检查类别
+      // 如果只筛选类别
       if (!filterOptions.value.subType) {
-        return categoryMatch;
+        return trait.category === filterOptions.value.category;
       }
-      
-      // 否则同时检查类别和子类型
-      return categoryMatch && trait.subType === filterOptions.value.subType;
+      // 如果同时筛选类别和子类型
+      return trait.category === filterOptions.value.category && 
+             trait.subType === filterOptions.value.subType;
     });
   });
+};
+
+const onFilterChange = (newFilter: { category: TraitCategory | null, subType: TraitSubType | null }) => {
+  filterOptions.value = newFilter;
+  applyFilters();
   
-  // 如果当前选中的角色不在筛选结果中，则选择第一个角色
-  if (selectedRoleId.value !== null && !filteredRoles.value.some(role => role.id === selectedRoleId.value)) {
-    if (filteredRoles.value.length > 0) {
-      selectRole(filteredRoles.value[0].id);
+  // 如果筛选后没有角色，清除选中状态
+  if (filteredRoles.value.length === 0) {
+    selectedRole.value = null;
+    selectedRoleId.value = null;
+    return;
+  }
+  
+  // 如果之前选中的角色在筛选结果中，保持选中状态，否则选中第一个角色
+  if (selectedRoleId.value !== null) {
+    if (filteredRoles.value.some(role => role.id === selectedRoleId.value)) {
+      selectRole(selectedRoleId.value);
     } else {
-      selectedRole.value = null;
+      selectRole(filteredRoles.value[0].id);
     }
+  } else {
+    selectRole(filteredRoles.value[0].id);
   }
 };
 
-const handleFilterChange = (filters: {
-  category: TraitCategory | null,
-  subType: TraitSubType | null
-}) => {
-  filterOptions.value = filters;
-  applyFilters();
-};
-
-// 选择角色
 const selectRole = (roleId: number) => {
   selectedRoleId.value = roleId;
   selectedRole.value = roles.value.find(role => role.id === roleId) || null;
 };
 
-// 处理角色选择事件
-const handleRoleSelect = (roleId: number) => {
-  selectRole(roleId);
-};
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto">
-    
-    <div class="card card-bordered mb-6">
-      <div class="card-body">
-        <RoleFilters @filter-change="handleFilterChange" />
-      </div>
-    </div>
-    
-    <div v-if="filteredRoles.length === 0" class="alert alert-warning mb-6">
-      <div class="flex">
-        <span class="icon-[tabler--alert-circle] size-5 me-2"></span>
-        <p>No matching results, please try adjusting the filters.</p>
-      </div>
-    </div>
-    
-    <!-- 角色列表与详情的双栏布局 -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-      <!-- 左侧角色列表 -->
-      <div class="md:col-span-4 lg:col-span-3">
-        <RoleList 
-          :roles="filteredRoles" 
-          :selected-role-id="selectedRoleId" 
-          @select-role="handleRoleSelect" 
+  <div class="h-full flex flex-col lg:flex-row">
+    <!-- 左侧列表与筛选区域 -->
+    <div class="lg:w-1/3 xl:w-1/4 lg:border-r lg:pr-4 mb-4 lg:mb-0 h-full flex flex-col">
+      <div class="mb-4">
+        <RoleFilters 
+          :selected-category="filterOptions.category"
+          :selected-sub-type="filterOptions.subType" 
+          @change="onFilterChange"
         />
       </div>
       
-      <!-- 右侧角色详情 -->
-      <div class="md:col-span-8 lg:col-span-9">
-        <div v-if="selectedRole" class="card card-bordered">
-          <div class="card-body p-4">
-            <RoleCard 
-              :role="selectedRole" 
-              :all-roles="roles"
-            />
-          </div>
-        </div>
-        
-        <div v-else class="flex justify-center items-center h-64 rounded-lg border-2 border-dashed">
-          <div class="text-center">
-            <span class="icon-[tabler--user-question] size-12 block mx-auto mb-2"></span>
-            <p>Please select a character to view details</p>
-          </div>
+      <!-- 角色列表 -->
+      <div class="overflow-auto flex-grow">
+        <RoleList 
+          :roles="filteredRoles" 
+          :selected-role-id="selectedRoleId"
+          @select-role="selectRole"
+        />
+      </div>
+    </div>
+    
+    <!-- 右侧角色详情区域 -->
+    <div class="lg:w-2/3 xl:w-3/4 lg:pl-4 overflow-auto h-full">
+      <div v-if="selectedRole" class="h-full">
+        <RoleCard :role="selectedRole" :all-roles="roles" />
+      </div>
+      <div v-else class="h-full flex items-center justify-center p-4">
+        <div class="text-center">
+          <span class="icon-[tabler--user-question] size-16 opacity-30 mb-3"></span>
+          <p class="text-xl font-medium text-gray-500">请从左侧列表选择一个角色</p>
         </div>
       </div>
     </div>
