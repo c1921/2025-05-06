@@ -4,12 +4,16 @@ import RoleView from './RoleView.vue';
 import BuildingView from './BuildingView.vue';
 import MapView from './MapView.vue';
 import ItemView from './ItemView.vue';
+import TimeControl from '../components/TimeControl.vue';
 
 // 当前选中的标签页
 const activeTab = ref('roles');
 
 // 地图是否可见
 const isMapVisible = ref(false);
+
+// 时间控制组件引用，定义正确的类型
+const timeControlRef = ref<InstanceType<typeof TimeControl> | null>(null);
 
 // 切换标签页
 const setActiveTab = (tabId: string) => {
@@ -27,6 +31,15 @@ isMapVisible.value = activeTab.value === 'map';
 
 <template>
   <div class="h-full flex flex-col">
+    
+    <!-- 顶部导航栏 -->
+    <header class="flex items-center justify-between px-4 py-2 bg-base-200">
+      <!-- 游戏标题/Logo 暂时留空-->
+      <div class="text-lg font-bold"></div>
+      
+      <!-- 时间控制器 -->
+      <TimeControl ref="timeControlRef" />
+    </header>
     
     <!-- 标签导航 -->
     <nav class="tabs tabs-bordered mb-2 px-4 pt-5 flex-shrink-0" aria-label="Main Navigation" role="tablist" aria-orientation="horizontal">
