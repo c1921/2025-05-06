@@ -35,6 +35,7 @@ watch(() => activeTab.value, (newTab) => {
 
 // 监听食物消耗事件，更新库存显示
 onMounted(() => {
+  // 直接从GameEngine监听事件
   gameEngine.addEventListener('foodConsumed', () => {
     // 更新食物库存显示
     foodQuantity.value = getItemQuantity(FOOD_ITEM_ID);
