@@ -95,36 +95,48 @@ const selectRole = (roleId: number) => {
 </script>
 
 <template>
-  <div class="h-full flex flex-col lg:flex-row">
-    <!-- 左侧列表与筛选区域 -->
-    <div class="lg:w-1/3 xl:w-1/4 lg:border-r lg:pr-4 mb-4 lg:mb-0 h-full flex flex-col">
-      <div class="mb-4">
-        <RoleFilters 
-          :selected-category="filterOptions.category"
-          :selected-sub-type="filterOptions.subType" 
-          @change="onFilterChange"
-        />
-      </div>
-      
-      <!-- 角色列表 -->
-      <div class="overflow-auto flex-grow">
-        <RoleList 
-          :roles="filteredRoles" 
-          :selected-role-id="selectedRoleId"
-          @select-role="selectRole"
-        />
+  <div class="max-w-6xl mx-auto">
+    
+    <div class="card card-bordered mb-6">
+      <div class="card-body">
+        <RoleFilters @filter-change="onFilterChange" />
       </div>
     </div>
     
-    <!-- 右侧角色详情区域 -->
-    <div class="lg:w-2/3 xl:w-3/4 lg:pl-4 overflow-auto h-full">
-      <div v-if="selectedRole" class="h-full">
-        <RoleCard :role="selectedRole" :all-roles="roles" />
+    <div v-if="filteredRoles.length === 0" class="alert alert-warning mb-6">
+      <div class="flex">
+        <span class="icon-[tabler--alert-circle] size-5 me-2"></span>
+        <p>No matching results, please try adjusting the filters.</p>
       </div>
-      <div v-else class="h-full flex items-center justify-center p-4">
-        <div class="text-center">
-          <span class="icon-[tabler--user-question] size-16 opacity-30 mb-3"></span>
-          <p class="text-xl font-medium text-gray-500">请从左侧列表选择一个角色</p>
+    </div>
+    
+    <!-- 角色列表与详情的双栏布局 -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+      <!-- 左侧角色列表 -->
+      <div class="md:col-span-4 lg:col-span-3">
+        <RoleList 
+          :roles="filteredRoles" 
+          :selected-role-id="selectedRoleId" 
+          @select-role="selectRole" 
+        />
+      </div>
+      
+      <!-- 右侧角色详情 -->
+      <div class="md:col-span-8 lg:col-span-9">
+        <div v-if="selectedRole" class="card card-bordered">
+          <div class="card-body p-4">
+            <RoleCard 
+              :role="selectedRole" 
+              :all-roles="roles"
+            />
+          </div>
+        </div>
+        
+        <div v-else class="flex justify-center items-center h-64 rounded-lg border-2 border-dashed">
+          <div class="text-center">
+            <span class="icon-[tabler--user-question] size-12 block mx-auto mb-2"></span>
+            <p>Please select a character to view details</p>
+          </div>
         </div>
       </div>
     </div>
