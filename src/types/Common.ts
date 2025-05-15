@@ -1,5 +1,5 @@
 // 基础类型定义
-export type ID = number;
+export type ID = string;
 
 // 基础接口
 export interface BaseEntity {

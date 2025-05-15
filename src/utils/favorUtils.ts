@@ -1,6 +1,7 @@
 import { MIN_FAVOR, MAX_FAVOR, DEFAULT_FAVOR, FAVOR_THRESHOLDS, FAVOR_LEVEL_NAMES } from '../types/Common';
 import type { FavorLevel } from '../types/Common';
 import type { Role, FavorRelation } from '../types/Role';
+import type { ID } from '../types/Common';
 
 /**
  * 获取角色对另一个角色的好感度
@@ -8,7 +9,7 @@ import type { Role, FavorRelation } from '../types/Role';
  * @param targetId 目标角色ID
  * @returns 好感度值
  */
-export function getFavorValue(role: Role, targetId: number): number {
+export function getFavorValue(role: Role, targetId: ID): number {
   const relation = role.favorRelations.find(r => r.targetId === targetId);
   return relation?.value ?? DEFAULT_FAVOR;
 }
@@ -20,7 +21,7 @@ export function getFavorValue(role: Role, targetId: number): number {
  * @param value 好感度值
  * @returns 更新后的角色对象
  */
-export function setFavorValue(role: Role, targetId: number, value: number): Role {
+export function setFavorValue(role: Role, targetId: ID, value: number): Role {
   // 确保好感度在有效范围内
   const clampedValue = Math.max(MIN_FAVOR, Math.min(MAX_FAVOR, value));
   
@@ -58,7 +59,7 @@ export function setFavorValue(role: Role, targetId: number, value: number): Role
  * @param delta 好感度变化值
  * @returns 更新后的角色对象
  */
-export function changeFavorValue(role: Role, targetId: number, delta: number): Role {
+export function changeFavorValue(role: Role, targetId: ID, delta: number): Role {
   const currentValue = getFavorValue(role, targetId);
   return setFavorValue(role, targetId, currentValue + delta);
 }
@@ -107,7 +108,7 @@ export function getFavorLevelName(value: number): string {
  */
 export function initializeFavorRelations(
   role: Role, 
-  targetIds: number[], 
+  targetIds: ID[], 
   initialValue: number = DEFAULT_FAVOR
 ): Role {
   const favorRelations: FavorRelation[] = targetIds.map(targetId => ({

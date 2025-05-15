@@ -1,5 +1,4 @@
 import type { BaseEntity, ID } from './Common';
-import type { Item } from './Item';
 
 // 建筑类别常量
 export const BuildingType = {

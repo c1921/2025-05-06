@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import RoleView from './RoleView.vue';
 import BuildingView from './BuildingView.vue';
 import MapView from './MapView.vue';
@@ -9,7 +9,7 @@ import { gameEngine } from '../core/GameEngine';
 import { getItemQuantity } from '../utils/inventoryService';
 
 // 食物物品ID（根据items.json）
-const FOOD_ITEM_ID = 9;
+const FOOD_ITEM_ID = '9';
 
 // 当前选中的标签页
 const activeTab = ref('roles');

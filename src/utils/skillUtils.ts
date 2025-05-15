@@ -5,20 +5,31 @@ import type { TraitEffectsMap } from '../types/Trait';
 import { traitEffectsMap } from './traitEffects';
 import skillsData from '../data/skills.json';
 
-// 从JSON导入技能数据
+// 辅助函数：转换ID类型为字符串
+function convertSkillIdsToString(skills: any[]): Skill[] {
+  return skills.map(skill => ({
+    ...skill,
+    id: String(skill.id)
+  }));
+}
+
+// 从JSON导入技能数据并转换ID类型
+const skillDataWithStringIds = {
+  combatSkills: convertSkillIdsToString(skillsData.combatSkills),
+  magicSkills: convertSkillIdsToString(skillsData.magicSkills),
+  survivalSkills: convertSkillIdsToString(skillsData.survivalSkills),
+  socialSkills: convertSkillIdsToString(skillsData.socialSkills),
+  craftingSkills: convertSkillIdsToString(skillsData.craftingSkills)
+};
+
+// 解构技能数据
 const {
   combatSkills,
   magicSkills,
   survivalSkills,
   socialSkills,
   craftingSkills
-} = skillsData as {
-  combatSkills: Skill[];
-  magicSkills: Skill[];
-  survivalSkills: Skill[];
-  socialSkills: Skill[];
-  craftingSkills: Skill[];
-};
+} = skillDataWithStringIds;
 
 // 默认技能列表
 export const defaultSkills: Skill[] = [

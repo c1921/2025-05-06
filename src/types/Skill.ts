@@ -17,12 +17,12 @@ export interface Skill extends BaseEntity {
 
 // 技能效果接口
 export interface SkillEffect extends Effect {
-  readonly skillId: number;
+  readonly skillId: string;
 }
 
 // 技能效果映射
 export type SkillEffectsMap = {
-  readonly [key: number]: readonly SkillEffect[];
+  readonly [key: string]: readonly SkillEffect[];
 };
 
 // 获取技能等级描述

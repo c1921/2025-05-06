@@ -24,12 +24,12 @@ export interface TraitGroup extends Group<Trait> {}
 
 // 特质效果接口
 export interface TraitEffect {
-  readonly skillId: number;
+  readonly skillId: string;
   readonly value: number;
   readonly description: string;
 }
 
 // 特质效果映射
 export type TraitEffectsMap = {
-  readonly [key: number]: readonly TraitEffect[];
+  readonly [key: string]: readonly TraitEffect[];
 }; 

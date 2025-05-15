@@ -6,7 +6,7 @@ import itemsData from '../data/items.json';
 // 从JSON数据加载基础物品
 export function loadBaseItems(): BaseItem[] {
   return itemsData.items.map(item => createBaseItem(
-    item.id,
+    String(item.id),
     item.name,
     item.description,
     item.value,
@@ -42,6 +42,6 @@ export function getTotalQuantity(items: Item[]): number {
 }
 
 // 根据ID查找物品
-export function findItemById(items: Item[], id: number): Item | undefined {
+export function findItemById(items: Item[], id: string): Item | undefined {
   return items.find(item => item.id === id);
 } 

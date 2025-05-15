@@ -1,5 +1,3 @@
-import type { ID } from './Common';
-
 // 特质个性影响类型
 export interface TraitPersonalityEffect {
   // 影响的个性属性
@@ -11,4 +9,4 @@ export interface TraitPersonalityEffect {
 }
 
 // 特质个性影响映射表（特质ID -> 效果数组）
-export type TraitPersonalityEffectsMap = Record<number, TraitPersonalityEffect[]>; 
+export type TraitPersonalityEffectsMap = Record<string, TraitPersonalityEffect[]>; 

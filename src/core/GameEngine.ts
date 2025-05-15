@@ -8,8 +8,6 @@ import { processNoonFoodConsumption, isHungry } from './FoodConsumptionSystem';
  * 负责调度各个系统和管理游戏状态
  */
 export class GameEngine {
-  // 游戏运行状态
-  private running = ref(false);
   
   // 游戏角色
   private roles = ref<Role[]>([]);
@@ -52,7 +50,7 @@ export class GameEngine {
   private setupTimeWatchers(): void {
     // 监听小时变化，检查是否到中午12点
     watch([this.currentHour, this.currentDay], 
-      ([newHour, newDay], [oldHour, oldDay]) => {
+      ([newHour, newDay], [oldHour]) => {
         // 检查是否到了中午12点，且是新的一天
         if (newHour === 12 && oldHour !== 12 && newDay !== this.lastFoodConsumptionDay.value) {
           this.onNoonArrived();
@@ -209,7 +207,7 @@ export class GameEngine {
    * 检查角色是否饥饿
    * @param roleId 角色ID
    */
-  public isRoleHungry(roleId: number): boolean {
+  public isRoleHungry(roleId: string | number): boolean {
     return isHungry(roleId);
   }
   

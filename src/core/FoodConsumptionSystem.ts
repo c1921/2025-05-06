@@ -3,7 +3,7 @@ import type { Role } from '../types/Role';
 import { getItemQuantity, removeItemQuantity } from '../utils/inventoryService';
 
 // 食物物品ID（根据items.json）
-const FOOD_ITEM_ID = 9;
+const FOOD_ITEM_ID = '9';
 
 // 食物消耗配置
 interface FoodConsumptionConfig {
@@ -16,7 +16,7 @@ const config: FoodConsumptionConfig = {
 };
 
 // 饥饿状态追踪
-const hungryRoles = ref<Set<number>>(new Set()); // 饥饿的角色ID集合
+const hungryRoles = ref<Set<string>>(new Set()); // 饥饿的角色ID集合
 
 /**
  * 处理中午12点的食物消耗
@@ -71,15 +71,16 @@ export function processNoonFoodConsumption(roles: Role[]): { hungryCount: number
  * @param roleId 角色ID
  * @returns 是否饥饿
  */
-export function isHungry(roleId: number): boolean {
-  return hungryRoles.value.has(roleId);
+export function isHungry(roleId: string | number): boolean {
+  const id = typeof roleId === 'number' ? roleId.toString() : roleId;
+  return hungryRoles.value.has(id);
 }
 
 /**
  * 获取所有饥饿角色的ID
  * @returns 饥饿角色ID集合
  */
-export function getHungryRoleIds(): Set<number> {
+export function getHungryRoleIds(): Set<string> {
   return new Set(hungryRoles.value);
 }
 

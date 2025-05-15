@@ -9,12 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dicebear/collection": "^9.2.2",
+    "@dicebear/core": "^9.2.2",
     "@iconify-json/tabler": "^1.2.17",
     "@iconify/json": "^2.2.335",
     "@iconify/tailwind4": "^1.0.6",
     "@tailwindcss/vite": "^4.1.5",
+    "@types/uuid": "^10.0.0",
     "flyonui": "^2.1.0",
     "tailwindcss": "^4.1.5",
+    "uuid": "^11.1.0",
     "vue": "^3.5.13"
   },
   "devDependencies": {

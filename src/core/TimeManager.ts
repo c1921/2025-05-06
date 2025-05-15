@@ -117,7 +117,7 @@ function setupGameEventListeners(): void {
   });
   
   // 监听饥饿事件
-  gameEngine.addEventListener('hunger', (hungryCount: number, fedCount: number) => {
+  gameEngine.addEventListener('hunger', (hungryCount: number) => {
     showMessage(`警告: 食物不足！${hungryCount}人处于饥饿状态`);
   });
 }

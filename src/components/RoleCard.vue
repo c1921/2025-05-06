@@ -36,6 +36,59 @@ const hungerStatusText = computed(() => {
 const hungerStatusClass = computed(() => {
   return isHungry.value ? 'badge-error' : 'badge-success';
 });
+
+// 使用DiceBear API生成角色头像
+const avatarUrl = computed(() => {
+  // 使用DiceBear的HTTP API直接生成头像URL
+  // 选择avataaars风格，将角色ID用作种子，确保头像稳定性
+  const style = 'avataaars';
+  // 将ID直接作为种子参数，无需转换
+  const seed = encodeURIComponent(props.role.id);
+  
+  // 根据性别定义可用的发型选项
+  let topOptions = [];
+  
+  if (props.role.gender === 'Female') {
+    // 女性可用发型
+    topOptions = [
+      'bigHair', 'bob', 'bun','curly','curvy','dreads','frida','froBand','longButNotTooLong','miaWallace','shaggyMullet','shavedSides','straight01','straight02','straightAndStrand'
+    ];
+  } else {
+    // 男性可用发型
+    topOptions = [
+      'dreads', 'dreads01','dreads02','frizzle','fro','shaggy','shortCurly','shortFlat','shortRound','shortWaved','theCaesar','theCaesarAndSidePart'
+    ];
+  }
+  
+  // 将数组转换为逗号分隔的字符串
+  const tops = topOptions.join(',');
+  
+  // 指定允许的嘴部表情列表
+  const mouthOptions = [
+    'concerned', 'default', 'disbelief', 'eating', 
+    'sad', 'serious', 'smile', 'twinkle'
+  ];
+  const mouths = mouthOptions.join(',');
+  
+  // 设置参数
+  const options = {
+    seed: seed,
+    top: tops,
+    mouth: mouths,
+    facialHairProbability: props.role.gender === 'Female' ? 0 : 50,
+    size: 100
+  };
+  
+  // 构建URL查询参数 - 由于顶部参数格式特殊，单独处理
+  let queryParams = '';
+  for (const [key, value] of Object.entries(options)) {
+    if (queryParams) queryParams += '&';
+    queryParams += `${key}=${encodeURIComponent(value)}`;
+  }
+  
+  // 返回完整的DiceBear API URL
+  return `https://api.dicebear.com/9.x/${style}/svg?${queryParams}`;
+});
 </script>
 
 <template>
@@ -45,6 +98,11 @@ const hungerStatusClass = computed(() => {
       <div class="flex items-center justify-between">
         <div class="flex items-baseline gap-2">
           <h3 class="text-lg font-semibold">{{ role.name }}</h3>
+          <div class="avatar">
+            <div class="size-14 rounded-full">
+              <img :src="avatarUrl" :alt="`${role.name}的头像`" />
+            </div>
+          </div>
           
           <!-- 角色个性描述：悬停显示详细人格特质 -->
           <div class="tooltip">

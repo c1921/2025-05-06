@@ -1,7 +1,6 @@
 import type { ID } from '../types/Common';
 import type { 
   BuildingTemplate, 
-  Building, 
   BuildingType, 
   BuildingSize, 
   MaterialCalculation 
@@ -9,7 +8,6 @@ import type {
 import { 
   createBuildingTemplate, 
   calculateRequiredMaterials, 
-  isValidBuildingSize, 
   calculateBuildingArea 
 } from '../types/Building';
 import type { Item } from '../types/Item';
@@ -19,11 +17,14 @@ import buildingTemplatesData from '../data/buildingTemplates.json';
 // 从JSON数据加载建筑模板
 export function loadBuildingTemplates(): BuildingTemplate[] {
   return buildingTemplatesData.buildingTemplates.map(template => createBuildingTemplate(
-    template.id,
+    String(template.id),
     template.name,
     template.description,
     template.type as BuildingType,
-    template.materialRequirements,
+    template.materialRequirements.map(req => ({
+      ...req,
+      itemId: String(req.itemId)
+    })),
     template.minSize,
     template.maxSize
   ));

@@ -6,6 +6,7 @@ import { initializeFavorRelations } from './favorUtils';
 import { applyTraitFavorEffectsToRoles } from './traitFavorUtils';
 import { applyPoliticalFavorEffectsToRoles } from './politicalFavorUtils';
 import { applyTraitPersonalityEffects } from './traitPersonalityEffects';
+import { v4 as uuidv4 } from 'uuid';
 
 // 英文名字列表
 const maleNames = ['John', 'David', 'Michael', 'James', 'Robert', 'William', 'Thomas', 'Christopher'];
@@ -63,7 +64,6 @@ function createDefaultPersonalityTraits(): PersonalityTraits {
 
 /**
  * 生成一个角色
- * @param id 角色ID
  * @param name 角色名称
  * @param gender 角色性别
  * @param age 角色年龄
@@ -73,7 +73,6 @@ function createDefaultPersonalityTraits(): PersonalityTraits {
  * @returns 生成的角色
  */
 export function generateCharacter(
-  id: number,
   name: string,
   gender: string,
   age: number,
@@ -87,7 +86,7 @@ export function generateCharacter(
   
   // 创建角色
   const role: Role = {
-    id,
+    id: uuidv4(),
     name,
     gender,
     age,
@@ -152,10 +151,9 @@ export function getTopSkills(role: Role, count: number = 3): Skill[] {
 
 /**
  * 生成随机角色
- * @param id 角色ID
  * @returns 生成的角色
  */
-export function generateRandomRole(id: number): Role {
+export function generateRandomRole(): Role {
   const gender: 'Male' | 'Female' = Math.random() > 0.5 ? 'Male' : 'Female';
   const nameList = gender === 'Male' ? maleNames : femaleNames;
   const randomIndex = Math.floor(Math.random() * nameList.length);
@@ -171,7 +169,7 @@ export function generateRandomRole(id: number): Role {
   
   // 创建角色
   const role: Role = {
-    id,
+    id: uuidv4(),
     name,
     gender,
     age,
@@ -202,7 +200,7 @@ export function generateRandomRoles(count: number): Role[] {
   // 先生成所有角色
   const roles: Role[] = [];
   for (let i = 0; i < count; i++) {
-    roles.push(generateRandomRole(i + 1));
+    roles.push(generateRandomRole());
   }
 
   // 为每个角色初始化与其他角色的好感度关系（初始值为0）

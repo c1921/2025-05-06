@@ -3,8 +3,14 @@ import type { Trait } from '../types/Trait';
 import type { TraitPersonalityEffect, TraitPersonalityEffectsMap } from '../types/TraitPersonalityEffect';
 import traitPersonalityEffectsData from '../data/traitPersonalityEffects.json';
 
-// 从JSON文件导入特质个性影响配置表
-export const traitPersonalityEffectsMap: TraitPersonalityEffectsMap = traitPersonalityEffectsData as TraitPersonalityEffectsMap;
+// 从JSON文件导入特质个性影响配置表并转换ID为字符串
+const rawData = traitPersonalityEffectsData as any;
+const traitPersonalityEffectsMap: TraitPersonalityEffectsMap = {};
+
+// 将数字ID转换为字符串ID
+Object.keys(rawData).forEach(key => {
+  traitPersonalityEffectsMap[String(key)] = rawData[key];
+});
 
 /**
  * 应用特质个性影响到角色
@@ -24,11 +30,13 @@ export function applyTraitPersonalityEffects(role: Role): Role {
     
     // 应用每个效果到相应的个性属性
     for (const effect of effects) {
+      const personalityType = effect.personalityType as keyof typeof updatedPersonality;
+      
       // 获取当前属性值
-      const currentValue = updatedPersonality[effect.personalityType];
+      const currentValue = updatedPersonality[personalityType];
       
       // 计算新值并限制在-100~100范围内
-      updatedPersonality[effect.personalityType] = Math.max(-100, Math.min(100, currentValue + effect.value));
+      updatedPersonality[personalityType] = Math.max(-100, Math.min(100, currentValue + effect.value));
     }
   }
   

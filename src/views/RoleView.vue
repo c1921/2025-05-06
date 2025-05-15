@@ -9,7 +9,7 @@ import { gameEngine } from '../core/GameEngine';
 
 const roles = computed(() => gameEngine.getRoles());
 const filteredRoles = ref<Role[]>([]);
-const selectedRoleId = ref<number | null>(null);
+const selectedRoleId = ref<string | null>(null);
 const selectedRole = ref<Role | null>(null);
 
 const filterOptions = ref<{
@@ -87,7 +87,7 @@ const onFilterChange = (newFilter: { category: TraitCategory | null, subType: Tr
   }
 };
 
-const selectRole = (roleId: number) => {
+const selectRole = (roleId: string) => {
   selectedRoleId.value = roleId;
   selectedRole.value = roles.value.find(role => role.id === roleId) || null;
 };

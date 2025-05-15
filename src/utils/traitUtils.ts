@@ -3,22 +3,32 @@ import traitsData from '../data/traits.json';
 
 // 定义特质组类型
 interface TraitGroup {
-  id: number;
+  id: string;
   traits: Trait[];
 }
 
-// 从JSON导入特质数据
-const {
-  physicalTraits,
-  personalityTraitGroups,
-  skillTraits,
-  backgroundTraits
-} = traitsData as {
-  physicalTraits: Trait[];
-  personalityTraitGroups: TraitGroup[];
-  skillTraits: Trait[];
-  backgroundTraits: Trait[];
-};
+// 辅助函数：将特质数据的ID转换为字符串
+function convertTraits(traits: any[]): Trait[] {
+  return traits.map(trait => ({
+    ...trait,
+    id: String(trait.id)
+  }));
+}
+
+// 辅助函数：转换特质组数据
+function convertTraitGroups(groups: any[]): TraitGroup[] {
+  return groups.map(group => ({
+    id: String(group.id),
+    traits: convertTraits(group.traits)
+  }));
+}
+
+// 从JSON导入特质数据并转换ID
+const rawData = traitsData as any;
+const physicalTraits = convertTraits(rawData.physicalTraits);
+const personalityTraitGroups = convertTraitGroups(rawData.personalityTraitGroups);
+const skillTraits = convertTraits(rawData.skillTraits);
+const backgroundTraits = convertTraits(rawData.backgroundTraits);
 
 // 从特质组中提取所有性格特质
 const personalityTraits: Trait[] = personalityTraitGroups.flatMap(group => group.traits);
@@ -55,7 +65,7 @@ export function getTraitsByCategoryAndSubType(category: TraitCategory, subType: 
 /**
  * 获取特质所属的特质组
  */
-function getTraitGroup(traitId: number): TraitGroup | undefined {
+function getTraitGroup(traitId: string): TraitGroup | undefined {
   return personalityTraitGroups.find(group => 
     group.traits.some(trait => trait.id === traitId)
   );
@@ -64,7 +74,7 @@ function getTraitGroup(traitId: number): TraitGroup | undefined {
 /**
  * 检查特质是否与已选特质存在冲突
  */
-function hasConflict(traitId: number, selectedTraitIds: number[]): boolean {
+function hasConflict(traitId: string, selectedTraitIds: string[]): boolean {
   const traitGroup = getTraitGroup(traitId);
   if (!traitGroup) return false;
   
@@ -81,7 +91,7 @@ function hasConflict(traitId: number, selectedTraitIds: number[]): boolean {
 function getRandomTraitFromCategoryAndType(
   category: TraitCategory, 
   subType?: TraitSubType,
-  selectedTraitIds: number[] = []
+  selectedTraitIds: string[] = []
 ): Trait | null {
   // 获取指定类别和子类型的特质
   let availableTraits: Trait[];
@@ -110,7 +120,7 @@ function getRandomTraitFromCategoryAndType(
  */
 export function generateCharacterTraits(totalTraits: number = 5): Trait[] {
   const result: Trait[] = [];
-  const selectedTraitIds: number[] = [];
+  const selectedTraitIds: string[] = [];
   
   // 确保至少有三个不同子类型的性格特质
   const personalitySubTypes: PersonalityTraitType[] = ['Character', 'Temperament', 'Social'];

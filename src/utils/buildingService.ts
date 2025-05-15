@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import type { ID } from '../types/Common';
-import type { Building, BuildingTemplate, BuildingSize, MaterialCalculation } from '../types/Building';
+import type { Building, BuildingSize, MaterialCalculation } from '../types/Building';
 import { createBuilding, calculateRequiredMaterials } from '../types/Building';
 import { findTemplateById, loadBuildingTemplates } from './buildingUtils';
 import { removeItemQuantity } from './inventoryService';
@@ -38,7 +38,7 @@ export function createNewBuilding(
   
   // 创建建筑实例
   const building = createBuilding(
-    nextBuildingId++,
+    String(nextBuildingId++),
     name || template.name,
     template.description,
     templateId,

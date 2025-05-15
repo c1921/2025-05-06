@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import BuildingTemplateCard from '../components/BuildingTemplateCard.vue';
 import BuildingCreator from '../components/BuildingCreator.vue';
-import { loadBuildingTemplates } from '../utils/buildingUtils';
 import { useBuildingService } from '../utils/buildingService';
-import type { Building } from '../types/Building';
 
 const isCreatingBuilding = ref(false);
-const { buildings, getAllBuildings, removeBuilding } = useBuildingService();
+const { buildings, removeBuilding } = useBuildingService();
 
 // 切换建筑创建模式
 const toggleBuildingCreation = () => {
@@ -15,7 +12,7 @@ const toggleBuildingCreation = () => {
 };
 
 // 处理建筑创建完成
-const handleBuildingCreated = (building: Building) => {
+const handleBuildingCreated = () => {
   isCreatingBuilding.value = false;
 };
 
@@ -25,7 +22,7 @@ const handleBuildingCreationCancel = () => {
 };
 
 // 删除建筑
-const handleRemoveBuilding = (id: number) => {
+const handleRemoveBuilding = (id: string) => {
   removeBuilding(id);
 };
 </script>

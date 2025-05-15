@@ -1,8 +1,19 @@
-import type { TraitEffectsMap } from '../types/Trait';
+import type { TraitEffectsMap, TraitEffect } from '../types/Trait';
 import traitEffectsData from '../data/traitEffects.json';
 
-// 从JSON文件导入特质效果配置表
-export const traitEffectsMap: TraitEffectsMap = traitEffectsData as TraitEffectsMap;
+// 从JSON文件导入特质效果配置表，并转换ID为字符串
+const rawEffectsMap = traitEffectsData as any;
+const convertedMap: { [key: string]: TraitEffect[] } = {};
+
+Object.keys(rawEffectsMap).forEach(key => {
+  const stringKey = String(key);
+  convertedMap[stringKey] = rawEffectsMap[key].map((effect: any) => ({
+    ...effect,
+    skillId: String(effect.skillId)
+  }));
+});
+
+export const traitEffectsMap = convertedMap as TraitEffectsMap;
 
 /**
  * 获取特质对指定技能的效果描述
@@ -10,16 +21,12 @@ export const traitEffectsMap: TraitEffectsMap = traitEffectsData as TraitEffects
  * @param skillId 技能ID
  * @throws {Error} 当特质ID或技能ID无效时抛出错误
  */
-export function getTraitEffectDescription(traitId: number, skillId: number): string | null {
-  if (!Number.isInteger(traitId) || traitId <= 0) {
-    throw new Error(`无效的特质ID: ${traitId}`);
-  }
-  if (!Number.isInteger(skillId) || skillId <= 0) {
-    throw new Error(`无效的技能ID: ${skillId}`);
-  }
+export function getTraitEffectDescription(traitId: string | number, skillId: string | number): string | null {
+  const traitIdStr = String(traitId);
+  const skillIdStr = String(skillId);
 
-  const effects = traitEffectsMap[traitId] || [];
-  const effect = effects.find(e => e.skillId === skillId);
+  const effects = traitEffectsMap[traitIdStr] || [];
+  const effect = effects.find(e => e.skillId === skillIdStr);
   
   if (!effect) return null;
   
@@ -32,12 +39,10 @@ export function getTraitEffectDescription(traitId: number, skillId: number): str
  * @param traitId 特质ID
  * @throws {Error} 当特质ID无效时抛出错误
  */
-export function getAllTraitEffectsDescription(traitId: number): string[] {
-  if (!Number.isInteger(traitId) || traitId <= 0) {
-    throw new Error(`无效的特质ID: ${traitId}`);
-  }
-
-  const effects = traitEffectsMap[traitId] || [];
+export function getAllTraitEffectsDescription(traitId: string | number): string[] {
+  const traitIdStr = String(traitId);
+  const effects = traitEffectsMap[traitIdStr] || [];
+  
   return effects.map(effect => {
     const sign = effect.value > 0 ? '+' : '';
     return `${effect.description} (${sign}${effect.value})`;
@@ -49,18 +54,13 @@ export function getAllTraitEffectsDescription(traitId: number): string[] {
  * @param traitId 特质ID
  * @param skillId 技能ID
  * @returns 效果值，如果没有效果则返回0
- * @throws {Error} 当特质ID或技能ID无效时抛出错误
  */
-export function getTraitEffectValue(traitId: number, skillId: number): number {
-  if (!Number.isInteger(traitId) || traitId <= 0) {
-    throw new Error(`无效的特质ID: ${traitId}`);
-  }
-  if (!Number.isInteger(skillId) || skillId <= 0) {
-    throw new Error(`无效的技能ID: ${skillId}`);
-  }
-
-  const effects = traitEffectsMap[traitId] || [];
-  const effect = effects.find(e => e.skillId === skillId);
+export function getTraitEffectValue(traitId: string | number, skillId: string | number): number {
+  const traitIdStr = String(traitId);
+  const skillIdStr = String(skillId);
+  
+  const effects = traitEffectsMap[traitIdStr] || [];
+  const effect = effects.find(e => e.skillId === skillIdStr);
   return effect?.value ?? 0;
 }
 
@@ -69,16 +69,11 @@ export function getTraitEffectValue(traitId: number, skillId: number): number {
  * @param traitId 特质ID
  * @param skillId 技能ID
  * @returns 是否有效果
- * @throws {Error} 当特质ID或技能ID无效时抛出错误
  */
-export function hasTraitEffect(traitId: number, skillId: number): boolean {
-  if (!Number.isInteger(traitId) || traitId <= 0) {
-    throw new Error(`无效的特质ID: ${traitId}`);
-  }
-  if (!Number.isInteger(skillId) || skillId <= 0) {
-    throw new Error(`无效的技能ID: ${skillId}`);
-  }
-
-  const effects = traitEffectsMap[traitId] || [];
-  return effects.some(e => e.skillId === skillId);
+export function hasTraitEffect(traitId: string | number, skillId: string | number): boolean {
+  const traitIdStr = String(traitId);
+  const skillIdStr = String(skillId);
+  
+  const effects = traitEffectsMap[traitIdStr] || [];
+  return effects.some(e => e.skillId === skillIdStr);
 } 

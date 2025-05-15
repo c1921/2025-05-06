@@ -1,7 +1,7 @@
 // 特质效果类型
 export interface TraitEffect {
   // 影响的技能ID
-  skillId: number;
+  skillId: string;
   // 效果值（正为增益，负为减益）
   value: number;
   // 效果描述
@@ -9,13 +9,13 @@ export interface TraitEffect {
 }
 
 // 特质效果映射表（特质ID -> 效果数组）
-export type TraitEffectsMap = Record<number, TraitEffect[]>;
+export type TraitEffectsMap = Record<string, TraitEffect[]>;
 
 // 计算特质效果
 export function calculateTraitEffectForSkill(
   traitEffectsMap: TraitEffectsMap,
-  traitIds: number[],
-  skillId: number
+  traitIds: string[],
+  skillId: string
 ): number {
   let totalEffect = 0;
   

@@ -5,12 +5,12 @@ import type { Role } from '../types/Role';
 // 属性定义
 const props = defineProps<{
   roles: Role[]; // 要显示的角色列表
-  selectedRoleId: number | null; // 当前选中的角色ID
+  selectedRoleId: string | null; // 当前选中的角色ID
 }>();
 
 // 事件定义
 const emit = defineEmits<{
-  'select-role': [roleId: number]; // 选择角色事件
+  'select-role': [roleId: string]; // 选择角色事件
 }>();
 
 // 搜索功能
@@ -57,7 +57,7 @@ const handleSearchInput = () => {
 };
 
 // 选择角色
-const handleSelectRole = (roleId: number) => {
+const handleSelectRole = (roleId: string) => {
   emit('select-role', roleId);
 };
 </script>

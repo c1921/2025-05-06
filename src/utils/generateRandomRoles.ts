@@ -13,7 +13,7 @@ export function generateRandomRoles(count: number): Role[] {
   // 先生成所有角色
   const roles: Role[] = [];
   for (let i = 0; i < count; i++) {
-    roles.push(generateRandomRole(i + 1));
+    roles.push(generateRandomRole());
   }
 
   // 为每个角色初始化与其他角色的好感度关系（初始值为0）
