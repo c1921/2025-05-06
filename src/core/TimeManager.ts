@@ -6,10 +6,6 @@ const isPaused = ref(true);
 const speedIndex = ref(1); // 默认速度 1x
 const speedOptions = [0.5, 1, 2, 5, 10]; // 速度选项倍数
 
-// 消息通知状态
-const latestMessage = ref('');
-const hasMessage = ref(false);
-
 // 基础时间流逝速度（毫秒）
 const baseTickMs = 1000; // 1000ms = 1小时游戏时间
 
@@ -20,17 +16,6 @@ const currentTickMs = computed(() => {
 
 // 时间计时器引用
 let timeInterval: number | null = null;
-
-// 显示消息通知
-function showMessage(message: string): void {
-  latestMessage.value = message;
-  hasMessage.value = true;
-  
-  // 5秒后自动清除消息
-  setTimeout(() => {
-    hasMessage.value = false;
-  }, 5000);
-}
 
 // 启动时间流逝
 function startTime(): void {
@@ -108,27 +93,10 @@ function cleanup(): void {
   window.removeEventListener('keydown', handleKeyPress);
 }
 
-// 设置游戏事件监听
-function setupGameEventListeners(): void {
-  // 监听食物消耗事件
-  gameEngine.addEventListener('foodConsumed', (result: { hungryCount: number, fedCount: number }) => {
-    const message = `食物已消耗，${result.fedCount}人获得食物${result.hungryCount > 0 ? '，' + result.hungryCount + '人饥饿' : ''}`;
-    showMessage(message);
-  });
-  
-  // 监听饥饿事件
-  gameEngine.addEventListener('hunger', (hungryCount: number) => {
-    showMessage(`警告: 食物不足！${hungryCount}人处于饥饿状态`);
-  });
-}
-
 // 初始化时间管理器
 function initTimeManager(): void {
   // 添加键盘事件监听
   window.addEventListener('keydown', handleKeyPress);
-  
-  // 设置游戏事件监听器
-  setupGameEventListeners();
   
   // 监听速度变化
   watch(() => speedIndex.value, () => {
@@ -142,8 +110,6 @@ export const timeManager = {
   isPaused,
   speedIndex,
   speedOptions,
-  latestMessage,
-  hasMessage,
   currentTickMs,
   
   // 游戏时间计算函数（从GameEngine获取）
@@ -158,7 +124,6 @@ export const timeManager = {
   togglePause,
   increaseSpeed,
   decreaseSpeed,
-  showMessage,
   cleanup,
   
   // 初始化

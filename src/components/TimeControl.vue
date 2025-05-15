@@ -39,14 +39,6 @@ defineExpose({
 
 <template>
   <div class="relative">
-    <!-- 消息通知 -->
-    <div 
-      v-if="timeManager.hasMessage.value" 
-      class="message-notification absolute top-full left-1/2 transform -translate-x-1/2 mt-2 p-2 bg-base-300 shadow-md rounded-md text-sm z-10 w-72 max-w-full"
-    >
-      {{ timeManager.latestMessage.value }}
-    </div>
-    
     <div class="time-control flex flex-wrap items-center justify-center sm:justify-end gap-2">
       <!-- 时间显示 -->
       <div class="time-display font-mono text-base sm:text-lg bg-base-100 rounded-md px-2 py-1 shadow-sm">
