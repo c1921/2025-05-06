@@ -40,8 +40,8 @@ export class GameEngine {
     // 生成初始角色
     this.roles.value = generateRandomRoles(roleCount);
     
-    // 设置起始日期
-    this.lastFoodConsumptionDay.value = this.currentDay.value;
+    // 设置起始日期 - 初始化为0，确保第一天也会触发食物消耗
+    this.lastFoodConsumptionDay.value = 0;
   }
   
   /**
