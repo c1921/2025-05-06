@@ -5,6 +5,7 @@ import BuildingView from './BuildingView.vue';
 import MapView from './MapView.vue';
 import ItemView from './ItemView.vue';
 import TimeControl from '../components/TimeControl.vue';
+import SettingsModal from '../components/SettingsModal.vue';
 import { gameEngine } from '../core/GameEngine';
 import { getItemQuantity } from '../utils/inventoryService';
 
@@ -61,6 +62,18 @@ isMapVisible.value = activeTab.value === 'map';
       
       <!-- 时间控制器 -->
       <TimeControl ref="timeControlRef" class="order-1 sm:order-2 w-full sm:w-auto mb-1 sm:mb-0" />
+      
+      <!-- 设置按钮 -->
+      <button 
+        type="button" 
+        class="btn btn-ghost btn-sm btn-circle order-3" 
+        aria-haspopup="dialog" 
+        aria-expanded="false" 
+        aria-controls="settings-modal" 
+        data-overlay="#settings-modal"
+      >
+        <span class="icon-[tabler--settings] size-5"></span>
+      </button>
     </header>
     
     <!-- 标签导航 -->
@@ -165,5 +178,8 @@ isMapVisible.value = activeTab.value === 'map';
         <MapView />
       </div>
     </div>
+    
+    <!-- 设置模态框组件 -->
+    <SettingsModal />
   </div>
 </template> 

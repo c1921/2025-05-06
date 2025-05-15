@@ -6,7 +6,7 @@
  * 设计为在角色详情页面使用，提供完整的角色数据展示。
  */
 
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import type { Role } from '../types/Role';
 import TraitBadge from './TraitBadge.vue';
 import SkillSection from './SkillSection.vue';
@@ -15,6 +15,7 @@ import PoliticalStanceSection from './PoliticalStanceSection.vue';
 import { getOverallPersonalityDescription, getPersonalityTooltip } from '../utils/personalityDescriptionUtils';
 import { gameEngine } from '../core/GameEngine';
 import { generateAvatarUrl } from '../utils/avatarGenerator';
+import { getSettings, addSettingsListener, removeSettingsListener } from '../utils/settingsService';
 
 // 组件属性定义
 const props = defineProps<{
@@ -40,6 +41,31 @@ const hungerStatusClass = computed(() => {
 
 // 生成角色头像URL
 const avatarUrl = computed(() => generateAvatarUrl(props.role));
+
+// 是否显示头像
+const showAvatar = ref(true);
+
+// 监听设置变化的事件处理函数
+const handleSettingsChanged = (event: CustomEvent) => {
+  if (event.detail && 'showAvatars' in event.detail) {
+    showAvatar.value = event.detail.showAvatars;
+  }
+};
+
+// 组件挂载时添加事件监听并初始化设置
+onMounted(() => {
+  // 从设置服务获取设置
+  const settings = getSettings();
+  showAvatar.value = settings.showAvatars;
+  
+  // 添加设置变化事件监听
+  addSettingsListener(handleSettingsChanged);
+});
+
+// 组件卸载时移除事件监听
+onUnmounted(() => {
+  removeSettingsListener(handleSettingsChanged);
+});
 </script>
 
 <template>
@@ -49,7 +75,8 @@ const avatarUrl = computed(() => generateAvatarUrl(props.role));
       <div class="flex items-center justify-between">
         <div class="flex items-baseline gap-2">
           <h3 class="text-lg font-semibold">{{ role.name }}</h3>
-          <div class="avatar">
+          <!-- 角色头像：根据设置显示或隐藏 -->
+          <div v-if="showAvatar" class="avatar">
             <div class="size-14 rounded-full">
               <img :src="avatarUrl" :alt="`${role.name}的头像`" />
             </div>
