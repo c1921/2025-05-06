@@ -1,49 +1,49 @@
 {
   "physicalTraits": [
     {
-      "id": 1,
+      "id": "tall",
       "name": "Tall",
       "description": "Above average height",
       "category": "Physical",
       "subType": "Appearance"
     },
     {
-      "id": 2,
+      "id": "beautiful",
       "name": "Beautiful",
       "description": "Exceptionally attractive appearance",
       "category": "Physical",
       "subType": "Appearance"
     },
     {
-      "id": 3,
+      "id": "athletic",
       "name": "Athletic",
       "description": "Well-built physique",
       "category": "Physical",
       "subType": "Build"
     },
     {
-      "id": 4,
+      "id": "slender",
       "name": "Slender",
       "description": "Thin and graceful",
       "category": "Physical",
       "subType": "Build"
     },
     {
-      "id": 5,
+      "id": "strong",
       "name": "Strong",
       "description": "Physically powerful",
       "category": "Physical",
       "subType": "Build"
     },
     {
-      "id": 6,
+      "id": "sharp_eyes",
       "name": "Sharp Eyes",
       "description": "Piercing, attentive gaze",
       "category": "Physical",
       "subType": "Feature"
     },
     {
-      "id": 7,
+      "id": "distinctive_voice",
       "name": "Distinctive Voice",
       "description": "Memorable and unique voice",
       "category": "Physical",
@@ -52,17 +52,17 @@
   ],
   "personalityTraitGroups": [
     {
-      "id": 1,
+      "id": "diligent_lazy_group",
       "traits": [
         {
-          "id": 29,
+          "id": "diligent",
           "name": "Diligent",
           "description": "Hardworking and persistent",
           "category": "Personality",
           "subType": "Character"
         },
         {
-          "id": 30,
+          "id": "lazy",
           "name": "Lazy",
           "description": "Avoids effort when possible",
           "category": "Personality",
@@ -71,17 +71,17 @@
       ]
     },
     {
-      "id": 2,
+      "id": "generous_greedy_group",
       "traits": [
         {
-          "id": 31,
+          "id": "generous",
           "name": "Generous",
           "description": "Willing to give and share freely",
           "category": "Personality",
           "subType": "Character"
         },
         {
-          "id": 32,
+          "id": "greedy",
           "name": "Greedy",
           "description": "Desires more than needed",
           "category": "Personality",
@@ -90,17 +90,17 @@
       ]
     },
     {
-      "id": 3,
+      "id": "honest_cunning_group",
       "traits": [
         {
-          "id": 33,
+          "id": "honest",
           "name": "Honest",
           "description": "Truthful and sincere",
           "category": "Personality",
           "subType": "Character"
         },
         {
-          "id": 34,
+          "id": "cunning",
           "name": "Cunning",
           "description": "Clever and deceptive",
           "category": "Personality",
@@ -109,17 +109,17 @@
       ]
     },
     {
-      "id": 4,
+      "id": "loyal_promiscuous_group",
       "traits": [
         {
-          "id": 35,
+          "id": "loyal",
           "name": "Loyal",
           "description": "Faithful and devoted",
           "category": "Personality",
           "subType": "Character"
         },
         {
-          "id": 36,
+          "id": "promiscuous",
           "name": "Promiscuous",
           "description": "Casual in relationships",
           "category": "Personality",
@@ -128,17 +128,17 @@
       ]
     },
     {
-      "id": 5,
+      "id": "ambitious_content_group",
       "traits": [
         {
-          "id": 37,
+          "id": "ambitious",
           "name": "Ambitious",
           "description": "Strong desire for achievement",
           "category": "Personality",
           "subType": "Character"
         },
         {
-          "id": 38,
+          "id": "content",
           "name": "Content",
           "description": "Satisfied with the present state",
           "category": "Personality",
@@ -147,17 +147,17 @@
       ]
     },
     {
-      "id": 6,
+      "id": "righteous_wicked_group",
       "traits": [
         {
-          "id": 39,
+          "id": "righteous",
           "name": "Righteous",
           "description": "Morally upright and virtuous",
           "category": "Personality",
           "subType": "Character"
         },
         {
-          "id": 40,
+          "id": "wicked",
           "name": "Wicked",
           "description": "Morally bad or wrong",
           "category": "Personality",
@@ -166,17 +166,17 @@
       ]
     },
     {
-      "id": 7,
+      "id": "frugal_extravagant_group",
       "traits": [
         {
-          "id": 41,
+          "id": "frugal",
           "name": "Frugal",
           "description": "Careful with resources",
           "category": "Personality",
           "subType": "Character"
         },
         {
-          "id": 42,
+          "id": "extravagant",
           "name": "Extravagant",
           "description": "Spends freely and lavishly",
           "category": "Personality",
@@ -185,17 +185,17 @@
       ]
     },
     {
-      "id": 8,
+      "id": "compassionate_cruel_group",
       "traits": [
         {
-          "id": 43,
+          "id": "compassionate",
           "name": "Compassionate",
           "description": "Feels sympathy for others",
           "category": "Personality",
           "subType": "Character"
         },
         {
-          "id": 44,
+          "id": "cruel",
           "name": "Cruel",
           "description": "Causes pain without compassion",
           "category": "Personality",
@@ -204,17 +204,17 @@
       ]
     },
     {
-      "id": 9,
+      "id": "neat_sloppy_group",
       "traits": [
         {
-          "id": 45,
+          "id": "neat",
           "name": "Neat",
           "description": "Organized and tidy",
           "category": "Personality",
           "subType": "Character"
         },
         {
-          "id": 46,
+          "id": "sloppy",
           "name": "Sloppy",
           "description": "Careless and untidy",
           "category": "Personality",
@@ -223,17 +223,17 @@
       ]
     },
     {
-      "id": 10,
+      "id": "enthusiastic_gloomy_group",
       "traits": [
         {
-          "id": 47,
+          "id": "enthusiastic",
           "name": "Enthusiastic",
           "description": "Shows intense interest",
           "category": "Personality",
           "subType": "Temperament"
         },
         {
-          "id": 48,
+          "id": "gloomy",
           "name": "Gloomy",
           "description": "Tends toward sadness",
           "category": "Personality",
@@ -242,17 +242,17 @@
       ]
     },
     {
-      "id": 11,
+      "id": "courageous_timid_group",
       "traits": [
         {
-          "id": 49,
+          "id": "courageous",
           "name": "Courageous",
           "description": "Face challenges without fear",
           "category": "Personality",
           "subType": "Temperament"
         },
         {
-          "id": 50,
+          "id": "timid",
           "name": "Timid",
           "description": "Lacks courage or confidence",
           "category": "Personality",
@@ -261,17 +261,17 @@
       ]
     },
     {
-      "id": 12,
+      "id": "stubborn_fickle_group",
       "traits": [
         {
-          "id": 51,
+          "id": "stubborn",
           "name": "Stubborn",
           "description": "Unwilling to change opinions",
           "category": "Personality",
           "subType": "Temperament"
         },
         {
-          "id": 52,
+          "id": "fickle",
           "name": "Fickle",
           "description": "Changes quickly and unexpectedly",
           "category": "Personality",
@@ -280,17 +280,17 @@
       ]
     },
     {
-      "id": 13,
+      "id": "optimistic_pessimistic_group",
       "traits": [
         {
-          "id": 53,
+          "id": "optimistic",
           "name": "Optimistic",
           "description": "Hopeful about the future",
           "category": "Personality",
           "subType": "Temperament"
         },
         {
-          "id": 54,
+          "id": "pessimistic",
           "name": "Pessimistic",
           "description": "Expects negative outcomes",
           "category": "Personality",
@@ -299,17 +299,17 @@
       ]
     },
     {
-      "id": 14,
+      "id": "gentle_irritable_group",
       "traits": [
         {
-          "id": 55,
+          "id": "gentle",
           "name": "Gentle",
           "description": "Kind and mild in temperament",
           "category": "Personality",
           "subType": "Temperament"
         },
         {
-          "id": 56,
+          "id": "irritable",
           "name": "Irritable",
           "description": "Easily annoyed or angered",
           "category": "Personality",
@@ -318,17 +318,17 @@
       ]
     },
     {
-      "id": 15,
+      "id": "calculated_reckless_group",
       "traits": [
         {
-          "id": 57,
+          "id": "calculated",
           "name": "Calculated",
           "description": "Carefully plans actions",
           "category": "Personality",
           "subType": "Temperament"
         },
         {
-          "id": 58,
+          "id": "reckless",
           "name": "Reckless",
           "description": "Acts without caution",
           "category": "Personality",
@@ -337,17 +337,17 @@
       ]
     },
     {
-      "id": 16,
+      "id": "sensitive_callous_group",
       "traits": [
         {
-          "id": 59,
+          "id": "sensitive",
           "name": "Sensitive",
           "description": "Responsive to emotions",
           "category": "Personality",
           "subType": "Temperament"
         },
         {
-          "id": 60,
+          "id": "callous",
           "name": "Callous",
           "description": "Insensitive to emotions",
           "category": "Personality",
@@ -356,17 +356,17 @@
       ]
     },
     {
-      "id": 17,
+      "id": "decisive_hesitant_group",
       "traits": [
         {
-          "id": 61,
+          "id": "decisive",
           "name": "Decisive",
           "description": "Makes decisions quickly",
           "category": "Personality",
           "subType": "Temperament"
         },
         {
-          "id": 62,
+          "id": "hesitant",
           "name": "Hesitant",
           "description": "Uncertain in making decisions",
           "category": "Personality",
@@ -375,17 +375,17 @@
       ]
     },
     {
-      "id": 18,
+      "id": "extroverted_introverted_group",
       "traits": [
         {
-          "id": 63,
+          "id": "extroverted",
           "name": "Extroverted",
           "description": "Energized by social interaction",
           "category": "Personality",
           "subType": "Social"
         },
         {
-          "id": 64,
+          "id": "introverted",
           "name": "Introverted",
           "description": "Energized by solitude",
           "category": "Personality",
@@ -394,17 +394,17 @@
       ]
     },
     {
-      "id": 19,
+      "id": "courteous_domineering_group",
       "traits": [
         {
-          "id": 65,
+          "id": "courteous",
           "name": "Courteous",
           "description": "Respectful and polite",
           "category": "Personality",
           "subType": "Social"
         },
         {
-          "id": 66,
+          "id": "domineering",
           "name": "Domineering",
           "description": "Tries to control others",
           "category": "Personality",
@@ -415,49 +415,49 @@
   ],
   "skillTraits": [
     {
-      "id": 15,
+      "id": "computer_expert",
       "name": "Computer Expert",
       "description": "Proficient with technology",
       "category": "Skill",
       "subType": "Technical"
     },
     {
-      "id": 16,
+      "id": "scientific",
       "name": "Scientific",
       "description": "Analytical and methodical",
       "category": "Skill",
       "subType": "Technical"
     },
     {
-      "id": 17,
+      "id": "artistic",
       "name": "Artistic",
       "description": "Talent for creative expression",
       "category": "Skill",
       "subType": "Creative"
     },
     {
-      "id": 18,
+      "id": "musical",
       "name": "Musical",
       "description": "Gifted with musical abilities",
       "category": "Skill",
       "subType": "Creative"
     },
     {
-      "id": 19,
+      "id": "leadership",
       "name": "Leadership",
       "description": "Ability to guide others",
       "category": "Skill",
       "subType": "People"
     },
     {
-      "id": 20,
+      "id": "persuasive",
       "name": "Persuasive",
       "description": "Skilled at convincing others",
       "category": "Skill",
       "subType": "People"
     },
     {
-      "id": 21,
+      "id": "empathetic",
       "name": "Empathetic",
       "description": "Understanding of others' feelings",
       "category": "Skill",
@@ -466,49 +466,49 @@
   ],
   "backgroundTraits": [
     {
-      "id": 22,
+      "id": "academic",
       "name": "Academic",
       "description": "Scholarly background",
       "category": "Background",
       "subType": "Education"
     },
     {
-      "id": 23,
+      "id": "self_taught",
       "name": "Self-Taught",
       "description": "Learned through personal study",
       "category": "Background",
       "subType": "Education"
     },
     {
-      "id": 24,
+      "id": "military",
       "name": "Military",
       "description": "Military training or service",
       "category": "Background",
       "subType": "Experience"
     },
     {
-      "id": 25,
+      "id": "business",
       "name": "Business",
       "description": "Experience in business world",
       "category": "Background",
       "subType": "Experience"
     },
     {
-      "id": 26,
+      "id": "cosmopolitan",
       "name": "Cosmopolitan",
       "description": "Well-traveled and worldly",
       "category": "Background",
       "subType": "Cultural"
     },
     {
-      "id": 27,
+      "id": "traditional",
       "name": "Traditional",
       "description": "Rooted in cultural traditions",
       "category": "Background",
       "subType": "Cultural"
     },
     {
-      "id": 28,
+      "id": "foreign_born",
       "name": "Foreign Born",
       "description": "Born and raised in another country",
       "category": "Background",

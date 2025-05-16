@@ -4,8 +4,6 @@ export interface TraitEffect {
   skillId: string;
   // 效果值（正为增益，负为减益）
   value: number;
-  // 效果描述
-  description: string;
 }
 
 // 特质效果映射表（特质ID -> 效果数组）

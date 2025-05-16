@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { Trait } from '../types/Trait';
-import { getAllTraitEffectsDescription } from '../utils/traitEffects';
 import { traitEffectsMap } from '../utils/traitEffects';
 
 const props = defineProps<{
@@ -26,25 +25,33 @@ const getBadgeColorClass = (category: Trait['category']): string => {
   }
 };
 
-// 获取特质的所有效果描述
+// 获取特质的所有效果
 const traitEffects = computed(() => {
-  return getAllTraitEffectsDescription(props.trait.id);
+  return traitEffectsMap[props.trait.id] || [];
 });
 
 // 检查特质是否有负面效果
 const hasNegativeEffect = computed(() => {
-  const effects = traitEffectsMap[props.trait.id] || [];
-  return effects.some(effect => effect.value < 0);
+  return traitEffects.value.some(effect => effect.value < 0);
+});
+
+// 获取特质效果描述
+const getEffectDescriptions = computed(() => {
+  return traitEffects.value.map(effect => {
+    const sign = effect.value > 0 ? '+' : '';
+    const skillName = effect.skillId.charAt(0).toUpperCase() + effect.skillId.slice(1).replace(/_/g, ' ');
+    return `${skillName} ${sign}${effect.value}`;
+  });
 });
 
 // 获取带有子类型和效果的提示文本
 const tooltipText = computed(() => {
-  let tooltip = `${props.trait.name} (${props.trait.subType}): ${props.trait.description}`;
+  let tooltip = `${props.trait.name} (${props.trait.subType})`;
   
   // 如果特质有效果，添加到提示中
   if (traitEffects.value.length > 0) {
     tooltip += '\n\nEffects:';
-    traitEffects.value.forEach(effect => {
+    getEffectDescriptions.value.forEach(effect => {
       tooltip += `\n• ${effect}`;
     });
   }

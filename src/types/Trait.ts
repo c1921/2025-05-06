@@ -26,7 +26,6 @@ export interface TraitGroup extends Group<Trait> {}
 export interface TraitEffect {
   readonly skillId: string;
   readonly value: number;
-  readonly description: string;
 }
 
 // 特质效果映射
