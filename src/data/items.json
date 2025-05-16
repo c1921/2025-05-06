@@ -1,84 +1,84 @@
 {
   "items": [
     {
-      "id": 1,
+      "id": "iron_sword",
       "name": "Iron Sword",
       "description": "A common iron sword, suitable for beginners.",
       "value": 50,
       "category": "weapon"
     },
     {
-      "id": 2,
+      "id": "leather_armor",
       "name": "Leather Armor",
       "description": "Light armor made from animal hide, provides basic protection.",
       "value": 45,
       "category": "armor"
     },
     {
-      "id": 3,
+      "id": "healing_potion",
       "name": "Healing Potion",
       "description": "A potion that restores a small amount of health.",
       "value": 20,
       "category": "consumable"
     },
     {
-      "id": 4,
+      "id": "iron_ore",
       "name": "Iron Ore",
       "description": "Raw material used for crafting weapons and armor.",
       "value": 5,
       "category": "material"
     },
     {
-      "id": 5,
+      "id": "ancient_scroll",
       "name": "Ancient Scroll",
       "description": "A mysterious scroll that seems to be related to the main quest.",
       "value": 0,
       "category": "quest"
     },
     {
-      "id": 6,
+      "id": "lucky_charm",
       "name": "Lucky Charm",
       "description": "A small trinket said to bring good luck.",
       "value": 15,
       "category": "miscellaneous"
     },
     {
-      "id": 7,
+      "id": "wood",
       "name": "Wood",
       "description": "Common lumber used for construction and crafting.",
       "value": 2,
       "category": "material"
     },
     {
-      "id": 8,
+      "id": "stone",
       "name": "Stone",
       "description": "Basic building material for structures and foundations.",
       "value": 1,
       "category": "material"
     },
     {
-      "id": 9,
+      "id": "food",
       "name": "Food",
       "description": "Basic provisions that restore energy and prevent hunger.",
       "value": 3,
       "category": "consumable"
     },
     {
-      "id": 10,
+      "id": "steel",
       "name": "Steel",
       "description": "Refined metal alloy used for high-quality weapons and armor.",
       "value": 15,
       "category": "material"
     },
     {
-      "id": 11,
+      "id": "leather",
       "name": "Leather",
       "description": "Processed animal hide used for armor and accessories.",
       "value": 4,
       "category": "material"
     },
     {
-      "id": 12,
+      "id": "cloth",
       "name": "Cloth",
       "description": "Woven fabric used for clothing and light armor.",
       "value": 3,

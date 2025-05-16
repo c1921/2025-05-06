@@ -6,7 +6,7 @@ import itemsData from '../data/items.json';
 // 从JSON数据加载基础物品
 export function loadBaseItems(): BaseItem[] {
   return itemsData.items.map(item => createBaseItem(
-    String(item.id),
+    item.id,
     item.name,
     item.description,
     item.value,

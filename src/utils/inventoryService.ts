@@ -5,18 +5,18 @@ import { createItem } from '../types/Item';
 
 // 初始库存数据
 const defaultInventory: InventoryItem[] = [
-  { itemId: '1', quantity: 1 },  // Iron Sword
-  { itemId: '2', quantity: 1 },  // Leather Armor
-  { itemId: '3', quantity: 5 },  // Healing Potion
-  { itemId: '4', quantity: 10 }, // Iron Ore
-  { itemId: '5', quantity: 1 },  // Ancient Scroll
-  { itemId: '6', quantity: 1 },  // Lucky Charm
-  { itemId: '7', quantity: 25 }, // Wood
-  { itemId: '8', quantity: 30 }, // Stone
-  { itemId: '9', quantity: 120 }, // Food
-  { itemId: '10', quantity: 8 }, // Steel
-  { itemId: '11', quantity: 15 }, // Leather
-  { itemId: '12', quantity: 20 }  // Cloth
+  { itemId: 'iron_sword', quantity: 1 },
+  { itemId: 'leather_armor', quantity: 1 },
+  { itemId: 'healing_potion', quantity: 5 },
+  { itemId: 'iron_ore', quantity: 10 },
+  { itemId: 'ancient_scroll', quantity: 1 },
+  { itemId: 'lucky_charm', quantity: 1 },
+  { itemId: 'wood', quantity: 25 },
+  { itemId: 'stone', quantity: 30 },
+  { itemId: 'food', quantity: 120 },
+  { itemId: 'steel', quantity: 8 },
+  { itemId: 'leather', quantity: 15 },
+  { itemId: 'cloth', quantity: 20 }
 ];
 
 // 库存状态
