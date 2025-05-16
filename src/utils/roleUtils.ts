@@ -1,4 +1,4 @@
-import type { Role, PoliticalStance, PersonalityTraits } from '../types/Role';
+import type { Role, PoliticalStance, PersonalityTraits, RoleWorkState } from '../types/Role';
 import type { Skill, SkillType } from '../types/Skill';
 import { generateCharacterTraits } from './traitUtils';
 import { generateSpecializedSkills, applyTraitEffectsToSkills } from './skillUtils';
@@ -63,6 +63,20 @@ function createDefaultPersonalityTraits(): PersonalityTraits {
 }
 
 /**
+ * 创建默认的工作状态
+ * @returns 默认的工作状态
+ */
+function createDefaultWorkState(): RoleWorkState {
+  return {
+    efficiency: 100,
+    stamina: 100,
+    lastRestTime: null,
+    taskHistory: [],
+    preferredTaskTypes: []
+  };
+}
+
+/**
  * 生成一个角色
  * @param name 角色名称
  * @param gender 角色性别
@@ -95,7 +109,11 @@ export function generateCharacter(
     favorRelations: [],
     specialtyType,
     politicalStance: generateRandomPoliticalStance(),
-    aiPersonality: createDefaultPersonalityTraits()
+    aiPersonality: createDefaultPersonalityTraits(),
+    currentTaskId: null,
+    workState: createDefaultWorkState(),
+    location: null,
+    isAvailable: true
   };
   
   // 应用特质效果到技能
@@ -178,7 +196,11 @@ export function generateRandomRole(): Role {
     favorRelations: [],
     specialtyType,
     politicalStance: generateRandomPoliticalStance(),
-    aiPersonality: generateRandomPersonalityTraits()
+    aiPersonality: generateRandomPersonalityTraits(),
+    currentTaskId: null,
+    workState: createDefaultWorkState(),
+    location: null,
+    isAvailable: true
   };
   
   // 应用特质效果到技能

@@ -34,7 +34,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import type { PropType } from 'vue';
-import type { BuildingTemplate, MaterialRequirement } from '../types/Building';
+import type { BuildingTemplate } from '../types/Building';
 import { BUILDING_TYPE_NAMES } from '../types/Building';
 import { loadItems, findItemById } from '../utils/itemUtils';
 import { getBuildingSizeRangeText } from '../utils/buildingUtils';

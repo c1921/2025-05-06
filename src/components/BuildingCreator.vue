@@ -192,7 +192,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import type { BuildingTemplate, BuildingSize, BuildingType } from '../types/Building';
 import { BUILDING_TYPE_NAMES } from '../types/Building';
 import { loadBuildingTemplates, filterTemplatesByType, getBuildingSizeRangeText, getBuildingAreaText as formatBuildingArea, calculateMaterialsWithItems } from '../utils/buildingUtils';
@@ -206,7 +206,7 @@ export default defineComponent({
     BuildingTemplateCard
   },
   emits: ['created', 'cancel'],
-  setup(props, { emit }) {
+  setup(_props, { emit }) {
     // 当前步骤
     const step = ref(1);
     // 选择的建筑类型过滤器
