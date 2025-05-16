@@ -2,6 +2,7 @@ import { ref, watch } from 'vue';
 import { generateRandomRoles } from '../utils/roleUtils';
 import type { Role } from '../types/Role';
 import { processNoonFoodConsumption, isHungry } from './FoodConsumptionSystem';
+import { taskSystem } from './TaskSystem';
 
 /**
  * GameEngine 管理游戏的核心逻辑
@@ -42,6 +43,32 @@ export class GameEngine {
     
     // 设置起始日期 - 初始化为0，确保第一天也会触发食物消耗
     this.lastFoodConsumptionDay.value = 0;
+    
+    // 初始化角色工作状态
+    this.initializeRoleWorkState();
+  }
+  
+  /**
+   * 初始化角色工作状态
+   */
+  private initializeRoleWorkState(): void {
+    for (const role of this.roles.value) {
+      // 如果角色没有工作状态，为其创建
+      if (!role.workState) {
+        role.workState = {
+          efficiency: 100,       // 默认效率100%
+          stamina: 100,          // 满体力
+          lastRestTime: new Date(),
+          taskHistory: [],
+          preferredTaskTypes: [] // 暂无偏好
+        };
+      }
+      
+      // 初始化工作相关属性
+      role.currentTaskId = null;
+      role.location = null;
+      role.isAvailable = true;
+    }
   }
   
   /**
@@ -55,6 +82,9 @@ export class GameEngine {
         if (newHour === 12 && oldHour !== 12 && newDay !== this.lastFoodConsumptionDay.value) {
           this.onNoonArrived();
         }
+        
+        // 通知工作系统时间更新
+        taskSystem.onTimeUpdate(newHour, newDay, this.roles.value);
       }
     );
     
@@ -135,6 +165,29 @@ export class GameEngine {
   private onDayChanged(): void {
     // 触发日期变化事件
     this.triggerEvent('dayChanged', this.getCurrentDateString());
+    
+    // 恢复角色体力
+    this.recoverRoleStamina();
+  }
+  
+  /**
+   * 恢复角色体力
+   * 每天恢复一定体力
+   */
+  private recoverRoleStamina(): void {
+    for (const role of this.roles.value) {
+      // 每天恢复20点体力，但工作中的角色恢复较少
+      const recoveryAmount = role.currentTaskId ? 10 : 20;
+      
+      // 更新体力值，不超过100
+      role.workState.stamina = Math.min(100, role.workState.stamina + recoveryAmount);
+      
+      // 如果角色休息了，可以恢复一些效率
+      if (!role.currentTaskId) {
+        role.workState.efficiency = Math.min(120, role.workState.efficiency + 5);
+        role.workState.lastRestTime = new Date();
+      }
+    }
   }
   
   /**
@@ -201,6 +254,15 @@ export class GameEngine {
    */
   public getRoles(): Role[] {
     return this.roles.value;
+  }
+  
+  /**
+   * 获取特定ID的角色
+   * @param roleId 角色ID
+   */
+  public getRoleById(roleId: string | number): Role | undefined {
+    const id = typeof roleId === 'number' ? roleId.toString() : roleId;
+    return this.roles.value.find(role => role.id === id);
   }
   
   /**

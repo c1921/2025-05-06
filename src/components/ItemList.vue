@@ -136,6 +136,7 @@ import type { Item } from '../types/Item';
 import { ItemCategory, ITEM_CATEGORY_NAMES } from '../types/Item';
 import { loadItems, filterItemsByCategory, findItemsByName, calculateTotalValue, getTotalQuantity } from '../utils/itemUtils';
 import { gameEngine } from '../core/GameEngine';
+import { taskSystem } from '../core/TaskSystem';
 
 export default defineComponent({
   name: 'ItemList',
@@ -166,6 +167,22 @@ export default defineComponent({
       
       // 每天变化时刷新物品列表
       gameEngine.addEventListener('dayChanged', () => {
+        refreshItems();
+      });
+      
+      // 监听任务系统相关事件
+      // 任务完成时刷新物品列表（物品生产）
+      taskSystem.addEventListener('taskCompleted', () => {
+        refreshItems();
+      });
+      
+      // 任务分配时刷新物品列表（物品消耗）
+      taskSystem.addEventListener('taskAssigned', () => {
+        refreshItems();
+      });
+      
+      // 任务取消分配时刷新物品列表（物品返还）
+      taskSystem.addEventListener('taskUnassigned', () => {
         refreshItems();
       });
     });

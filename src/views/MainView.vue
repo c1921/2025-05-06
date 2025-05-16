@@ -4,6 +4,7 @@ import RoleView from './RoleView.vue';
 import BuildingView from './BuildingView.vue';
 import MapView from './MapView.vue';
 import ItemView from './ItemView.vue';
+import TaskView from './TaskView.vue';
 import TimeControl from '../components/TimeControl.vue';
 import SettingsModal from '../components/SettingsModal.vue';
 import { gameEngine } from '../core/GameEngine';
@@ -90,7 +91,7 @@ isMapVisible.value = activeTab.value === 'map';
         @click="setActiveTab('roles')"
       >
         <span class="icon-[tabler--users] size-5 me-2"></span>
-        Characters
+        角色
       </button>
       <button 
         type="button" 
@@ -104,7 +105,7 @@ isMapVisible.value = activeTab.value === 'map';
         @click="setActiveTab('buildings')"
       >
         <span class="icon-[tabler--building] size-5 me-2"></span>
-        Buildings
+        建筑
       </button>
       <button 
         type="button" 
@@ -118,7 +119,21 @@ isMapVisible.value = activeTab.value === 'map';
         @click="setActiveTab('items')"
       >
         <span class="icon-[tabler--backpack] size-5 me-2"></span>
-        Items
+        物品
+      </button>
+      <button 
+        type="button" 
+        class="tab active-tab:tab-active w-full" 
+        :class="{ 'active': activeTab === 'tasks' }"
+        id="tab-tasks" 
+        data-tab="#tab-content-tasks" 
+        aria-controls="tab-content-tasks" 
+        role="tab" 
+        aria-selected="false"
+        @click="setActiveTab('tasks')"
+      >
+        <span class="icon-[tabler--list-check] size-5 me-2"></span>
+        工作
       </button>
       <button 
         type="button" 
@@ -132,7 +147,7 @@ isMapVisible.value = activeTab.value === 'map';
         @click="setActiveTab('map')"
       >
         <span class="icon-[tabler--map] size-5 me-2"></span>
-        Map
+        地图
       </button>
     </nav>
     
@@ -166,6 +181,16 @@ isMapVisible.value = activeTab.value === 'map';
         :class="{ 'hidden': activeTab !== 'items' }"
       >
         <ItemView />
+      </div>
+      
+      <div 
+        id="tab-content-tasks" 
+        role="tabpanel" 
+        aria-labelledby="tab-tasks"
+        class="h-full"
+        :class="{ 'hidden': activeTab !== 'tasks' }"
+      >
+        <TaskView />
       </div>
       
       <div 

@@ -29,6 +29,15 @@ export interface PersonalityTraits {
   zealotry: number; // -100~100，狂热（冷漠-狂热）
 }
 
+// 角色工作状态
+export interface RoleWorkState {
+  efficiency: number;        // 工作效率百分比(0-200)，基准为100
+  stamina: number;           // 体力值(0-100)
+  lastRestTime: Date | null; // 上次休息时间
+  taskHistory: string[];     // 最近完成的工作ID列表
+  preferredTaskTypes: string[]; // 偏好的工作类型
+}
+
 // 角色类型
 export interface Role {
   id: ID;
@@ -45,4 +54,10 @@ export interface Role {
   politicalStance: PoliticalStance;
   // AI性格特质（用户不可见）
   aiPersonality: PersonalityTraits;
+  
+  // 工作相关属性
+  currentTaskId: string | null; // 当前分配的工作ID
+  workState: RoleWorkState;     // 工作状态
+  location: string | null;      // 当前位置
+  isAvailable: boolean;         // 是否可分配工作
 } 
