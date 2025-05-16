@@ -3,14 +3,8 @@ import type { Trait } from '../types/Trait';
 import type { TraitPersonalityEffect, TraitPersonalityEffectsMap } from '../types/TraitPersonalityEffect';
 import traitPersonalityEffectsData from '../data/traitPersonalityEffects.json';
 
-// 从JSON文件导入特质个性影响配置表并转换ID为字符串
-const rawData = traitPersonalityEffectsData as any;
-const traitPersonalityEffectsMap: TraitPersonalityEffectsMap = {};
-
-// 将数字ID转换为字符串ID
-Object.keys(rawData).forEach(key => {
-  traitPersonalityEffectsMap[String(key)] = rawData[key];
-});
+// 从JSON文件导入特质个性影响配置表
+export const traitPersonalityEffectsMap = traitPersonalityEffectsData as TraitPersonalityEffectsMap;
 
 /**
  * 应用特质个性影响到角色
@@ -48,16 +42,16 @@ export function applyTraitPersonalityEffects(role: Role): Role {
 }
 
 /**
- * 获取特质对个性的所有影响描述
+ * 获取特质对个性的所有影响
  * @param trait 特质
- * @returns 特质个性影响描述数组
+ * @returns 特质个性影响数组
  */
 export function getTraitPersonalityEffects(trait: Trait): TraitPersonalityEffect[] {
   return traitPersonalityEffectsMap[trait.id] || [];
 }
 
 /**
- * 获取特质个性影响文本描述，包括值和描述
+ * 获取特质个性影响文本描述
  * @param trait 特质
  * @returns 文本描述数组
  */
@@ -66,6 +60,7 @@ export function getTraitPersonalityEffectsDescription(trait: Trait): string[] {
   
   return effects.map(effect => {
     const sign = effect.value > 0 ? '+' : '';
-    return `${effect.description} (${sign}${effect.value})`;
+    const personalityName = effect.personalityType.charAt(0).toUpperCase() + effect.personalityType.slice(1);
+    return `${personalityName} ${sign}${effect.value}`;
   });
 } 

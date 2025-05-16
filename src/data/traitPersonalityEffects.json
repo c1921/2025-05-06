@@ -1,73 +1,73 @@
 {
-  "49": [
-    { "personalityType": "bravery", "value": 200, "description": "面对挑战无所畏惧" },
-    { "personalityType": "energy", "value": 20, "description": "充满活力" },
-    { "personalityType": "rationality", "value": -20, "description": "冲动行事" },
-    { "personalityType": "sociability", "value": 20, "description": "敢于社交" }
+  "courageous": [
+    { "personalityType": "bravery", "value": 200 },
+    { "personalityType": "energy", "value": 20 },
+    { "personalityType": "rationality", "value": -20 },
+    { "personalityType": "sociability", "value": 20 }
   ],
-  "57": [
-    { "personalityType": "bravery", "value": -20, "description": "谨慎行事" },
-    { "personalityType": "energy", "value": -10, "description": "节约能量" },
-    { "personalityType": "rationality", "value": 75, "description": "理性思考" },
-    { "personalityType": "vengefulness", "value": -10, "description": "冷静判断" }
+  "calculated": [
+    { "personalityType": "bravery", "value": -20 },
+    { "personalityType": "energy", "value": -10 },
+    { "personalityType": "rationality", "value": 75 },
+    { "personalityType": "vengefulness", "value": -10 }
   ],
-  "43": [
-    { "personalityType": "compassion", "value": 150, "description": "充满同情心" },
-    { "personalityType": "vengefulness", "value": -50, "description": "宽恕他人" },
-    { "personalityType": "honor", "value": 25, "description": "行为高尚" }
+  "compassionate": [
+    { "personalityType": "compassion", "value": 150 },
+    { "personalityType": "vengefulness", "value": -50 },
+    { "personalityType": "honor", "value": 25 }
   ],
-  "44": [
-    { "personalityType": "compassion", "value": -150, "description": "冷血无情" },
-    { "personalityType": "vengefulness", "value": 75, "description": "记仇报复" },
-    { "personalityType": "honor", "value": -50, "description": "卑鄙行为" }
+  "cruel": [
+    { "personalityType": "compassion", "value": -150 },
+    { "personalityType": "vengefulness", "value": 75 },
+    { "personalityType": "honor", "value": -50 }
   ],
-  "31": [
-    { "personalityType": "greed", "value": -100, "description": "慷慨大方" },
-    { "personalityType": "compassion", "value": 50, "description": "关心他人" }
+  "generous": [
+    { "personalityType": "greed", "value": -100 },
+    { "personalityType": "compassion", "value": 50 }
   ],
-  "32": [
-    { "personalityType": "greed", "value": 150, "description": "贪婪自私" },
-    { "personalityType": "honor", "value": -30, "description": "为利益不择手段" }
+  "greedy": [
+    { "personalityType": "greed", "value": 150 },
+    { "personalityType": "honor", "value": -30 }
   ],
-  "39": [
-    { "personalityType": "honor", "value": 150, "description": "正直高尚" },
-    { "personalityType": "vengefulness", "value": -30, "description": "宽宏大量" }
+  "righteous": [
+    { "personalityType": "honor", "value": 150 },
+    { "personalityType": "vengefulness", "value": -30 }
   ],
-  "40": [
-    { "personalityType": "honor", "value": -150, "description": "邪恶卑鄙" },
-    { "personalityType": "vengefulness", "value": 50, "description": "睚眦必报" }
+  "wicked": [
+    { "personalityType": "honor", "value": -150 },
+    { "personalityType": "vengefulness", "value": 50 }
   ],
-  "60": [
-    { "personalityType": "rationality", "value": 100, "description": "冷酷理性" },
-    { "personalityType": "compassion", "value": -50, "description": "缺乏同情心" }
+  "callous": [
+    { "personalityType": "rationality", "value": 100 },
+    { "personalityType": "compassion", "value": -50 }
   ],
-  "59": [
-    { "personalityType": "rationality", "value": -50, "description": "感性思维" },
-    { "personalityType": "compassion", "value": 75, "description": "情感丰富" }
+  "sensitive": [
+    { "personalityType": "rationality", "value": -50 },
+    { "personalityType": "compassion", "value": 75 }
   ],
-  "63": [
-    { "personalityType": "sociability", "value": 150, "description": "热爱社交" },
-    { "personalityType": "energy", "value": 50, "description": "精力充沛" }
+  "extroverted": [
+    { "personalityType": "sociability", "value": 150 },
+    { "personalityType": "energy", "value": 50 }
   ],
-  "64": [
-    { "personalityType": "sociability", "value": -100, "description": "独处为主" },
-    { "personalityType": "energy", "value": -20, "description": "社交消耗能量" },
-    { "personalityType": "rationality", "value": 30, "description": "独处思考" }
+  "introverted": [
+    { "personalityType": "sociability", "value": -100 },
+    { "personalityType": "energy", "value": -20 },
+    { "personalityType": "rationality", "value": 30 }
   ],
-  "56": [
-    { "personalityType": "vengefulness", "value": 100, "description": "易怒记恨" },
-    { "personalityType": "rationality", "value": -40, "description": "感情用事" }
+  "irritable": [
+    { "personalityType": "vengefulness", "value": 100 },
+    { "personalityType": "rationality", "value": -40 }
   ],
-  "55": [
-    { "personalityType": "vengefulness", "value": -60, "description": "温和宽容" },
-    { "personalityType": "compassion", "value": 40, "description": "友善待人" }
+  "gentle": [
+    { "personalityType": "vengefulness", "value": -60 },
+    { "personalityType": "compassion", "value": 40 }
   ],
-  "47": [
-    { "personalityType": "zealotry", "value": 100, "description": "热情投入" },
-    { "personalityType": "energy", "value": 75, "description": "精力旺盛" }
+  "enthusiastic": [
+    { "personalityType": "zealotry", "value": 100 },
+    { "personalityType": "energy", "value": 75 }
   ],
-  "48": [
-    { "personalityType": "zealotry", "value": -75, "description": "冷漠消极" },
-    { "personalityType": "energy", "value": -50, "description": "缺乏活力" }
+  "gloomy": [
+    { "personalityType": "zealotry", "value": -75 },
+    { "personalityType": "energy", "value": -50 }
   ]
 } 

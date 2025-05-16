@@ -4,8 +4,6 @@ export interface TraitPersonalityEffect {
   personalityType: 'energy' | 'bravery' | 'compassion' | 'greed' | 'honor' | 'rationality' | 'sociability' | 'vengefulness' | 'zealotry';
   // 效果值（-100~100）
   value: number;
-  // 效果描述
-  description: string;
 }
 
 // 特质个性影响映射表（特质ID -> 效果数组）

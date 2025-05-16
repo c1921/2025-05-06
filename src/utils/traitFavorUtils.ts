@@ -2,13 +2,8 @@ import type { Role } from '../types/Role';
 import type { TraitFavorEffect } from '../types/TraitFavorEffect';
 import traitFavorEffectsData from '../data/traitFavorEffects.json';
 
-// 将JSON数据转换为正确的类型
-const rawData = traitFavorEffectsData as any;
-const traitFavorEffects = rawData.traitFavorEffects.map((effect: any) => ({
-  ...effect,
-  sourceTraitId: String(effect.sourceTraitId),
-  targetTraitId: effect.targetTraitId !== null ? String(effect.targetTraitId) : null
-})) as TraitFavorEffect[];
+// 导入特质好感度效果数据
+const traitFavorEffects = traitFavorEffectsData.traitFavorEffects as TraitFavorEffect[];
 
 /**
  * 计算目标角色对源角色的特质好感度影响
@@ -98,12 +93,9 @@ export function applyTraitFavorEffectsToRoles(roles: Role[]): Role[] {
  * @param targetTraitId 目标特质ID
  * @returns 影响描述
  */
-export function getTraitFavorEffectDescription(sourceTraitId: string | number, targetTraitId: string | number | null): string | null {
-  const sourceId = String(sourceTraitId);
-  const targetId = targetTraitId !== null ? String(targetTraitId) : null;
-  
+export function getTraitFavorEffectDescription(sourceTraitId: string, targetTraitId: string | null): string | null {
   const effect = traitFavorEffects.find(
-    effect => effect.sourceTraitId === sourceId && effect.targetTraitId === targetId
+    effect => effect.sourceTraitId === sourceTraitId && effect.targetTraitId === targetTraitId
   );
   return effect ? effect.description : null;
 }
@@ -114,12 +106,9 @@ export function getTraitFavorEffectDescription(sourceTraitId: string | number, t
  * @param targetTraitId 目标特质ID
  * @returns 好感度变化值
  */
-export function getTraitFavorChange(sourceTraitId: string | number, targetTraitId: string | number | null): number {
-  const sourceId = String(sourceTraitId);
-  const targetId = targetTraitId !== null ? String(targetTraitId) : null;
-  
+export function getTraitFavorChange(sourceTraitId: string, targetTraitId: string | null): number {
   const effect = traitFavorEffects.find(
-    effect => effect.sourceTraitId === sourceId && effect.targetTraitId === targetId
+    effect => effect.sourceTraitId === sourceTraitId && effect.targetTraitId === targetTraitId
   );
   return effect ? effect.favorChange : 0;
 } 
