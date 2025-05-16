@@ -5,6 +5,9 @@ import { getSettings, updateSetting } from '../utils/settingsService';
 // 角色头像显示设置
 const showAvatars = ref(true);
 
+// 自动分配任务设置
+const autoAssignTasks = ref(true);
+
 // 切换头像显示状态
 const toggleAvatarDisplay = () => {
   showAvatars.value = !showAvatars.value;
@@ -12,11 +15,19 @@ const toggleAvatarDisplay = () => {
   updateSetting('showAvatars', showAvatars.value);
 };
 
+// 切换自动分配任务状态
+const toggleAutoAssignTasks = () => {
+  autoAssignTasks.value = !autoAssignTasks.value;
+  // 使用设置服务更新设置
+  updateSetting('autoAssignTasks', autoAssignTasks.value);
+};
+
 // 组件挂载时初始化设置
 onMounted(() => {
   // 从设置服务获取设置
   const settings = getSettings();
   showAvatars.value = settings.showAvatars;
+  autoAssignTasks.value = settings.autoAssignTasks;
 });
 </script>
 
@@ -46,6 +57,21 @@ onMounted(() => {
                   @change="toggleAvatarDisplay"
                 />
                 <label class="label-text text-base" for="toggle-avatar">显示角色头像</label>
+              </div>
+            </div>
+            
+            <!-- 自动分配任务设置 -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="icon-[tabler--robot] size-7"></span>
+                <input 
+                  type="checkbox" 
+                  class="switch switch-primary" 
+                  id="toggle-auto-assign" 
+                  :checked="autoAssignTasks"
+                  @change="toggleAutoAssignTasks"
+                />
+                <label class="label-text text-base" for="toggle-auto-assign">自动分配任务</label>
               </div>
             </div>
           </div>

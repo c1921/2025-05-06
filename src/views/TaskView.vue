@@ -32,6 +32,12 @@ const errorMessage = ref('');
 // 任务创建对话框
 const isTaskCreationDialogOpen = ref(false);
 
+// 最近自动分配的任务
+const recentAutoAssignments = ref<{taskName: string, roleName: string, timestamp: Date}[]>([]);
+
+// 成功消息
+const successMessage = ref('');
+
 // 加载任务列表
 const loadTasks = () => {
   switch (activeFilter.value) {
@@ -68,6 +74,17 @@ const getRoleName = (roleId: string | null): string => {
 // 选择任务
 const selectTask = (task: Task) => {
   selectedTask.value = task;
+};
+
+// 检查任务是否自动分配
+const isAutoAssigned = (task: Task): boolean => {
+  return task.history.some(h => h.type === 'auto-assigned');
+};
+
+// 获取自动分配的时间
+const getAutoAssignedTime = (task: Task): Date | null => {
+  const autoAssignEvent = task.history.find(h => h.type === 'auto-assigned');
+  return autoAssignEvent ? autoAssignEvent.timestamp : null;
 };
 
 // 分配任务给角色
@@ -174,6 +191,7 @@ onMounted(() => {
   taskSystem.addEventListener('taskCreated', () => loadTasks());
   taskSystem.addEventListener('taskCompleted', () => loadTasks());
   taskSystem.addEventListener('taskProgressUpdated', () => loadTasks());
+  taskSystem.addEventListener('tasksAutoAssigned', handleAutoAssignment);
 });
 
 // 监听筛选器变化
@@ -200,274 +218,325 @@ const getRoleScoreClass = (score: number): string => {
   if (score >= 40) return 'text-info';
   return 'text-error';
 };
+
+// 处理自动分配任务
+const handleAutoAssignment = (assignedCount: number) => {
+  if (assignedCount > 0) {
+    // 获取所有进行中的任务
+    const inProgressTasks = taskSystem.getTasksByStatus(TaskStatus.IN_PROGRESS);
+    
+    // 过滤出自动分配的任务
+    const autoAssignedTasks = inProgressTasks
+      .filter(isAutoAssigned)
+      .sort((a, b) => {
+        const timeA = getAutoAssignedTime(a)?.getTime() || 0;
+        const timeB = getAutoAssignedTime(b)?.getTime() || 0;
+        return timeB - timeA; // 按自动分配时间降序排序
+      });
+    
+    // 将自动分配的任务添加到最近自动分配的任务列表中
+    recentAutoAssignments.value = autoAssignedTasks.slice(0, 5).map(task => ({
+      taskName: task.name,
+      roleName: getRoleName(task.assignedRoleId),
+      timestamp: getAutoAssignedTime(task) || new Date()
+    }));
+    
+    // 添加成功消息
+    successMessage.value = `自动分配了 ${assignedCount} 个任务`;
+    
+    // 重新加载任务列表
+    loadTasks();
+  }
+};
 </script>
 
 <template>
-  <div class="flex flex-col h-full">
+  <div class="h-full flex flex-col">
     <!-- 任务管理顶部导航 -->
     <div class="flex justify-between items-center mb-4">
-      <div class="tabs tabs-boxed">
-        <button 
-          class="tab" 
-          :class="{ 'tab-active': activeFilter === 'active' }"
-          @click="setFilter('active')"
-        >活动任务</button>
-        <button 
-          class="tab" 
-          :class="{ 'tab-active': activeFilter === 'pending' }"
-          @click="setFilter('pending')"
-        >待分配</button>
-        <button 
-          class="tab" 
-          :class="{ 'tab-active': activeFilter === 'in_progress' }"
-          @click="setFilter('in_progress')"
-        >进行中</button>
-        <button 
-          class="tab" 
-          :class="{ 'tab-active': activeFilter === 'completed' }"
-          @click="setFilter('completed')"
-        >已完成</button>
-      </div>
-      
+      <h2 class="text-2xl font-bold">
+        <span class="icon-[tabler--list-check] size-7 mr-2"></span>
+        任务管理
+      </h2>
+      <button 
+        class="btn btn-primary btn-sm"  
+        @click="openTaskCreationDialog"
+      >
+        <span class="icon-[tabler--plus] size-4 mr-1"></span>
+        添加任务
+      </button>
+    </div>
+    
+    <!-- 错误消息 -->
+    <div v-if="errorMessage" class="alert alert-error mb-4">
+      <span class="icon-[tabler--alert-circle] size-5 flex-shrink-0"></span>
+      <span>{{ errorMessage }}</span>
+    </div>
+    
+    <!-- 成功消息 -->
+    <div v-if="successMessage" class="alert alert-success mb-4">
+      <span class="icon-[tabler--check] size-5 flex-shrink-0"></span>
+      <span>{{ successMessage }}</span>
+    </div>
+    
+    <!-- 最近自动分配的任务 -->
+    <div v-if="recentAutoAssignments.length > 0" class="alert alert-info mb-4">
+      <span class="icon-[tabler--robot] size-5 flex-shrink-0"></span>
       <div>
-        <!-- 临时：仅用于测试 -->
-        <button 
-          class="btn btn-primary btn-sm"
-          @click="openTaskCreationDialog"
-          aria-haspopup="dialog"
-          aria-expanded="false"
-          aria-controls="task-creation-modal"
-        >
-          <span class="icon-[tabler--plus] size-4 me-1"></span>
-          创建任务
-        </button>
+        <div class="font-semibold">最近自动分配的任务</div>
+        <div class="text-xs mt-1">
+          <div v-for="(item, index) in recentAutoAssignments" :key="index" class="mb-1">
+            自动分配了 <span class="font-medium">{{ item.taskName }}</span> 给 <span class="font-medium">{{ item.roleName }}</span>
+            <span class="text-xs opacity-75">{{ formatTaskDate(item.timestamp) }}</span>
+          </div>
+        </div>
       </div>
     </div>
     
+    <!-- 任务筛选器 -->
+    <div class="tabs tabs-boxed mb-4">
+      <button 
+        class="tab" 
+        :class="{ 'tab-active': activeFilter === 'active' }"
+        @click="setFilter('active')"
+      >
+        进行中任务
+      </button>
+      <button 
+        class="tab" 
+        :class="{ 'tab-active': activeFilter === 'pending' }"
+        @click="setFilter('pending')"
+      >
+        待分配任务
+      </button>
+      <button 
+        class="tab" 
+        :class="{ 'tab-active': activeFilter === 'in_progress' }"
+        @click="setFilter('in_progress')"
+      >
+        进行中
+      </button>
+      <button 
+        class="tab" 
+        :class="{ 'tab-active': activeFilter === 'completed' }"
+        @click="setFilter('completed')"
+      >
+        已完成
+      </button>
+    </div>
+    
     <!-- 任务列表和详情 -->
-    <div class="flex gap-4 h-full">
+    <div class="flex flex-grow h-0 gap-4">
       <!-- 任务列表 -->
-      <div class="w-1/2 overflow-auto rounded-lg border">
-        <div class="divide-y">
+      <div class="flex-1 overflow-auto min-w-0 h-full">
+        <div class="grid grid-cols-1 gap-3">
           <div 
             v-for="task in tasks" 
             :key="task.id"
-            class="p-3 cursor-pointer hover:bg-base-200 transition-colors"
-            :class="[selectedTask?.id === task.id ? 'bg-base-200' : '', getTaskColor(task)]"
+            class="card cursor-pointer transition-all hover:shadow-md"
+            :class="[getTaskColor(task), selectedTask?.id === task.id ? 'border-2 border-primary' : '']"
             @click="selectTask(task)"
           >
-            <div class="flex justify-between items-center">
-              <h3 class="font-medium">{{ task.name }}</h3>
-              <span class="badge" :class="getStatusClass(task.status)">
-                {{ getTaskStatusText(task.status) }}
-              </span>
+            <div class="card-body p-4">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="card-title text-base">{{ task.name }}</h3>
+                <span 
+                  class="badge" 
+                  :class="getStatusClass(task.status)"
+                >
+                  {{ getTaskStatusText(task.status) }}
+                </span>
+              </div>
+              
+              <p class="text-sm mb-2 line-clamp-1">{{ task.description }}</p>
+              
+              <div class="flex justify-between items-center text-xs">
+                <div class="flex items-center">
+                  <span class="icon-[tabler--user] size-4 mr-1"></span>
+                  <span>
+                    {{ getRoleName(task.assignedRoleId) }}
+                    <span v-if="isAutoAssigned(task)" class="badge badge-xs badge-info ml-1">自动分配</span>
+                  </span>
+                </div>
+                <div class="flex items-center">
+                  <span class="icon-[tabler--clock] size-4 mr-1"></span>
+                  <span>
+                    {{ task.progress }}%
+                  </span>
+                </div>
+              </div>
             </div>
-            
-            <div class="text-sm text-base-content text-opacity-70">
-              {{ task.description }}
-            </div>
-            
-            <div class="mt-2 flex justify-between text-xs">
-              <span>
-                分配给: {{ getRoleName(task.assignedRoleId) }}
-              </span>
-              <span>
-                优先级: {{ task.priority }}
-              </span>
-            </div>
-            
-            <!-- 进度条 -->
-            <div v-if="task.status === 'in_progress'" class="mt-2 w-full bg-base-300 rounded-full h-1.5">
-              <div 
-                class="bg-primary h-1.5 rounded-full" 
-                :style="{ width: `${task.progress}%` }"
-              ></div>
-            </div>
-          </div>
-          
-          <!-- 空状态 -->
-          <div v-if="tasks.length === 0" class="p-10 text-center text-base-content text-opacity-50">
-            <span class="icon-[tabler--list-check] size-10 mx-auto block mb-2"></span>
-            <p>没有{{ activeFilter === 'all' ? '' : '符合条件的' }}工作</p>
           </div>
         </div>
       </div>
       
       <!-- 任务详情 -->
-      <div class="w-1/2 overflow-auto rounded-lg border p-4">
-        <div v-if="selectedTask" class="h-full">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold">{{ selectedTask.name }}</h2>
-            <span class="badge" :class="getStatusClass(selectedTask.status)">
-              {{ getTaskStatusText(selectedTask.status) }}
-            </span>
-          </div>
-          
-          <p class="mb-4">{{ selectedTask.description }}</p>
-          
-          <!-- 任务信息 -->
-          <div class="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <h4 class="font-medium mb-1">创建时间</h4>
-              <p class="text-sm">{{ formatTaskDate(selectedTask.creationTime) }}</p>
-            </div>
-            
-            <div>
-              <h4 class="font-medium mb-1">截止时间</h4>
-              <p class="text-sm">{{ formatTaskDate(selectedTask.deadline) }}</p>
-            </div>
-            
-            <div>
-              <h4 class="font-medium mb-1">开始时间</h4>
-              <p class="text-sm">{{ formatTaskDate(selectedTask.startTime) }}</p>
-            </div>
-            
-            <div>
-              <h4 class="font-medium mb-1">完成时间</h4>
-              <p class="text-sm">{{ formatTaskDate(selectedTask.completionTime) }}</p>
-            </div>
-          </div>
-          
-          <!-- 所需技能 -->
-          <div class="mb-4" v-if="selectedTask.requiredSkills.length > 0">
-            <h4 class="font-medium mb-1">所需技能</h4>
-            <div class="flex flex-wrap gap-1">
+      <div class="w-1/2 overflow-auto h-full">
+        <div class="card bg-base-200 h-full" v-if="selectedTask">
+          <div class="card-body p-4 overflow-auto">
+            <div class="flex justify-between items-start mb-3">
+              <h3 class="card-title">{{ selectedTask.name }}</h3>
               <span 
-                v-for="skill in selectedTask.requiredSkills" 
-                :key="skill.skillId"
-                class="badge badge-outline"
+                class="badge" 
+                :class="getStatusClass(selectedTask.status)"
               >
-                {{ skill.skillName }} {{ skill.requiredValue }}
+                {{ getTaskStatusText(selectedTask.status) }}
               </span>
             </div>
-          </div>
-          
-          <!-- 所需物品 -->
-          <div class="mb-4" v-if="selectedTask.requiredItems.length > 0">
-            <h4 class="font-medium mb-1">所需物品</h4>
-            <div class="space-y-1">
-              <div 
-                v-for="item in selectedTask.requiredItems" 
-                :key="item.itemId"
-                class="text-sm flex justify-between"
-              >
-                <span>{{ item.itemName }}</span>
-                <span>{{ item.quantity }}个</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- 产出物品 -->
-          <div class="mb-4" v-if="selectedTask.outputItems.length > 0">
-            <h4 class="font-medium mb-1">产出物品</h4>
-            <div class="space-y-1">
-              <div 
-                v-for="item in selectedTask.outputItems" 
-                :key="item.itemId"
-                class="text-sm flex justify-between"
-              >
-                <span>{{ item.itemName }}</span>
-                <span>{{ item.quantity }}个</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- 操作按钮 -->
-          <div class="mt-6">
-            <!-- 待分配任务的按钮 -->
-            <div v-if="selectedTask.status === 'pending'">
-              <h4 class="font-medium mb-2">分配给角色:</h4>
-              <!-- 错误消息 -->
-              <div v-if="errorMessage" class="alert alert-error mb-2 py-2 text-sm">
-                {{ errorMessage }}
-              </div>
-              
-              <!-- 评分说明 -->
-              <div class="mb-2 text-sm text-base-content/70">
-                角色适合度评分: 
-                <span class="text-success">高(80-100)</span> | 
-                <span class="text-warning">中(60-79)</span> | 
-                <span class="text-info">低(40-59)</span> | 
-                <span class="text-error">很低(0-39)</span>
-              </div>
-              
-              <div class="flex flex-wrap gap-2 mb-4">
-                <button 
-                  v-for="role in availableRoles" 
-                  :key="role.id"
-                  class="btn btn-sm"
-                  @click="assignTaskToRole(selectedTask.id, role.id)"
-                >
-                  {{ role.name }}
-                  <span 
-                    class="ms-1 font-bold" 
-                    :class="getRoleScoreClass(getRoleFitScores[role.id] || 0)"
-                  >
-                    ({{ getRoleFitScores[role.id] || 0 }})
-                  </span>
-                </button>
-                <div v-if="availableRoles.length === 0" class="text-sm text-base-content text-opacity-50">
-                  没有可用角色
+            
+            <p class="mb-3">{{ selectedTask.description }}</p>
+            
+            <div class="stats shadow mb-4">
+              <div class="stat">
+                <div class="stat-title">优先级</div>
+                <div class="stat-value text-base">
+                  {{ selectedTask.priority }}/10
                 </div>
               </div>
               
-              <button 
-                class="btn btn-error btn-sm mt-2"
-                @click="cancelTask(selectedTask.id)"
-              >
-                取消任务
-              </button>
+              <div class="stat">
+                <div class="stat-title">开始时间</div>
+                <div class="stat-value text-sm">
+                  {{ formatTaskDate(selectedTask.startTime) }}
+                </div>
+              </div>
+              
+              <div class="stat">
+                <div class="stat-title">进度</div>
+                <div class="stat-value text-base">
+                  {{ selectedTask.progress }}%
+                </div>
+                <div class="stat-desc">
+                  <progress class="progress progress-primary w-full" :value="selectedTask.progress" max="100"></progress>
+                </div>
+              </div>
             </div>
             
-            <!-- 进行中任务的按钮 -->
-            <div v-else-if="selectedTask.status === 'in_progress'">
-              <div class="flex justify-between items-center mb-2">
-                <h4 class="font-medium">进度: {{ Math.round(selectedTask.progress) }}%</h4>
-                <p class="text-sm">
-                  分配给: <span class="font-medium">{{ getRoleName(selectedTask.assignedRoleId) }}</span>
-                </p>
-              </div>
-              
-              <div class="w-full bg-base-300 rounded-full h-2 mb-4">
+            <!-- 所需技能 -->
+            <div class="mb-4" v-if="selectedTask.requiredSkills.length > 0">
+              <h4 class="font-semibold mb-2">所需技能</h4>
+              <div class="flex flex-wrap gap-2">
                 <div 
-                  class="bg-primary h-2 rounded-full" 
-                  :style="{ width: `${selectedTask.progress}%` }"
-                ></div>
-              </div>
-              
-              <div class="flex gap-2">
-                <button 
-                  class="btn btn-warning btn-sm"
-                  @click="unassignTask(selectedTask.id)"
+                  v-for="skill in selectedTask.requiredSkills" 
+                  :key="skill.skillId"
+                  class="badge badge-outline"
                 >
-                  取消分配
-                </button>
-                
+                  {{ skill.skillName }}: {{ skill.requiredValue }}
+                </div>
+              </div>
+            </div>
+            
+            <!-- 所需物品 -->
+            <div class="mb-4" v-if="selectedTask.requiredItems.length > 0">
+              <h4 class="font-semibold mb-2">所需物品</h4>
+              <div class="flex flex-wrap gap-2">
+                <div 
+                  v-for="item in selectedTask.requiredItems" 
+                  :key="item.itemId"
+                  class="badge badge-outline"
+                >
+                  {{ item.itemName }}: {{ item.quantity }}个
+                </div>
+              </div>
+            </div>
+            
+            <!-- 产出物品 -->
+            <div class="mb-4" v-if="selectedTask.outputItems.length > 0">
+              <h4 class="font-semibold mb-2">产出物品</h4>
+              <div class="flex flex-wrap gap-2">
+                <div 
+                  v-for="item in selectedTask.outputItems" 
+                  :key="item.itemId"
+                  class="badge badge-outline"
+                >
+                  {{ item.itemName }}: {{ item.quantity }}个
+                </div>
+              </div>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <div class="flex flex-wrap gap-2 mt-4">
+              <!-- 待分配任务的按钮 -->
+              <div v-if="selectedTask.status === 'pending'" class="w-full">
+                <h4 class="font-semibold mb-2">分配给角色:</h4>
+                <div class="grid grid-cols-1 gap-2 mb-4">
+                  <button 
+                    v-for="role in availableRoles" 
+                    :key="role.id"
+                    class="btn btn-outline btn-sm justify-between"
+                    @click="assignTaskToRole(selectedTask.id, role.id)"
+                  >
+                    {{ role.name }}
+                    <span 
+                      class="badge ml-2" 
+                      :class="getRoleScoreClass(getRoleFitScores[role.id] || 0)"
+                    >
+                      {{ getRoleFitScores[role.id] || 0 }}
+                    </span>
+                  </button>
+                </div>
                 <button 
-                  class="btn btn-error btn-sm"
+                  class="btn btn-error btn-sm w-full"
                   @click="cancelTask(selectedTask.id)"
                 >
+                  <span class="icon-[tabler--trash] size-4 mr-1"></span>
                   取消任务
                 </button>
+              </div>
+              
+              <!-- 进行中任务的按钮 -->
+              <div v-if="selectedTask.status === 'in_progress'" class="w-full">
+                <button 
+                  class="btn btn-warning btn-sm w-full mb-2"
+                  @click="unassignTask(selectedTask.id)"
+                >
+                  <span class="icon-[tabler--user-x] size-4 mr-1"></span>
+                  取消分配
+                </button>
+                <button 
+                  class="btn btn-error btn-sm w-full"
+                  @click="cancelTask(selectedTask.id)"
+                >
+                  <span class="icon-[tabler--trash] size-4 mr-1"></span>
+                  取消任务
+                </button>
+              </div>
+            </div>
+            
+            <!-- 任务历史 -->
+            <div class="divider"></div>
+            <h4 class="font-semibold mb-2">任务历史</h4>
+            <div class="text-sm">
+              <div 
+                v-for="(history, index) in selectedTask.history" 
+                :key="index"
+                class="mb-2"
+              >
+                <div class="flex justify-between items-center">
+                  <span class="font-medium">
+                    {{ history.type === 'auto-assigned' ? '自动分配' : history.description }}
+                  </span>
+                  <span class="text-xs opacity-75">{{ formatTaskDate(history.timestamp) }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
         
-        <!-- 未选择任务的状态 -->
-        <div v-else class="h-full flex flex-col items-center justify-center text-base-content text-opacity-50">
-          <span class="icon-[tabler--clipboard] size-12 mb-2"></span>
-          <p>选择一个任务查看详情</p>
+        <div class="card bg-base-200 h-full flex items-center justify-center" v-else>
+          <div class="text-center p-4">
+            <span class="icon-[tabler--list-details] size-20 opacity-20 mb-2"></span>
+            <p class="text-base-content opacity-50">选择一个任务查看详情</p>
+          </div>
         </div>
       </div>
     </div>
     
     <!-- 任务创建对话框 -->
     <TaskCreationDialog 
-      :isOpen="isTaskCreationDialogOpen"
+      :is-open="isTaskCreationDialogOpen"
       @close="closeTaskCreationDialog"
       @task-created="onTaskCreated"
-      id="task-creation-modal"
     />
   </div>
 </template> 

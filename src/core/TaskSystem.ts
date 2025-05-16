@@ -1,14 +1,17 @@
 import { ref } from 'vue';
-import type { Task, CreateTaskParams } from '../types/Task';
+import type { Task, CreateTaskParams, TaskRoleFitScore } from '../types/Task';
 import { TaskStatus, TaskType } from '../types/Task';
 import type { Role } from '../types/Role';
 import { 
   createTaskFromParams, 
   calculateHourlyProgress, 
-  validateRequiredItems 
+  validateRequiredItems,
+  validateRoleForTask,
+  calculateRoleFitScore
 } from '../utils/taskUtils';
 import { removeItemQuantity, addItemQuantity } from '../utils/inventoryService';
 import { getEffectiveLevel } from '../types/Skill';
+import { getSettings } from '../utils/settingsService';
 
 /**
  * 工作系统
@@ -482,6 +485,15 @@ class TaskSystem {
       // 检查过期任务
       this.checkTaskDeadlines(roles);
       
+      // 获取用户设置
+      const settings = getSettings();
+      
+      // 根据用户设置决定是否自动分配任务
+      if (settings.autoAssignTasks) {
+        // 自动分配待分配任务给合适的角色
+        this.autoAssignRolesToTasks(roles);
+      }
+      
       // 更新时间检查点
       this.lastTimeUpdateHour = hour;
       this.lastTimeUpdateDay = day;
@@ -504,6 +516,100 @@ class TaskSystem {
         this.failTask(task.id, '任务过期', roles);
       }
     }
+  }
+  
+  /**
+   * 自动分配角色到待分配任务
+   * 根据角色与任务的匹配评分，将可用角色分配给最合适的任务
+   * @param roles 所有角色数据
+   * @returns 成功分配的任务数量
+   */
+  public autoAssignRolesToTasks(roles: Role[]): number {
+    // 获取所有待分配任务
+    const pendingTasks = this.getTasksByStatus(TaskStatus.PENDING);
+    
+    // 如果没有待分配任务，直接返回
+    if (pendingTasks.length === 0) {
+      return 0;
+    }
+    
+    // 按优先级降序排序任务（优先处理高优先级任务）
+    const sortedTasks = [...pendingTasks].sort((a, b) => b.priority - a.priority);
+    
+    // 筛选出可用角色（没有当前任务的角色）
+    const availableRoles = roles.filter(role => role.isAvailable && !role.currentTaskId);
+    
+    // 如果没有可用角色，直接返回
+    if (availableRoles.length === 0) {
+      return 0;
+    }
+    
+    // 记录成功分配的任务数量
+    let assignedCount = 0;
+    
+    // 为每个任务找到最合适的角色
+    for (const task of sortedTasks) {
+      // 记录每个角色的匹配评分
+      const roleFitScores: TaskRoleFitScore[] = [];
+      
+      // 计算每个可用角色与当前任务的匹配度
+      for (const role of availableRoles) {
+        // 首先验证角色是否满足任务的基本要求
+        const { isValid } = validateRoleForTask(task, role);
+        
+        // 如果角色不满足基本要求，跳过
+        if (!isValid) continue;
+        
+        // 计算角色与任务的匹配评分
+        const fitScore = calculateRoleFitScore(task, role);
+        roleFitScores.push(fitScore);
+      }
+      
+      // 如果没有合适的角色，继续下一个任务
+      if (roleFitScores.length === 0) continue;
+      
+      // 按总体评分降序排序，找出最合适的角色
+      roleFitScores.sort((a, b) => b.overallScore - a.overallScore);
+      
+      // 获取评分最高的角色
+      const bestFitRole = roles.find(role => role.id === roleFitScores[0].roleId);
+      
+      // 验证物品需求
+      const { hasAllItems } = validateRequiredItems(task.requiredItems);
+      
+      // 如果找到合适的角色且有足够的物品，分配任务
+      if (bestFitRole && hasAllItems) {
+        const success = this.assignTaskToRole(task.id, bestFitRole.id, roles);
+        
+        if (success) {
+          assignedCount++;
+          
+          // 记录自动分配信息
+          task.history.push({
+            timestamp: new Date(),
+            type: 'auto-assigned',
+            description: `系统自动分配给 ${bestFitRole.name}`,
+            data: { roleId: bestFitRole.id, score: roleFitScores[0].overallScore }
+          });
+          
+          // 从可用角色列表中移除已分配的角色
+          const roleIndex = availableRoles.findIndex(r => r.id === bestFitRole.id);
+          if (roleIndex !== -1) {
+            availableRoles.splice(roleIndex, 1);
+          }
+          
+          // 如果没有更多可用角色，结束分配
+          if (availableRoles.length === 0) break;
+        }
+      }
+    }
+    
+    // 如果有任务被分配，触发事件
+    if (assignedCount > 0) {
+      this.triggerEvent('tasksAutoAssigned', assignedCount);
+    }
+    
+    return assignedCount;
   }
   
   /**

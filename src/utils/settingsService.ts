@@ -6,12 +6,14 @@
 // 定义设置项接口
 export interface AppSettings {
   showAvatars: boolean;
+  autoAssignTasks: boolean;
   // 未来可以在这里添加更多的设置项
 }
 
 // 默认设置
 const defaultSettings: AppSettings = {
-  showAvatars: true
+  showAvatars: true,
+  autoAssignTasks: true
 };
 
 // 事件名称常量
