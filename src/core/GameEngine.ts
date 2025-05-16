@@ -310,6 +310,34 @@ export class GameEngine {
     this.currentDay.value = day;
     this.currentHour.value = hour;
   }
+  
+  /**
+   * 加载游戏状态
+   * @param gameState 游戏状态数据
+   */
+  public loadGameState(gameState: any): void {
+    // 更新时间
+    this.currentYear.value = gameState.currentYear;
+    this.currentMonth.value = gameState.currentMonth;
+    this.currentDay.value = gameState.currentDay;
+    this.currentHour.value = gameState.currentHour;
+    
+    // 更新上次食物消耗日期
+    this.lastFoodConsumptionDay.value = gameState.lastFoodConsumptionDay;
+    
+    // 更新角色数据
+    this.roles.value = gameState.roles;
+    
+    // 触发加载游戏事件
+    this.triggerEvent('gameStateLoaded');
+  }
+  
+  /**
+   * 获取上次食物消耗的日期
+   */
+  public getLastFoodConsumptionDay(): number {
+    return this.lastFoodConsumptionDay.value;
+  }
 }
 
 // 导出单例游戏引擎实例

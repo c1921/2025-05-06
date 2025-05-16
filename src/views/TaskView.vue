@@ -8,11 +8,11 @@ import { TaskStatus } from '../types/Task';
 import { 
   formatTaskDate, 
   getTaskStatusText, 
-  getTaskColor,
   validateRequiredItems,
   validateRoleForTask,
   calculateRoleFitScore } from '../utils/taskUtils';
 import TaskCreationDialog from '../components/TaskCreationModal.vue';
+import { saveGame } from '../utils/saveService';
 
 // 所有角色
 const roles = computed(() => gameEngine.getRoles());
@@ -120,6 +120,7 @@ const assignTaskToRole = (taskId: string, roleId: string) => {
   const success = taskSystem.assignTaskToRole(taskId, roleId, roles.value);
   if (success) {
     loadTasks();
+    saveGame();
   } else {
     errorMessage.value = '分配失败，请稍后再试';
   }
@@ -130,6 +131,7 @@ const unassignTask = (taskId: string) => {
   const success = taskSystem.unassignTask(taskId, roles.value);
   if (success) {
     loadTasks();
+    saveGame();
   }
 };
 
@@ -141,6 +143,7 @@ const cancelTask = (taskId: string) => {
       selectedTask.value = null;
     }
     loadTasks();
+    saveGame();
   }
 };
 
@@ -180,6 +183,7 @@ const closeTaskCreationDialog = () => {
 // 任务创建成功回调
 const onTaskCreated = () => {
   loadTasks();
+  saveGame();
 };
 
 // 处理任务创建和完成事件
@@ -188,10 +192,36 @@ onMounted(() => {
   loadTasks();
   
   // 监听任务事件
-  taskSystem.addEventListener('taskCreated', () => loadTasks());
-  taskSystem.addEventListener('taskCompleted', () => loadTasks());
-  taskSystem.addEventListener('taskProgressUpdated', () => loadTasks());
-  taskSystem.addEventListener('taskCycleCompleted', () => loadTasks());
+  taskSystem.addEventListener('taskCreated', () => {
+    loadTasks();
+    saveGame();
+  });
+  
+  taskSystem.addEventListener('taskAssigned', () => {
+    loadTasks();
+    saveGame();
+  });
+  
+  taskSystem.addEventListener('taskCompleted', () => {
+    loadTasks();
+    saveGame();
+  });
+  
+  taskSystem.addEventListener('taskUnassigned', () => {
+    loadTasks();
+    saveGame();
+  });
+  
+  taskSystem.addEventListener('taskCancelled', () => {
+    loadTasks();
+    saveGame();
+  });
+  
+  taskSystem.addEventListener('taskFailed', () => {
+    loadTasks();
+    saveGame();
+  });
+  
   taskSystem.addEventListener('tasksAutoAssigned', handleAutoAssignment);
 });
 

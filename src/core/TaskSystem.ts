@@ -655,6 +655,37 @@ class TaskSystem {
       handler(...args);
     }
   }
+  
+  /**
+   * 加载任务
+   * @param tasks 任务数组
+   */
+  public loadTasks(tasks: Task[]): void {
+    if (!tasks || !Array.isArray(tasks)) {
+      return;
+    }
+    
+    // 清空当前进行中的任务列表
+    this.tasks.value = [];
+    
+    // 添加所有任务
+    this.tasks.value = tasks.map(task => ({
+      ...task,
+      // 确保创建时间、截止时间、开始时间和完成时间都是 Date 对象
+      creationTime: new Date(task.creationTime),
+      deadline: task.deadline ? new Date(task.deadline) : null,
+      startTime: task.startTime ? new Date(task.startTime) : null,
+      completionTime: task.completionTime ? new Date(task.completionTime) : null,
+      // 确保历史记录中的时间戳都是 Date 对象
+      history: task.history.map(item => ({
+        ...item,
+        timestamp: new Date(item.timestamp)
+      }))
+    }));
+    
+    // 触发任务加载事件
+    this.triggerEvent('tasksLoaded', this.tasks.value);
+  }
 }
 
 // 导出单例实例

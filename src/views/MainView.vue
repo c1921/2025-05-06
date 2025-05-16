@@ -9,6 +9,7 @@ import TimeControl from '../components/TimeControl.vue';
 import SettingsModal from '../components/SettingsModal.vue';
 import { gameEngine } from '../core/GameEngine';
 import { getItemQuantity } from '../utils/inventoryService';
+import { saveGame } from '../utils/saveService';
 
 // 食物物品ID（根据items.json）
 const FOOD_ITEM_ID = '9';
@@ -25,6 +26,9 @@ const timeControlRef = ref(null);
 // 食物库存数量
 const foodQuantity = ref(getItemQuantity(FOOD_ITEM_ID));
 
+// 自动保存计数器
+const autoSaveCounter = ref(0);
+
 // 切换标签页
 const setActiveTab = (tabId: string) => {
   activeTab.value = tabId;
@@ -35,6 +39,24 @@ watch(() => activeTab.value, (newTab) => {
   isMapVisible.value = newTab === 'map';
 });
 
+// 自动保存处理函数
+const handleAutoSave = () => {
+  // 每8小时自动保存一次
+  autoSaveCounter.value++;
+  if (autoSaveCounter.value >= 8) {
+    saveGame();
+    autoSaveCounter.value = 0;
+    console.log('自动保存成功');
+  }
+};
+
+// 监听游戏时间变化，处理自动保存
+watch(() => gameEngine.getCurrentHour(), (newHour, oldHour) => {
+  if (newHour !== oldHour) {
+    handleAutoSave();
+  }
+});
+
 // 监听食物消耗事件，更新库存显示
 onMounted(() => {
   // 直接从GameEngine监听事件
@@ -42,6 +64,9 @@ onMounted(() => {
     // 更新食物库存显示
     foodQuantity.value = getItemQuantity(FOOD_ITEM_ID);
   });
+  
+  // 初始设置自动保存一次
+  saveGame();
 });
 
 // 初始设置
