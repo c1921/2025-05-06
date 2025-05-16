@@ -191,6 +191,7 @@ onMounted(() => {
   taskSystem.addEventListener('taskCreated', () => loadTasks());
   taskSystem.addEventListener('taskCompleted', () => loadTasks());
   taskSystem.addEventListener('taskProgressUpdated', () => loadTasks());
+  taskSystem.addEventListener('taskCycleCompleted', () => loadTasks());
   taskSystem.addEventListener('tasksAutoAssigned', handleAutoAssignment);
 });
 
@@ -333,35 +334,63 @@ const handleAutoAssignment = (assignedCount: number) => {
           <div 
             v-for="task in tasks" 
             :key="task.id"
-            class="card cursor-pointer transition-all hover:shadow-md"
-            :class="[getTaskColor(task), selectedTask?.id === task.id ? 'border-2 border-primary' : '']"
+            class="card overflow-hidden bg-base-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
             @click="selectTask(task)"
           >
             <div class="card-body p-4">
-              <div class="flex justify-between items-start mb-2">
-                <h3 class="card-title text-base">{{ task.name }}</h3>
-                <span 
-                  class="badge" 
-                  :class="getStatusClass(task.status)"
-                >
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="text-base font-semibold truncate">{{ task.name }}</h3>
+                <div class="badge" :class="getStatusClass(task.status)">
                   {{ getTaskStatusText(task.status) }}
-                </span>
+                </div>
               </div>
               
-              <p class="text-sm mb-2 line-clamp-1">{{ task.description }}</p>
-              
-              <div class="flex justify-between items-center text-xs">
-                <div class="flex items-center">
-                  <span class="icon-[tabler--user] size-4 mr-1"></span>
-                  <span>
-                    {{ getRoleName(task.assignedRoleId) }}
-                    <span v-if="isAutoAssigned(task)" class="badge badge-xs badge-info ml-1">自动分配</span>
+              <!-- 添加任务进度条 -->
+              <div class="mb-2" v-if="task.isRecurring || task.status === 'in_progress'">
+                <div class="flex justify-between text-xs mb-1">
+                  <span>{{ task.progress }}%</span>
+                  <span v-if="task.isRecurring && task.currentCycle">
+                    {{ task.cycleCount ? `周期 ${task.currentCycle}/${task.cycleCount}` : `周期 ${task.currentCycle}` }}
                   </span>
                 </div>
-                <div class="flex items-center">
-                  <span class="icon-[tabler--clock] size-4 mr-1"></span>
-                  <span>
-                    {{ task.progress }}%
+                <progress 
+                  class="progress progress-primary w-full h-1" 
+                  :value="task.progress" 
+                  max="100"
+                ></progress>
+              </div>
+              
+              <p class="text-sm opacity-80 line-clamp-2 mb-2">{{ task.description }}</p>
+              
+              <div class="flex items-center justify-between text-xs opacity-70">
+                <div>
+                  <span class="inline-block mr-1">{{ formatTaskDate(task.creationTime) }}</span>
+                  {{ task.deadline ? '截止: ' + formatTaskDate(task.deadline) : '' }}
+                </div>
+                
+                <div class="flex items-center gap-1">
+                  <!-- 显示循环信息 -->
+                  <span v-if="task.isRecurring" class="badge badge-accent badge-sm text-xs">
+                    {{ task.currentCycle && task.cycleCount 
+                        ? `循环 ${task.currentCycle}/${task.cycleCount}` 
+                        : (task.currentCycle 
+                            ? `循环 ${task.currentCycle}` 
+                            : '循环') }}
+                  </span>
+                  
+                  <span 
+                    v-if="task.assignedRoleId" 
+                    class="badge badge-outline badge-sm text-xs"
+                  >
+                    {{ getRoleName(task.assignedRoleId) }}
+                  </span>
+                  
+                  <span 
+                    v-if="isAutoAssigned(task)" 
+                    class="tooltip tooltip-left" 
+                    data-tip="由系统自动分配"
+                  >
+                    <span class="icon-[tabler--robot] size-4 mr-1"></span>
                   </span>
                 </div>
               </div>
@@ -407,6 +436,10 @@ const handleAutoAssignment = (assignedCount: number) => {
                   {{ selectedTask.progress }}%
                 </div>
                 <div class="stat-desc">
+                  <div class="flex justify-between text-xs mb-1" v-if="selectedTask.isRecurring && selectedTask.currentCycle">
+                    <span>当前周期</span>
+                    <span>{{ selectedTask.cycleCount ? `${selectedTask.currentCycle}/${selectedTask.cycleCount}` : selectedTask.currentCycle }}</span>
+                  </div>
                   <progress class="progress progress-primary w-full" :value="selectedTask.progress" max="100"></progress>
                 </div>
               </div>
@@ -514,7 +547,14 @@ const handleAutoAssignment = (assignedCount: number) => {
               >
                 <div class="flex justify-between items-center">
                   <span class="font-medium">
-                    {{ history.type === 'auto-assigned' ? '自动分配' : history.description }}
+                    <template v-if="history.type === 'auto-assigned'">自动分配</template>
+                    <template v-else-if="history.type === 'cycle_completed'">
+                      <span class="text-info">完成周期 {{ history.data?.cycle }}</span>
+                    </template>
+                    <template v-else-if="history.type === 'all_cycles_completed'">
+                      <span class="text-success">完成所有周期</span>
+                    </template>
+                    <template v-else>{{ history.description }}</template>
                   </span>
                   <span class="text-xs opacity-75">{{ formatTaskDate(history.timestamp) }}</span>
                 </div>

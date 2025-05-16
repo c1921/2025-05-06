@@ -295,6 +295,56 @@ class TaskSystem {
     // 生成产出物品
     this.generateOutputItems(task, role);
     
+    // 更新角色状态
+    role.currentTaskId = null;
+    role.isAvailable = true;
+    role.workState.taskHistory.unshift(taskId);
+    
+    // 限制历史记录长度
+    if (role.workState.taskHistory.length > 10) {
+      role.workState.taskHistory.pop();
+    }
+    
+    // 处理循环任务 - 如果任务标记为循环，则创建一个新的相同任务
+    if (task.isRecurring) {
+      // 检查当前循环次数
+      const currentCycle = task.currentCycle || 1;
+      const cycleCount = task.cycleCount || 0; // 0表示无限循环
+      
+      // 如果当前循环次数小于总循环次数，或者当前循环次数小于总循环次数
+      if (cycleCount === 0 || currentCycle < cycleCount) {
+        // 记录循环完成信息
+        task.history.push({
+          timestamp: new Date(),
+          type: 'cycle_completed',
+          description: `完成第 ${currentCycle} 次循环`,
+          data: { roleId: role.id, cycle: currentCycle }
+        });
+        
+        // 更新循环次数
+        task.currentCycle = (currentCycle + 1);
+        
+        // 更新任务状态为待分配，进度为0，分配角色为null，开始时间为null，完成时间为null
+        task.status = TaskStatus.PENDING;
+        task.progress = 0;
+        task.assignedRoleId = null;
+        task.startTime = null;
+        task.completionTime = null;
+        
+        // 触发循环任务完成事件
+        this.triggerEvent('taskCycleCompleted', task, role, currentCycle);
+        return true;
+      }
+      
+      // 如果已经完成所有循环，记录完成信息
+      task.history.push({
+        timestamp: new Date(),
+        type: 'all_cycles_completed',
+        description: `完成所有循环`,
+        data: { roleId: role.id, totalCycles: currentCycle }
+      });
+    }
+    
     // 更新任务状态
     task.status = TaskStatus.COMPLETED;
     task.progress = 100;
@@ -306,53 +356,8 @@ class TaskSystem {
       data: { roleId: role.id }
     });
     
-    // 更新角色状态
-    role.currentTaskId = null;
-    role.isAvailable = true;
-    role.workState.taskHistory.unshift(taskId);
-    
-    // 限制历史记录长度
-    if (role.workState.taskHistory.length > 10) {
-      role.workState.taskHistory.pop();
-    }
-    
     // 触发工作完成事件
     this.triggerEvent('taskCompleted', task, role);
-    
-    // 处理循环任务 - 如果任务标记为循环，则创建一个新的相同任务
-    if (task.isRecurring) {
-      // 创建新任务参数
-      const newTaskParams: CreateTaskParams = {
-        name: task.name,
-        type: task.type,
-        description: task.description,
-        requiredSkills: task.requiredSkills,
-        priority: task.priority,
-        requiredItems: task.requiredItems,
-        outputItems: task.outputItems.map(item => ({
-          ...item,
-          qualityModifier: undefined // 重置质量修饰符
-        })),
-        timeEstimate: task.timeEstimate,
-        tags: task.tags,
-        isRecurring: true, // 保持循环属性
-        isUserCreated: task.isUserCreated
-      };
-      
-      // 创建新任务
-      const newTask = this.createTask(newTaskParams);
-      
-      // 记录任务循环创建
-      newTask.history.push({
-        timestamp: new Date(),
-        type: 'recurring_creation',
-        description: '由循环任务自动创建',
-        data: { sourceTaskId: task.id }
-      });
-      
-      // 触发循环任务创建事件
-      this.triggerEvent('recurringTaskCreated', newTask, task);
-    }
     
     return true;
   }

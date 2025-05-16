@@ -24,6 +24,9 @@ const selectedTemplate = ref<string | null>(null);
 // 任务循环设置
 const isRecurring = ref(false);
 
+// 循环次数（0表示无限循环）
+const cycleCount = ref(0);
+
 // 任务详情对话框
 const showTaskDetails = ref(false);
 
@@ -35,6 +38,7 @@ watch(() => props.isOpen, (newValue) => {
     errorMessage.value = '';
     selectedTemplate.value = null;
     isRecurring.value = false;
+    cycleCount.value = 0;
     showTaskDetails.value = false;
   }
 });
@@ -115,14 +119,18 @@ const createTask = () => {
   if (!selectedTemplate.value) return;
   
   const customParams = {
-    isRecurring: isRecurring.value
+    isRecurring: isRecurring.value,
+    cycleCount: isRecurring.value ? cycleCount.value : undefined
   };
   
   const success = createTaskFromTemplateId(selectedTemplate.value, customParams);
   
   if (success) {
     const templateName = taskTemplates[selectedTemplate.value]?.name || '未知任务';
-    successMessage.value = `成功创建任务：${templateName}${isRecurring.value ? '（循环）' : ''}`;
+    const cycleText = isRecurring.value 
+      ? (cycleCount.value > 0 ? `（循环${cycleCount.value}次）` : '（无限循环）') 
+      : '';
+    successMessage.value = `成功创建任务：${templateName}${cycleText}`;
     
     // 通知父组件任务已创建
     emit('taskCreated');
@@ -131,6 +139,7 @@ const createTask = () => {
     showTaskDetails.value = false;
     selectedTemplate.value = null;
     isRecurring.value = false;
+    cycleCount.value = 0;
   } else {
     errorMessage.value = '创建任务失败，请重试';
   }
@@ -146,6 +155,7 @@ const backToList = () => {
   showTaskDetails.value = false;
   selectedTemplate.value = null;
   isRecurring.value = false;
+  cycleCount.value = 0;
 };
 </script>
 
@@ -215,8 +225,21 @@ const backToList = () => {
                   class="checkbox checkbox-sm mr-2" 
                   v-model="isRecurring"
                 />
-                <span class="label-text">设为循环任务（任务完成后自动创建新的相同任务）</span>
+                <span class="label-text">设为循环任务（同一任务可多次执行）</span>
               </label>
+            </div>
+            
+            <div v-if="isRecurring" class="form-control mb-4 pl-8">
+              <label class="label">
+                <span class="label-text">循环次数（0表示无限循环）</span>
+              </label>
+              <input 
+                type="number" 
+                min="0" 
+                step="1" 
+                class="input input-bordered input-sm w-32" 
+                v-model="cycleCount"
+              />
             </div>
             
             <!-- 预览信息 -->
@@ -264,7 +287,9 @@ const backToList = () => {
                 <div class="mt-2">
                   <div class="flex items-center">
                     <div class="badge badge-sm mr-2">{{ getTaskTypeName(currentTemplate.type) }}</div>
-                    <div v-if="isRecurring" class="badge badge-sm badge-accent">循环</div>
+                    <div v-if="isRecurring" class="badge badge-sm badge-accent">
+                      循环{{ cycleCount > 0 ? cycleCount + '次' : '(无限)' }}
+                    </div>
                   </div>
                 </div>
               </div>

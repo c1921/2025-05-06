@@ -53,7 +53,9 @@ export function createTaskFromParams(params: CreateTaskParams): Task {
     ],
     tags: params.tags || [],
     isUserCreated: true,
-    isRecurring: params.isRecurring || false // 添加任务的isRecurring属性支持
+    isRecurring: params.isRecurring || false, // 添加任务的isRecurring属性支持
+    cycleCount: params.isRecurring ? (params.cycleCount ?? 0) : undefined, // 总循环次数，默认无限制循环
+    currentCycle: params.isRecurring ? 1 : undefined, // 当前循环次数，第一次开始
   };
 }
 
