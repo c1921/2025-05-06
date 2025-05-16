@@ -376,15 +376,22 @@ const handleAutoAssignment = (assignedCount: number) => {
               </div>
               
               <!-- 添加任务进度条 -->
-              <div class="mb-2" v-if="task.isRecurring || task.status === 'in_progress'">
+              <div class="mb-2" v-if="task.isRecurring || task.status === 'in_progress' || (task.status === 'pending' && task.progress > 0)">
                 <div class="flex justify-between text-xs mb-1">
                   <span>{{ task.progress }}%</span>
                   <span v-if="task.isRecurring && task.currentCycle">
                     {{ task.cycleCount ? `周期 ${task.currentCycle}/${task.cycleCount}` : `周期 ${task.currentCycle}` }}
                   </span>
+                  <span v-else-if="task.status === 'pending' && task.progress > 0" class="text-warning">
+                    已暂停
+                  </span>
                 </div>
                 <progress 
-                  class="progress progress-primary w-full h-1" 
+                  class="progress w-full h-1" 
+                  :class="{
+                    'progress-primary': task.status === 'in_progress', 
+                    'progress-warning': task.status === 'pending' && task.progress > 0
+                  }"
                   :value="task.progress" 
                   max="100"
                 ></progress>
@@ -462,15 +469,25 @@ const handleAutoAssignment = (assignedCount: number) => {
               
               <div class="stat">
                 <div class="stat-title">进度</div>
-                <div class="stat-value text-base">
+                <div class="stat-value text-base flex items-center">
                   {{ selectedTask.progress }}%
+                  <span v-if="selectedTask.status === 'pending' && selectedTask.progress > 0" 
+                    class="badge badge-warning badge-sm ml-2 text-xs">已暂停</span>
                 </div>
                 <div class="stat-desc">
                   <div class="flex justify-between text-xs mb-1" v-if="selectedTask.isRecurring && selectedTask.currentCycle">
                     <span>当前周期</span>
                     <span>{{ selectedTask.cycleCount ? `${selectedTask.currentCycle}/${selectedTask.cycleCount}` : selectedTask.currentCycle }}</span>
                   </div>
-                  <progress class="progress progress-primary w-full" :value="selectedTask.progress" max="100"></progress>
+                  <progress 
+                    class="progress w-full" 
+                    :class="{
+                      'progress-primary': selectedTask.status === 'in_progress', 
+                      'progress-warning': selectedTask.status === 'pending' && selectedTask.progress > 0
+                    }"
+                    :value="selectedTask.progress" 
+                    max="100"
+                  ></progress>
                 </div>
               </div>
             </div>

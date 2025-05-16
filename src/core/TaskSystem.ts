@@ -123,15 +123,23 @@ class TaskSystem {
       return false;
     }
     
+    // 获取当前进度
+    const currentProgress = task.progress || 0;
+    const isResuming = currentProgress > 0;
+    
     // 更新任务状态
     task.assignedRoleId = roleId;
     task.status = TaskStatus.IN_PROGRESS;
     task.startTime = new Date();
+    
+    // 添加分配记录，如果有已保存的进度则在描述中提及
     task.history.push({
       timestamp: new Date(),
       type: 'assigned',
-      description: `分配给 ${role.name}`,
-      data: { roleId }
+      description: isResuming 
+        ? `分配给 ${role.name}（从 ${Math.round(currentProgress)}% 继续）` 
+        : `分配给 ${role.name}`,
+      data: { roleId, isResuming, previousProgress: currentProgress }
     });
     
     // 更新角色状态
@@ -170,16 +178,18 @@ class TaskSystem {
       return false;
     }
     
-    // 更新任务状态
+    // 更新任务状态 - 保留进度，仅更改状态和移除分配
     task.assignedRoleId = null;
     task.status = TaskStatus.PENDING;
-    task.progress = 0;
+    // 不再重置进度: task.progress = 0;
     task.startTime = null;
+    
+    // 记录当前进度到历史记录
     task.history.push({
       timestamp: new Date(),
       type: 'unassigned',
-      description: `从 ${role.name} 取消分配`,
-      data: { roleId }
+      description: `从 ${role.name} 取消分配，已完成 ${Math.round(task.progress)}%`,
+      data: { roleId, progressSaved: task.progress }
     });
     
     // 更新角色状态
