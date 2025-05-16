@@ -9,7 +9,9 @@ import skillsData from '../data/skills.json';
 function convertSkillIdsToString(skills: any[]): Skill[] {
   return skills.map(skill => ({
     ...skill,
-    id: String(skill.id)
+    id: String(skill.id),
+    baseLevel: skill.baseLevel ?? 0,
+    bonusLevel: skill.bonusLevel ?? 0
   }));
 }
 
