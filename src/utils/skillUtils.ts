@@ -5,23 +5,22 @@ import type { TraitEffectsMap } from '../types/Trait';
 import { traitEffectsMap } from './traitEffects';
 import skillsData from '../data/skills.json';
 
-// 辅助函数：转换ID类型为字符串
-function convertSkillIdsToString(skills: any[]): Skill[] {
+// 辅助函数：设置技能默认值
+function setSkillDefaults(skills: any[]): Skill[] {
   return skills.map(skill => ({
     ...skill,
-    id: String(skill.id),
     baseLevel: skill.baseLevel ?? 0,
     bonusLevel: skill.bonusLevel ?? 0
   }));
 }
 
-// 从JSON导入技能数据并转换ID类型
-const skillDataWithStringIds = {
-  combatSkills: convertSkillIdsToString(skillsData.combatSkills),
-  magicSkills: convertSkillIdsToString(skillsData.magicSkills),
-  survivalSkills: convertSkillIdsToString(skillsData.survivalSkills),
-  socialSkills: convertSkillIdsToString(skillsData.socialSkills),
-  craftingSkills: convertSkillIdsToString(skillsData.craftingSkills)
+// 从JSON导入技能数据并设置默认值
+const skillDataWithDefaults = {
+  combatSkills: setSkillDefaults(skillsData.combatSkills),
+  magicSkills: setSkillDefaults(skillsData.magicSkills),
+  survivalSkills: setSkillDefaults(skillsData.survivalSkills),
+  socialSkills: setSkillDefaults(skillsData.socialSkills),
+  craftingSkills: setSkillDefaults(skillsData.craftingSkills)
 };
 
 // 解构技能数据
@@ -31,7 +30,7 @@ const {
   survivalSkills,
   socialSkills,
   craftingSkills
-} = skillDataWithStringIds;
+} = skillDataWithDefaults;
 
 // 默认技能列表
 export const defaultSkills: Skill[] = [

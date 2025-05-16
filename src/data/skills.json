@@ -1,19 +1,19 @@
 {
   "combatSkills": [
     {
-      "id": 1,
+      "id": "swordsmanship",
       "name": "Swordsmanship",
       "type": "Combat",
       "description": "Skill with swords and bladed weapons"
     },
     {
-      "id": 2,
+      "id": "archery",
       "name": "Archery",
       "type": "Combat",
       "description": "Proficiency with bows and ranged weapons"
     },
     {
-      "id": 3,
+      "id": "hand_to_hand",
       "name": "Hand-to-hand",
       "type": "Combat",
       "description": "Unarmed combat techniques"
@@ -21,19 +21,19 @@
   ],
   "magicSkills": [
     {
-      "id": 4,
+      "id": "elemental_magic",
       "name": "Elemental Magic",
       "type": "Magic",
       "description": "Control over natural elements"
     },
     {
-      "id": 5,
+      "id": "healing",
       "name": "Healing",
       "type": "Magic",
       "description": "Restoration and recovery magic"
     },
     {
-      "id": 6,
+      "id": "illusion",
       "name": "Illusion",
       "type": "Magic",
       "description": "Creation of false sensory impressions"
@@ -41,19 +41,19 @@
   ],
   "survivalSkills": [
     {
-      "id": 7,
+      "id": "tracking",
       "name": "Tracking",
       "type": "Survival",
       "description": "Following trails and finding targets"
     },
     {
-      "id": 8,
+      "id": "foraging",
       "name": "Foraging",
       "type": "Survival",
       "description": "Finding food and resources in the wild"
     },
     {
-      "id": 9,
+      "id": "navigation",
       "name": "Navigation",
       "type": "Survival",
       "description": "Finding direction and creating maps"
@@ -61,19 +61,19 @@
   ],
   "socialSkills": [
     {
-      "id": 10,
+      "id": "persuasion",
       "name": "Persuasion",
       "type": "Social",
       "description": "Convincing others through logic and appeal"
     },
     {
-      "id": 11,
+      "id": "intimidation",
       "name": "Intimidation",
       "type": "Social",
       "description": "Using fear or strength to influence others"
     },
     {
-      "id": 12,
+      "id": "deception",
       "name": "Deception",
       "type": "Social",
       "description": "Lying and misleading convincingly"
@@ -81,19 +81,19 @@
   ],
   "craftingSkills": [
     {
-      "id": 13,
+      "id": "smithing",
       "name": "Smithing",
       "type": "Crafting",
       "description": "Creation and repair of metal items"
     },
     {
-      "id": 14,
+      "id": "alchemy",
       "name": "Alchemy",
       "type": "Crafting",
       "description": "Brewing potions and chemical compounds"
     },
     {
-      "id": 15,
+      "id": "engineering",
       "name": "Engineering",
       "type": "Crafting",
       "description": "Building and designing complex structures"
