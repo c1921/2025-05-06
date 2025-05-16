@@ -65,7 +65,6 @@ export const TaskFailureReason = {
  */
 export interface SkillRequirement {
   skillId: string;           // 技能ID
-  skillName: string;         // 技能名称
   requiredValue: number;     // 需要的最低技能值
 }
 
@@ -75,7 +74,6 @@ export interface SkillRequirement {
  */
 export interface ItemRequirement {
   itemId: string;            // 物品ID
-  itemName: string;          // 物品名称
   quantity: number;          // 需要的数量
 }
 
@@ -85,7 +83,6 @@ export interface ItemRequirement {
  */
 export interface ItemOutput {
   itemId: string;            // 物品ID
-  itemName: string;          // 物品名称
   quantity: number;          // 产出数量
   qualityModifier?: number;  // 品质修饰符，由角色技能影响
 }

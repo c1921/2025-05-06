@@ -14,8 +14,7 @@ export const taskTemplates: Record<string, TaskTemplate> = {
     description: '将原木加工成木材',
     requiredSkills: [
       {
-        skillId: '3', // 工艺技能
-        skillName: '工艺',
+        skillId: 'smithing',
         requiredValue: 2
       }
     ],
@@ -26,15 +25,13 @@ export const taskTemplates: Record<string, TaskTemplate> = {
     },
     requiredItems: [
       {
-        itemId: '7', // 木材 (Wood)
-        itemName: '木材',
+        itemId: 'wood',
         quantity: 2
       }
     ],
     outputItems: [
       {
-        itemId: '8', // 石材 (Stone)，作为示例，实际应该是加工后的木板
-        itemName: '石材',
+        itemId: 'stone',
         quantity: 4
       }
     ],
@@ -50,8 +47,7 @@ export const taskTemplates: Record<string, TaskTemplate> = {
     description: '准备食物供角色食用',
     requiredSkills: [
       {
-        skillId: '5', // 烹饪技能
-        skillName: '烹饪',
+        skillId: 'alchemy',
         requiredValue: 3
       }
     ],
@@ -62,15 +58,13 @@ export const taskTemplates: Record<string, TaskTemplate> = {
     },
     requiredItems: [
       {
-        itemId: '7', // 木材 (当作食材)
-        itemName: '食材',
+        itemId: 'wood',
         quantity: 3
       }
     ],
     outputItems: [
       {
-        itemId: '9', // 食物 (Food)
-        itemName: '食物',
+        itemId: 'food',
         quantity: 6
       }
     ],
@@ -86,8 +80,7 @@ export const taskTemplates: Record<string, TaskTemplate> = {
     description: '收集基础资源',
     requiredSkills: [
       {
-        skillId: '4', // 采集技能
-        skillName: '采集',
+        skillId: 'foraging',
         requiredValue: 1
       }
     ],
@@ -99,13 +92,11 @@ export const taskTemplates: Record<string, TaskTemplate> = {
     requiredItems: [],
     outputItems: [
       {
-        itemId: '7', // 木材 (Wood)
-        itemName: '木材',
+        itemId: 'wood',
         quantity: 5
       },
       {
-        itemId: '8', // 石材 (Stone)
-        itemName: '石材',
+        itemId: 'stone',
         quantity: 3
       }
     ],

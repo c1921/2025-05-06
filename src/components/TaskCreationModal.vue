@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue';
 import { taskTemplates, createTaskFromTemplateId } from '../utils/taskCreationUtils';
 import { TaskType } from '../types/Task';
+import { getSkillName, getItemName } from '../utils/taskUtils';
 
 const props = defineProps<{
   isOpen: boolean
@@ -255,7 +256,7 @@ const backToList = () => {
                   <div v-if="currentTemplate.skills && currentTemplate.skills.length > 0">
                     <div class="font-medium">所需技能</div>
                     <div v-for="skill in currentTemplate.skills" :key="skill.skillId" class="text-xs">
-                      {{ skill.skillName }}: {{ skill.requiredValue }}
+                      {{ getSkillName(skill.skillId) }}: {{ skill.requiredValue }}
                     </div>
                   </div>
                   
@@ -263,7 +264,7 @@ const backToList = () => {
                   <div v-if="currentTemplate.requiredItems && currentTemplate.requiredItems.length > 0">
                     <div class="font-medium">所需物品</div>
                     <div v-for="item in currentTemplate.requiredItems" :key="item.itemId" class="text-xs">
-                      {{ item.itemName }}: {{ item.quantity }}个
+                      {{ getItemName(item.itemId) }}: {{ item.quantity }}个
                     </div>
                   </div>
                   
@@ -271,7 +272,7 @@ const backToList = () => {
                   <div v-if="currentTemplate.outputItems && currentTemplate.outputItems.length > 0">
                     <div class="font-medium">产出物品</div>
                     <div v-for="item in currentTemplate.outputItems" :key="item.itemId" class="text-xs">
-                      {{ item.itemName }}: {{ item.quantity }}个
+                      {{ getItemName(item.itemId) }}: {{ item.quantity }}个
                     </div>
                   </div>
                   
@@ -325,7 +326,7 @@ const backToList = () => {
                   <div v-if="template.skills && template.skills.length > 0">
                     <div class="font-medium">所需技能</div>
                     <div v-for="skill in template.skills" :key="skill.skillId" class="text-xs">
-                      {{ skill.skillName }}: {{ skill.requiredValue }}
+                      {{ getSkillName(skill.skillId) }}: {{ skill.requiredValue }}
                     </div>
                   </div>
                   
@@ -333,7 +334,7 @@ const backToList = () => {
                   <div v-if="template.requiredItems && template.requiredItems.length > 0">
                     <div class="font-medium">所需物品</div>
                     <div v-for="item in template.requiredItems" :key="item.itemId" class="text-xs">
-                      {{ item.itemName }}: {{ item.quantity }}个
+                      {{ getItemName(item.itemId) }}: {{ item.quantity }}个
                     </div>
                   </div>
                   
@@ -341,7 +342,7 @@ const backToList = () => {
                   <div v-if="template.outputItems && template.outputItems.length > 0">
                     <div class="font-medium">产出物品</div>
                     <div v-for="item in template.outputItems" :key="item.itemId" class="text-xs">
-                      {{ item.itemName }}: {{ item.quantity }}个
+                      {{ getItemName(item.itemId) }}: {{ item.quantity }}个
                     </div>
                   </div>
                   

@@ -10,6 +10,29 @@ import type {
 import { TaskStatus } from '../types/Task';
 import { getItemQuantity } from './inventoryService';
 import { getEffectiveLevel } from '../types/Skill';
+import { defaultSkills } from './skillUtils';
+import { loadBaseItems } from './itemUtils';
+
+/**
+ * 根据技能ID获取技能名称
+ * @param skillId 技能ID
+ * @returns 技能名称
+ */
+export function getSkillName(skillId: string): string {
+  const skill = defaultSkills.find(s => s.id === skillId);
+  return skill ? skill.name : skillId;
+}
+
+/**
+ * 根据物品ID获取物品名称
+ * @param itemId 物品ID
+ * @returns 物品名称
+ */
+export function getItemName(itemId: string): string {
+  const items = loadBaseItems();
+  const item = items.find(i => i.id === itemId);
+  return item ? item.name : itemId;
+}
 
 /**
  * 生成唯一的工作ID
@@ -173,7 +196,7 @@ export function calculateRoleFitScore(task: Task, role: Role): TaskRoleFitScore 
         }
       }
       
-      skillDetails[requiredSkill.skillName] = skillMatch;
+      skillDetails[getSkillName(requiredSkill.skillId)] = skillMatch;
       skillScore += skillMatch;
     }
     
@@ -229,7 +252,7 @@ export function validateRoleForTask(task: Task, role: Role): { isValid: boolean,
     if (!roleSkill || getEffectiveLevel(roleSkill) < requiredSkill.requiredValue) {
       return { 
         isValid: false, 
-        reason: `技能不足：${requiredSkill.skillName} (需要 ${requiredSkill.requiredValue})` 
+        reason: `技能不足：${getSkillName(requiredSkill.skillId)} (需要 ${requiredSkill.requiredValue})` 
       };
     }
   }
@@ -238,14 +261,18 @@ export function validateRoleForTask(task: Task, role: Role): { isValid: boolean,
 }
 
 /**
- * 验证是否有足够的物品完成工作
+ * 根据物品需求检查物品是否足够
  * @param requiredItems 所需物品列表
- * @returns 是否有足够物品和缺少的物品列表
+ * @returns 物品不足信息
  */
-export function validateRequiredItems(requiredItems: ItemRequirement[]): { 
-  hasAllItems: boolean, 
-  missingItems: { itemId: string, itemName: string, required: number, available: number }[] 
+export function checkItemRequirements(requiredItems: ItemRequirement[]): {
+  isValid: boolean,
+  missingItems: { itemId: string, required: number, available: number }[]
 } {
+  if (!requiredItems || requiredItems.length === 0) {
+    return { isValid: true, missingItems: [] };
+  }
+  
   const missingItems = [];
   
   for (const item of requiredItems) {
@@ -254,7 +281,6 @@ export function validateRequiredItems(requiredItems: ItemRequirement[]): {
     if (available < item.quantity) {
       missingItems.push({
         itemId: item.itemId,
-        itemName: item.itemName,
         required: item.quantity,
         available
       });
@@ -262,7 +288,7 @@ export function validateRequiredItems(requiredItems: ItemRequirement[]): {
   }
   
   return {
-    hasAllItems: missingItems.length === 0,
+    isValid: missingItems.length === 0,
     missingItems
   };
 }

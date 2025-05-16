@@ -5,7 +5,7 @@ import type { Role } from '../types/Role';
 import { 
   createTaskFromParams, 
   calculateHourlyProgress, 
-  validateRequiredItems,
+  checkItemRequirements,
   validateRoleForTask,
   calculateRoleFitScore
 } from '../utils/taskUtils';
@@ -118,8 +118,8 @@ class TaskSystem {
     }
     
     // 检查物品需求
-    const { hasAllItems } = validateRequiredItems(task.requiredItems);
-    if (!hasAllItems) {
+    const { isValid } = checkItemRequirements(task.requiredItems);
+    if (!isValid) {
       return false;
     }
     
@@ -589,11 +589,11 @@ class TaskSystem {
       // 获取评分最高的角色
       const bestFitRole = roles.find(role => role.id === roleFitScores[0].roleId);
       
-      // 验证物品需求
-      const { hasAllItems } = validateRequiredItems(task.requiredItems);
+      // 检查物品需求
+      const { isValid } = checkItemRequirements(task.requiredItems);
       
       // 如果找到合适的角色且有足够的物品，分配任务
-      if (bestFitRole && hasAllItems) {
+      if (bestFitRole && isValid) {
         const success = this.assignTaskToRole(task.id, bestFitRole.id, roles);
         
         if (success) {

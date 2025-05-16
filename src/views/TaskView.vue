@@ -8,9 +8,12 @@ import { TaskStatus } from '../types/Task';
 import { 
   formatTaskDate, 
   getTaskStatusText, 
-  validateRequiredItems,
+  checkItemRequirements,
   validateRoleForTask,
-  calculateRoleFitScore } from '../utils/taskUtils';
+  calculateRoleFitScore,
+  getTaskColor,
+  getSkillName,
+  getItemName } from '../utils/taskUtils';
 import TaskCreationDialog from '../components/TaskCreationModal.vue';
 import { saveGame } from '../utils/saveService';
 
@@ -108,10 +111,10 @@ const assignTaskToRole = (taskId: string, roleId: string) => {
   }
   
   // 验证物品是否足够
-  const { hasAllItems, missingItems } = validateRequiredItems(task.requiredItems);
-  if (!hasAllItems) {
+  const { isValid: itemIsValid, missingItems } = checkItemRequirements(task.requiredItems);
+  if (!itemIsValid) {
     errorMessage.value = `物品不足: ${missingItems.map(item => 
-      `${item.itemName}(需要${item.required}个，当前${item.available}个)`
+      `${getItemName(item.itemId)}(需要${item.required}个，当前${item.available}个)`
     ).join(', ')}`;
     return;
   }
@@ -501,7 +504,7 @@ const handleAutoAssignment = (assignedCount: number) => {
                   :key="skill.skillId"
                   class="badge badge-outline"
                 >
-                  {{ skill.skillName }}: {{ skill.requiredValue }}
+                  {{ getSkillName(skill.skillId) }}: {{ skill.requiredValue }}
                 </div>
               </div>
             </div>
@@ -515,7 +518,7 @@ const handleAutoAssignment = (assignedCount: number) => {
                   :key="item.itemId"
                   class="badge badge-outline"
                 >
-                  {{ item.itemName }}: {{ item.quantity }}个
+                  {{ getItemName(item.itemId) }}: {{ item.quantity }}个
                 </div>
               </div>
             </div>
@@ -529,7 +532,7 @@ const handleAutoAssignment = (assignedCount: number) => {
                   :key="item.itemId"
                   class="badge badge-outline"
                 >
-                  {{ item.itemName }}: {{ item.quantity }}个
+                  {{ getItemName(item.itemId) }}: {{ item.quantity }}个
                 </div>
               </div>
             </div>
