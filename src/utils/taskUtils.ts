@@ -52,7 +52,8 @@ export function createTaskFromParams(params: CreateTaskParams): Task {
       }
     ],
     tags: params.tags || [],
-    isUserCreated: true
+    isUserCreated: true,
+    isRecurring: params.isRecurring || false // 添加任务的isRecurring属性支持
   };
 }
 

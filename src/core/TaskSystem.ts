@@ -316,6 +316,41 @@ class TaskSystem {
     // 触发工作完成事件
     this.triggerEvent('taskCompleted', task, role);
     
+    // 处理循环任务 - 如果任务标记为循环，则创建一个新的相同任务
+    if (task.isRecurring) {
+      // 创建新任务参数
+      const newTaskParams: CreateTaskParams = {
+        name: task.name,
+        type: task.type,
+        description: task.description,
+        requiredSkills: task.requiredSkills,
+        priority: task.priority,
+        requiredItems: task.requiredItems,
+        outputItems: task.outputItems.map(item => ({
+          ...item,
+          qualityModifier: undefined // 重置质量修饰符
+        })),
+        timeEstimate: task.timeEstimate,
+        tags: task.tags,
+        isRecurring: true, // 保持循环属性
+        isUserCreated: task.isUserCreated
+      };
+      
+      // 创建新任务
+      const newTask = this.createTask(newTaskParams);
+      
+      // 记录任务循环创建
+      newTask.history.push({
+        timestamp: new Date(),
+        type: 'recurring_creation',
+        description: '由循环任务自动创建',
+        data: { sourceTaskId: task.id }
+      });
+      
+      // 触发循环任务创建事件
+      this.triggerEvent('recurringTaskCreated', newTask, task);
+    }
+    
     return true;
   }
   

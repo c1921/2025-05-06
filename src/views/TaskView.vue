@@ -3,9 +3,8 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { taskSystem } from '../core/TaskSystem';
 import { gameEngine } from '../core/GameEngine';
 import type { 
-  Task, 
-  CreateTaskParams} from '../types/Task';
-import { TaskStatus, TaskType } from '../types/Task';
+  Task} from '../types/Task';
+import { TaskStatus } from '../types/Task';
 import { 
   formatTaskDate, 
   getTaskStatusText, 
@@ -13,6 +12,7 @@ import {
   validateRequiredItems,
   validateRoleForTask,
   calculateRoleFitScore } from '../utils/taskUtils';
+import TaskCreationDialog from '../components/TaskCreationModal.vue';
 
 // 所有角色
 const roles = computed(() => gameEngine.getRoles());
@@ -28,6 +28,9 @@ const activeFilter = ref('active'); // 'all', 'active', 'pending', 'completed'
 
 // 错误消息
 const errorMessage = ref('');
+
+// 任务创建对话框
+const isTaskCreationDialogOpen = ref(false);
 
 // 加载任务列表
 const loadTasks = () => {
@@ -147,42 +150,18 @@ const getStatusClass = (status: TaskStatus): string => {
   }
 };
 
-// 创建示例任务
-const createSampleTask = () => {
-  const taskParams: CreateTaskParams = {
-    name: '制作木材',
-    type: TaskType.CRAFTING,
-    description: '将原木加工成木材',
-    requiredSkills: [
-      {
-        skillId: '3', // 假设ID为3是工艺技能
-        skillName: '工艺',
-        requiredValue: 20
-      }
-    ],
-    priority: 5,
-    requiredItems: [
-      {
-        itemId: '7', // ID为7是木材 (Wood)
-        itemName: '木材',
-        quantity: 2
-      }
-    ],
-    outputItems: [
-      {
-        itemId: '8', // ID为8是石材 (Stone)
-        itemName: '石材',
-        quantity: 4
-      }
-    ],
-    timeEstimate: {
-      baseHours: 4,
-      skillFactor: 0.5,
-      minHours: 1
-    }
-  };
-  
-  taskSystem.createTask(taskParams);
+// 打开任务创建对话框
+const openTaskCreationDialog = () => {
+  isTaskCreationDialogOpen.value = true;
+};
+
+// 关闭任务创建对话框
+const closeTaskCreationDialog = () => {
+  isTaskCreationDialogOpen.value = false;
+};
+
+// 任务创建成功回调
+const onTaskCreated = () => {
   loadTasks();
 };
 
@@ -254,10 +233,13 @@ const getRoleScoreClass = (score: number): string => {
         <!-- 临时：仅用于测试 -->
         <button 
           class="btn btn-primary btn-sm"
-          @click="createSampleTask"
+          @click="openTaskCreationDialog"
+          aria-haspopup="dialog"
+          aria-expanded="false"
+          aria-controls="task-creation-modal"
         >
           <span class="icon-[tabler--plus] size-4 me-1"></span>
-          测试任务
+          创建任务
         </button>
       </div>
     </div>
@@ -479,5 +461,13 @@ const getRoleScoreClass = (score: number): string => {
         </div>
       </div>
     </div>
+    
+    <!-- 任务创建对话框 -->
+    <TaskCreationDialog 
+      :isOpen="isTaskCreationDialogOpen"
+      @close="closeTaskCreationDialog"
+      @task-created="onTaskCreated"
+      id="task-creation-modal"
+    />
   </div>
 </template> 

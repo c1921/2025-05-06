@@ -152,6 +152,7 @@ export interface Task {
   history: TaskHistoryItem[]; // 历史记录
   tags: string[];            // 分类标签
   isUserCreated: boolean;    // 是否由用户创建
+  isRecurring?: boolean;     // 是否为循环任务
   // 可以添加自定义属性的扩展
   [key: string]: any;
 }
@@ -191,6 +192,7 @@ export interface CreateTaskParams {
   assignToRoleId?: string;   // 直接指派给角色
   templateId?: string;       // 使用的模板ID
   tags?: string[];           // 分类标签
+  isRecurring?: boolean;     // 是否为循环任务
   // 可以添加更多自定义参数
   [key: string]: any;
 } 
